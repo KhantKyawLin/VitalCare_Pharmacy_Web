@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Heart, ShoppingCart, User, Menu, X } from 'lucide-react';
+import { Search, Heart, ShoppingCart, User, Menu, X, LogOut } from 'lucide-react';
 import Button from '../common/Button';
+import { AuthContext } from '../../context/AuthContext';
+import { CartContext } from '../../context/CartContext';
 
 // Temporary mock asset for logo
 const Logo = () => (
@@ -14,9 +16,13 @@ const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const location = useLocation();
 
-    // Mock auth state for UI development
-    const isLoggedIn = false;
-    const cartCount = 0;
+    // Get auth state from context
+    const { user, token, logout } = useContext(AuthContext);
+    const { cartCount } = useContext(CartContext);
+
+    // Derived states
+    const isLoggedIn = !!token;
+    // Replace with real counts later during Wishlist integration
     const wishlistCount = 0;
 
     const isActive = (path) => location.pathname === path;
@@ -83,7 +89,7 @@ const Navbar = () => {
                                     </span>
                                 </Link>
 
-                                <Link to={isLoggedIn ? "/dashboard" : "/login"} className="text-text-dark hover:text-accent-green transition-colors">
+                                <Link to={isLoggedIn ? "/profile" : "/login"} className="text-text-dark hover:text-accent-green transition-colors">
                                     <div className="w-7 h-7 bg-light-grey rounded-full flex items-center justify-center overflow-hidden">
                                         <User size={18} />
                                     </div>
@@ -105,12 +111,23 @@ const Navbar = () => {
                                     </li>
                                 ))}
 
-                                <li className="mt-2 lg:mt-0 lg:ml-2">
+                                <li className="mt-2 lg:mt-0 lg:ml-2 flex flex-col lg:flex-row items-center gap-4">
                                     {isLoggedIn ? (
-                                        <Button variant="danger" size="sm" className="w-full lg:w-auto">Logout</Button>
+                                        <>
+                                            <span className="text-sm font-medium text-text-muted hidden lg:inline-block">
+                                                Hi, {user?.name?.split(' ')[0] || 'User'}
+                                            </span>
+                                            <button
+                                                onClick={logout}
+                                                className="flex items-center gap-2 text-red-500 hover:text-red-700 transition-colors py-2 lg:py-0 w-full lg:w-auto"
+                                            >
+                                                <LogOut size={18} />
+                                                <span>Logout</span>
+                                            </button>
+                                        </>
                                     ) : (
-                                        <Link to="/login">
-                                            <Button variant="primary" size="sm" className="w-full lg:w-auto">Login</Button>
+                                        <Link to="/login" className="w-full lg:w-auto">
+                                            <Button variant="primary" size="sm" className="w-full">Login</Button>
                                         </Link>
                                     )}
                                 </li>

@@ -1,44 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import ProductCard from '../components/common/ProductCard';
 
 const Home = () => {
-    // Dummy products for now
-    const featuredProducts = [
-        {
-            id: 1,
-            name: "Vitamin C 1000mg",
-            price: 15.99,
-            originalPrice: 19.99,
-            category: "Vitamins",
-            image: "https://images.unsplash.com/photo-1550572017-edb73be26f50?auto=format&fit=crop&q=80&w=400",
-            isOutOfStock: false
-        },
-        {
-            id: 2,
-            name: "First Aid Kit Pro",
-            price: 29.99,
-            category: "First Aid",
-            image: "https://images.unsplash.com/photo-1603398938378-e54eab446dde?auto=format&fit=crop&q=80&w=400",
-            isOutOfStock: false
-        },
-        {
-            id: 3,
-            name: "Digital Thermometer",
-            price: 12.50,
-            category: "Devices",
-            image: "https://images.unsplash.com/photo-1584308666744-24d5e16541f5?auto=format&fit=crop&q=80&w=400",
-            isOutOfStock: true
-        },
-        {
-            id: 4,
-            name: "Protein Powder Isolate",
-            price: 45.00,
-            originalPrice: 55.00,
-            category: "Supplements",
-            image: "https://images.unsplash.com/photo-1593095948074-a6984e4f509e?auto=format&fit=crop&q=80&w=400",
-            isOutOfStock: false
-        }
-    ];
+    const [featuredProducts, setFeaturedProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                // Fetching from your Laravel API
+                const response = await axios.get('http://localhost:8000/api/products');
+                // Let's just grab the first 4 products for the featured section
+                setFeaturedProducts(response.data.slice(0, 4));
+                setIsLoading(false);
+            } catch (err) {
+                console.error("Error fetching products:", err);
+                setError("Failed to load featured products.");
+                setIsLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
 
     return (
         <div className="flex flex-col gap-12 py-8">
@@ -82,9 +67,28 @@ const Home = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {featuredProducts.map(product => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
+                    {isLoading ? (
+                        <div className="col-span-full py-12 text-center text-text-muted">Loading products...</div>
+                    ) : error ? (
+                        <div className="col-span-full py-12 text-center text-red-500">{error}</div>
+                    ) : featuredProducts.length > 0 ? (
+                        featuredProducts.map(product => (
+                            <ProductCard
+                                key={product.id}
+                                product={{
+                                    id: product.id,
+                                    name: product.name,
+                                    price: parseFloat(product.price),
+                                    category: product.category?.name || 'Healthcare',
+                                    // Use the first related picture as image if it exists
+                                    image: product.pictures?.length > 0 ? product.pictures[0].image_path : null,
+                                    isOutOfStock: product.is_expired // Using is_expired as out of stock proxy temporarily
+                                }}
+                            />
+                        ))
+                    ) : (
+                        <div className="col-span-full py-12 text-center text-text-muted">No products found.</div>
+                    )}
                 </div>
             </section>
         </div>
