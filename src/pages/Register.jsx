@@ -9,7 +9,8 @@ const Register = () => {
         password: '',
         password_confirmation: '',
         phone: '',
-        address: ''
+        address: '',
+        gender: ''
     });
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -34,15 +35,16 @@ const Register = () => {
             return;
         }
 
+        if (!formData.gender) {
+            setError("Please select your gender");
+            return;
+        }
+
         setIsLoading(true);
 
         try {
-            const data = new FormData();
-            Object.keys(formData).forEach(key => {
-                data.append(key, formData[key]);
-            });
-
-            const result = await register(data);
+            // Send as plain object since register handles JSON in AuthContext
+            const result = await register(formData);
 
             if (result && result.success) {
                 navigate('/');
@@ -100,11 +102,52 @@ const Register = () => {
                                 onChange={handleChange}
                             />
                         </div>
+
                         <div>
-                            <label className="block text-sm font-medium text-text-dark mb-1">Phone Number</label>
+                            <label className="block text-sm font-medium text-text-dark mb-1">Gender *</label>
+                            <div className="flex gap-4 p-2 border border-gray-300 rounded-md">
+                                <label className="flex items-center text-sm text-text-dark gap-1 cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        name="gender"
+                                        value="male"
+                                        checked={formData.gender === 'male'}
+                                        onChange={handleChange}
+                                        className="text-primary-green focus:ring-primary-green"
+                                    />
+                                    Male
+                                </label>
+                                <label className="flex items-center text-sm text-text-dark gap-1 cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        name="gender"
+                                        value="female"
+                                        checked={formData.gender === 'female'}
+                                        onChange={handleChange}
+                                        className="text-primary-green focus:ring-primary-green"
+                                    />
+                                    Female
+                                </label>
+                                <label className="flex items-center text-sm text-text-dark gap-1 cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        name="gender"
+                                        value="others"
+                                        checked={formData.gender === 'others'}
+                                        onChange={handleChange}
+                                        className="text-primary-green focus:ring-primary-green"
+                                    />
+                                    Others
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-text-dark mb-1">Phone Number *</label>
                             <input
                                 name="phone"
                                 type="text"
+                                required
                                 className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-green focus:border-primary-green sm:text-sm"
                                 placeholder="Phone number"
                                 value={formData.phone}
@@ -112,9 +155,10 @@ const Register = () => {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-text-dark mb-1">Address</label>
+                            <label className="block text-sm font-medium text-text-dark mb-1">Address *</label>
                             <textarea
                                 name="address"
+                                required
                                 className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-green focus:border-primary-green sm:text-sm"
                                 placeholder="Delivery address"
                                 value={formData.address}
