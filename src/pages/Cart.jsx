@@ -64,7 +64,7 @@ const Cart = () => {
                             {cart.items.map(item => {
                                 const product = item.product;
                                 const itemTotal = product.price * item.quantity;
-                                const imageUrl = product.pictures?.length > 0 ? product.pictures[0].image_path : "https://placehold.co/100x100/f8fafc/a3c93a?text=Product";
+                                const imageUrl = product.pictures?.length > 0 ? `http://localhost/VitalCare/uploads/${product.pictures[0].image_path}` : "https://placehold.co/100x100/f8fafc/a3c93a?text=Product";
 
                                 return (
                                     <div key={item.id} className="p-4 md:grid md:grid-cols-12 md:gap-4 md:items-center flex flex-col sm:flex-row gap-4">

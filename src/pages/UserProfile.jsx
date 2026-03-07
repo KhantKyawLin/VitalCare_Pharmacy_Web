@@ -101,9 +101,9 @@ const UserProfile = () => {
                                     </div>
                                     <div className="mt-2 md:mt-0">
                                         <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${order.status === 'pending' ? 'bg-orange-100 text-orange-600' :
-                                                order.status === 'processing' ? 'bg-blue-100 text-blue-600' :
-                                                    order.status === 'completed' ? 'bg-green-100 text-green-600' :
-                                                        'bg-gray-100 text-gray-600'
+                                            order.status === 'processing' ? 'bg-blue-100 text-blue-600' :
+                                                order.status === 'completed' ? 'bg-green-100 text-green-600' :
+                                                    'bg-gray-100 text-gray-600'
                                             }`}>
                                             {order.status}
                                         </span>
@@ -111,7 +111,7 @@ const UserProfile = () => {
                                 </div>
                                 <div className="p-4 md:p-6 divide-y divide-light-grey">
                                     {order.products.map(op => {
-                                        const imageUrl = op.product.pictures?.length > 0 ? op.product.pictures[0].image_path : "https://placehold.co/80x80/f8fafc/a3c93a?text=Item";
+                                        const imageUrl = op.product.pictures?.length > 0 ? `http://localhost/VitalCare/uploads/${op.product.pictures[0].image_path}` : "https://placehold.co/80x80/f8fafc/a3c93a?text=Item";
                                         return (
                                             <div key={op.id} className="py-4 flex flex-row items-center gap-4 first:pt-0 last:pb-0">
                                                 <img src={imageUrl} alt={op.product.name} className="w-16 h-16 rounded object-cover border border-light-grey" />

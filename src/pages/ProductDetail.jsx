@@ -72,7 +72,7 @@ const ProductDetail = () => {
     }
 
     const imageUrl = product.pictures?.length > 0
-        ? product.pictures[0].image_path
+        ? `http://localhost/VitalCare/uploads/${product.pictures[0].image_path}`
         : "https://placehold.co/600x600/f8fafc/a3c93a?text=Product";
 
     return (

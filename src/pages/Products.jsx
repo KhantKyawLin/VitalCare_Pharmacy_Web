@@ -72,7 +72,7 @@ const Products = () => {
                                 name: product.name,
                                 price: parseFloat(product.price),
                                 category: product.category?.name || 'Healthcare',
-                                image: product.pictures?.length > 0 ? product.pictures[0].image_path : null,
+                                image: product.pictures?.length > 0 ? `http://localhost/VitalCare/uploads/${product.pictures[0].image_path}` : null,
                                 isOutOfStock: product.is_expired
                             }}
                         />

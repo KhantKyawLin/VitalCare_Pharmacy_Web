@@ -81,7 +81,7 @@ const Home = () => {
                                     price: parseFloat(product.price),
                                     category: product.category?.name || 'Healthcare',
                                     // Use the first related picture as image if it exists
-                                    image: product.pictures?.length > 0 ? product.pictures[0].image_path : null,
+                                    image: product.pictures?.length > 0 ? `http://localhost/VitalCare/uploads/${product.pictures[0].image_path}` : null,
                                     isOutOfStock: product.is_expired // Using is_expired as out of stock proxy temporarily
                                 }}
                             />
