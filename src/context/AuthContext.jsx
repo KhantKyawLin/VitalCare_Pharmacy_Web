@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
         const fetchUser = async () => {
             if (token) {
                 try {
-                    const response = await axios.get('http://localhost:8000/api/auth/me');
+                    const response = await axios.get('http://127.0.0.1:8000/api/auth/me');
                     setUser(response.data);
                 } catch (error) {
                     console.error("Error fetching user:", error);
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const response = await axios.post('http://localhost:8000/api/auth/login', {
+            const response = await axios.post('http://127.0.0.1:8000/api/auth/login', {
                 email,
                 password
             });
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (userData) => {
         try {
-            const response = await axios.post('http://localhost:8000/api/auth/register', userData);
+            const response = await axios.post('http://127.0.0.1:8000/api/auth/register', userData);
 
             // Auto login after successful registration
             const { access_token, user: newUser } = response.data;
@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
         try {
             if (token) {
                 // Inform backend
-                await axios.post('http://localhost:8000/api/auth/logout');
+                await axios.post('http://127.0.0.1:8000/api/auth/logout');
             }
         } catch (error) {
             console.error("Logout error API:", error);

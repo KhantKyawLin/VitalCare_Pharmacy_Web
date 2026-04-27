@@ -28,29 +28,57 @@ const Home = () => {
     return (
         <div className="flex flex-col gap-12 py-8">
             {/* Hero Section */}
-            <section className="bg-primary-green/10 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 mx-4 lg:mx-8">
-                <div className="flex-1 space-y-6">
-                    <h1 className="text-4xl md:text-5xl font-bold text-primary-green leading-tight">
-                        Your Health,<br />Our Priority
-                    </h1>
-                    <p className="text-lg text-text-muted">
-                        Get your medications, health supplements, and personal care products delivered right to your door.
-                    </p>
-                    <div className="flex gap-4">
-                        <button className="bg-primary-green hover:bg-accent-green text-white px-8 py-3 rounded-md font-medium transition-all shadow-md hover:shadow-lg">
-                            Shop Now
-                        </button>
-                        <button className="border-2 border-primary-green text-primary-green hover:bg-primary-green hover:text-white px-8 py-3 rounded-md font-medium transition-all">
-                            Upload Prescription
-                        </button>
+            <section className="bg-[#f8f9fa] py-16 text-center">
+                <div className="container mx-auto px-4 lg:px-8">
+                    <div className="flex flex-col md:flex-row items-center justify-between">
+                        <div className="md:w-1/2 text-left mb-8 md:mb-0 lg:pl-12">
+                            <h1 className="text-4xl md:text-5xl lg:text-[54px] font-bold text-primary-green leading-tight mb-4">
+                                Your Trusted Pharmacy
+                            </h1>
+                            <p className="text-xl text-text-muted mb-8 font-light">
+                                Quality healthcare products with fast delivery to your doorstep.
+                            </p>
+                            <a href="/products" className="bg-primary-green hover:bg-accent-green text-white px-8 py-3 rounded text-lg font-medium transition-transform hover:scale-105 shadow-md hover:shadow-lg inline-block">
+                                Shop Now
+                            </a>
+                        </div>
+                        <div className="md:w-1/2">
+                            <img
+                                src="http://localhost/VitalCare/image/VitalCare_Home.png"
+                                alt="Pharmacist Illustration"
+                                className="w-full h-auto max-w-lg mx-auto"
+                            />
+                        </div>
                     </div>
                 </div>
-                <div className="flex-1">
-                    <img
-                        src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800"
-                        alt="Pharmacy Store"
-                        className="rounded-xl shadow-lg w-full object-cover h-[400px]"
-                    />
+            </section>
+
+            {/* Features Section */}
+            <section className="py-12 bg-white">
+                <div className="container mx-auto px-4 text-center">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div className="flex flex-col items-center">
+                            <div className="text-primary-green mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/><path d="M14 9h4l4 4v4c0 .6-.4 1-1 1h-2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+                            </div>
+                            <h5 className="text-xl font-semibold mb-2">Fast Delivery</h5>
+                            <p className="text-text-muted">Same-day delivery in Yangon area</p>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <div className="text-primary-green mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m11 11-4 4"/><path d="m13 13 4-4"/><circle cx="15" cy="9" r="6"/><circle cx="9" cy="15" r="6"/></svg>
+                            </div>
+                            <h5 className="text-xl font-semibold mb-2">Genuine Medicine</h5>
+                            <p className="text-text-muted">100% authentic pharmaceutical products</p>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <div className="text-primary-green mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                            </div>
+                            <h5 className="text-xl font-semibold mb-2">Expert Support</h5>
+                            <p className="text-text-muted">Pharmacist consultation available</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 

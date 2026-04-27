@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import Home from './pages/Home';
@@ -10,31 +10,80 @@ import Register from './pages/Register';
 import Cart from './pages/Cart';
 import UserProfile from './pages/UserProfile';
 
+import AdminRoute from './components/auth/AdminRoute';
+import AdminLayout from './components/layout/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminProductList from './pages/admin/AdminProductList';
+import AdminProductDetail from './pages/admin/AdminProductDetail';
+import AdminProductForm from './pages/admin/AdminProductForm';
+import AdminCategoryList from './pages/admin/AdminCategoryList';
+import AdminUnitList from './pages/admin/AdminUnitList';
+import AdminExpiredItemList from './pages/admin/AdminExpiredItemList';
+import AdminReorderAlerts from './pages/admin/AdminReorderAlerts';
+import AdminPurchaseList from './pages/admin/AdminPurchaseList';
+import AdminPurchaseForm from './pages/admin/AdminPurchaseForm';
+import AdminSupplierList from './pages/admin/AdminSupplierList';
+
+const PublicLayout = () => {
+  const location = useLocation();
+  
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main key={location.pathname} className="flex-grow page-transition">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/orders" element={<UserProfile />} />
+          <Route path="/health-tips" element={<div className="container mx-auto p-8"><h1 className="text-3xl font-bold">Health Tips</h1><p className="mt-4">Page coming soon...</p></div>} />
+          <Route path="/about" element={<div className="container mx-auto p-8"><h1 className="text-3xl font-bold">About Us</h1><p className="mt-4">Page coming soon...</p></div>} />
+          <Route path="/contact" element={<div className="container mx-auto p-8"><h1 className="text-3xl font-bold">Contact Us</h1><p className="mt-4">Page coming soon...</p></div>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<div className="container mx-auto p-8 text-center py-20"><h1 className="text-4xl font-bold text-red-500">404</h1><p className="mt-4 text-slate-500">The page you are looking for does not exist.</p><Link to="/" className="mt-6 inline-block bg-green-600 text-white px-6 py-2 rounded-lg">Back to Home</Link></div>} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
+      <Routes>
+        {/* Admin Routes - No Public Navbar/Footer */}
+        <Route path="/admin/*" element={<AdminRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="products" element={<AdminProductList />} />
+            <Route path="products/:id" element={<AdminProductDetail />} />
+            <Route path="products/create" element={<AdminProductForm />} />
+            <Route path="products/edit/:id" element={<AdminProductForm />} />
+            <Route path="categories" element={<AdminCategoryList />} />
+            <Route path="units" element={<AdminUnitList />} />
+            <Route path="expired" element={<AdminExpiredItemList />} />
+            <Route path="reorder-alerts" element={<AdminReorderAlerts />} />
+            <Route path="purchases" element={<AdminPurchaseList />} />
+            <Route path="purchases/create" element={<AdminPurchaseForm />} />
+            <Route path="suppliers" element={<AdminSupplierList />} />
+            <Route path="inventory" element={<div className="p-8"><h2 className="text-2xl font-bold">Inventory Control</h2><p className="text-slate-500">Coming soon...</p></div>} />
+            <Route path="orders" element={<div className="p-8"><h2 className="text-2xl font-bold">Order Management</h2><p className="text-slate-500">Coming soon...</p></div>} />
+            <Route path="promotions" element={<div className="p-8"><h2 className="text-2xl font-bold">Promotions & Discounts</h2><p className="text-slate-500">Coming soon...</p></div>} />
+            <Route path="health-tips" element={<div className="p-8"><h2 className="text-2xl font-bold">Health Tips CRUD</h2><p className="text-slate-500">Coming soon...</p></div>} />
+            <Route path="users" element={<div className="p-8"><h2 className="text-2xl font-bold">User & Staff Control</h2><p className="text-slate-500">Coming soon...</p></div>} />
+            <Route path="messages" element={<div className="p-8"><h2 className="text-2xl font-bold">Contact Messages</h2><p className="text-slate-500">Coming soon...</p></div>} />
+            <Route path="logs" element={<div className="p-8"><h2 className="text-2xl font-bold">Activity Audit Logs</h2><p className="text-slate-500">Coming soon...</p></div>} />
+            <Route path="settings" element={<div className="p-8"><h2 className="text-2xl font-bold">Branding & Settings</h2><p className="text-slate-500">Coming soon...</p></div>} />
+          </Route>
+        </Route>
 
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/products/:id" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/orders" element={<UserProfile />} />
-            <Route path="/health-tips" element={<div className="container mx-auto p-8"><h1 className="text-3xl font-bold">Health Tips</h1><p className="mt-4">Component coming soon...</p></div>} />
-            <Route path="/about" element={<div className="container mx-auto p-8"><h1 className="text-3xl font-bold">About Us</h1><p className="mt-4">Component coming soon...</p></div>} />
-            <Route path="/contact" element={<div className="container mx-auto p-8"><h1 className="text-3xl font-bold">Contact Us</h1><p className="mt-4">Component coming soon...</p></div>} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="*" element={<div className="container mx-auto p-8 text-center"><h1 className="text-4xl font-bold text-red-500">404</h1><p className="mt-4">Page not found</p></div>} />
-          </Routes>
-        </main>
-
-        <Footer />
-      </div>
+        {/* Public Routes with Navbar/Footer */}
+        <Route path="*" element={<PublicLayout />} />
+      </Routes>
     </Router>
   );
 }

@@ -27,3 +27,18 @@ body {
   background-color: #f8fafc;
   color: var(--color-text-dark);
 }
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition {
+  animation: pageFadeIn 0.4s ease-out forwards;
+}

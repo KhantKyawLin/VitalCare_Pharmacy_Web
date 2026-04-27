@@ -17,12 +17,8 @@ const Login = () => {
         setIsLoading(true);
 
         try {
-            const formData = new FormData();
-            formData.append('email', email);
-            formData.append('password', password);
-
-            // Our AuthContext login function expects email and password
-            const result = await login(formData);
+            // Our AuthContext login function expects email and password as separate arguments
+            const result = await login(email, password);
 
             if (result && result.success) {
                 navigate('/');
