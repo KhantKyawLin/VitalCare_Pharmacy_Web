@@ -384,9 +384,13 @@ const AdminProductList = () => {
                                         {visibleColumns.discount && (
                                             <td className="py-3.5">
                                                 {activePromotion ? (
-                                                    <span className="px-2 py-0.5 bg-red-100 text-red-600 rounded text-xs font-bold border border-red-200">-{activePromotion.discount_percentage}%</span>
+                                                    <span className="px-2.5 py-1 bg-[#8DB600]/10 text-[#8DB600] rounded-full text-[11px] font-bold border border-[#8DB600]/20 flex items-center gap-1 w-fit">
+                                                        <Check size={12} strokeWidth={3}/> Yes
+                                                    </span>
                                                 ) : (
-                                                    <span className="text-gray-400 text-xs">-</span>
+                                                    <span className="px-2.5 py-1 bg-gray-50 text-gray-400 rounded-full text-[11px] font-bold border border-gray-100 flex items-center gap-1 w-fit">
+                                                        None
+                                                    </span>
                                                 )}
                                             </td>
                                         )}

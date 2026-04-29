@@ -23,7 +23,8 @@ import AdminReorderAlerts from './pages/admin/AdminReorderAlerts';
 import AdminPurchaseList from './pages/admin/AdminPurchaseList';
 import AdminPurchaseForm from './pages/admin/AdminPurchaseForm';
 import AdminSupplierList from './pages/admin/AdminSupplierList';
-
+import AdminPromotionList from './pages/admin/AdminPromotionList';
+import AdminPromotionForm from './pages/admin/AdminPromotionForm';
 const PublicLayout = () => {
   const location = useLocation();
   
@@ -72,7 +73,10 @@ function App() {
             <Route path="suppliers" element={<AdminSupplierList />} />
             <Route path="inventory" element={<div className="p-8"><h2 className="text-2xl font-bold">Inventory Control</h2><p className="text-slate-500">Coming soon...</p></div>} />
             <Route path="orders" element={<div className="p-8"><h2 className="text-2xl font-bold">Order Management</h2><p className="text-slate-500">Coming soon...</p></div>} />
-            <Route path="promotions" element={<div className="p-8"><h2 className="text-2xl font-bold">Promotions & Discounts</h2><p className="text-slate-500">Coming soon...</p></div>} />
+            <Route path="promotions" element={<AdminPromotionList />} />
+            <Route path="promotions/create" element={<AdminPromotionForm />} />
+            <Route path="promotions/view/:id" element={<AdminPromotionForm />} />
+            <Route path="promotions/edit/:id" element={<AdminPromotionForm />} />
             <Route path="health-tips" element={<div className="p-8"><h2 className="text-2xl font-bold">Health Tips CRUD</h2><p className="text-slate-500">Coming soon...</p></div>} />
             <Route path="users" element={<div className="p-8"><h2 className="text-2xl font-bold">User & Staff Control</h2><p className="text-slate-500">Coming soon...</p></div>} />
             <Route path="messages" element={<div className="p-8"><h2 className="text-2xl font-bold">Contact Messages</h2><p className="text-slate-500">Coming soon...</p></div>} />
