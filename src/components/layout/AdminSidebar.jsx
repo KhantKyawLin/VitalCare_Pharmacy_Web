@@ -23,7 +23,8 @@ import {
     Gauge,
     Store,
     Bell,
-    Truck
+    Truck,
+    Plus
 } from 'lucide-react';
 
 const AdminSidebar = ({ isOpen }) => {
@@ -97,7 +98,8 @@ const AdminSidebar = ({ isOpen }) => {
             icon: <ShoppingCart size={20} className="stroke-2" />, 
             roles: ['admin', 'superadmin', 'staff'],
             children: [
-                { name: 'Order History', path: '/admin/orders', icon: <History size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff'] },
+                { name: 'Point of Sale', path: '/admin/pos', icon: <ShoppingCart size={18} className="stroke-2 text-[#8DB600]" />, roles: ['admin', 'superadmin', 'staff'] },
+                { name: 'All Sales History', path: '/admin/orders', icon: <History size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff'] },
                 { name: 'New Purchase', path: '/admin/purchases/create', icon: <ShoppingCart size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff'] },
                 { name: 'Purchase History', path: '/admin/purchases', icon: <History size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff'] },
                 { name: 'Suppliers', path: '/admin/suppliers', icon: <Truck size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff'] }
@@ -113,7 +115,10 @@ const AdminSidebar = ({ isOpen }) => {
             name: 'Health Tips', 
             icon: <BookOpen size={20} className="stroke-2" />, 
             roles: ['admin', 'superadmin', 'pharmacist'],
-            path: '/admin/health-tips'
+            children: [
+                { name: 'New Health Tip', path: '/admin/health-tips/create', icon: <Plus size={18} className="stroke-2 text-green-500" />, roles: ['admin', 'superadmin', 'pharmacist'] },
+                { name: 'Health Tip List', path: '/admin/health-tips', icon: <ClipboardList size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'pharmacist'] }
+            ]
         },
         { name: 'User Management', path: '/admin/users', icon: <Users size={20} className="stroke-2" />, roles: ['admin', 'superadmin'] },
         { name: 'Contact Us', path: '/admin/messages', icon: <MessageSquare size={20} className="stroke-2" />, roles: ['admin', 'superadmin'] },
@@ -121,19 +126,17 @@ const AdminSidebar = ({ isOpen }) => {
         { name: 'Settings', path: '/admin/settings', icon: <Settings size={20} className="stroke-2" />, roles: ['admin', 'superadmin'] },
     ];
 
-    const filterRoles = (items) => {
-        return items.filter(item => {
-            if (!item.roles.includes(user?.role)) return false;
-            // If it has children, filter them too
+    const filteredItems = navItems.filter(item => item.roles.includes(user?.role))
+        .map(item => {
             if (item.children) {
-                item.children = item.children.filter(child => child.roles.includes(user?.role));
-                if (item.children.length === 0) return false;
+                return {
+                    ...item,
+                    children: item.children.filter(child => child.roles.includes(user?.role))
+                };
             }
-            return true;
-        });
-    };
-
-    const filteredItems = filterRoles(navItems);
+            return item;
+        })
+        .filter(item => !item.children || item.children.length > 0);
 
     return (
         <aside className={`${isOpen ? 'w-64' : 'w-20'} bg-white h-screen shrink-0 border-r border-gray-200 flex flex-col transition-all duration-300 z-20`}>

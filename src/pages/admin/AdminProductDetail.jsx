@@ -73,8 +73,7 @@ const AdminProductDetail = () => {
     }
 
     const movements = Array.isArray(product.movements) ? product.movements : [];
-    const totalStock = movements.reduce((sum, m) => 
-        m.movement_type !== 'sold-out' ? sum + (parseInt(m.instock_quantity) || 0) : sum, 0);
+    const totalStock = movements.reduce((sum, m) => sum + (parseInt(m.instock_quantity) || 0), 0);
     
     const isLowStock = totalStock <= product.minimum_quantity;
     const activePromotions = product.promotions?.filter(p => p.is_active) || [];

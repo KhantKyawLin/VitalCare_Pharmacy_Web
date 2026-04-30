@@ -137,24 +137,28 @@ const AdminDashboard = () => {
                             <tbody>
                                 {stats?.recent_orders?.length > 0 ? stats.recent_orders.map((order, index) => (
                                     <tr key={order.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50">
-                                        <td className="py-4 text-gray-600">
-                                            #VC-{String(order.id).padStart(4, '0')}
+                                        <td className="py-4 text-gray-600 font-medium">
+                                            #{order.receipt_number ? order.receipt_number.split('-')[1] : `VC-${String(order.id).padStart(4, '0')}`}
                                         </td>
                                         <td className="py-4 text-gray-800">
-                                            {order.user?.name || `Customer ${order.user_id}`}
+                                            {order.order_type === 'walk-in' ? (
+                                                <span className="text-blue-600 font-bold">Walk-in</span>
+                                            ) : (
+                                                order.user?.name || `Customer ${order.user_id || 'Guest'}`
+                                            )}
                                         </td>
                                         <td className="py-4 text-gray-800">
-                                            {new Date(order.order_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+                                            {new Date(order.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
                                         </td>
-                                        <td className="py-4 text-gray-800 font-medium">
-                                            Ks. {order.total_order_amount?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                                        <td className="py-4 text-gray-800 font-bold">
+                                            Ks. {parseFloat(order.total_amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}
                                         </td>
                                         <td className="py-4">
                                             <span className={`px-2.5 py-1 rounded-md text-[11px] font-bold text-white ${
-                                                order.order_status?.toLowerCase() === 'completed' ? 'bg-[#218F56]' : 
-                                                order.order_status?.toLowerCase() === 'pending' ? 'bg-[#FFB822]' : 'bg-red-500'
+                                                order.status?.toLowerCase() === 'completed' ? 'bg-[#218F56]' : 
+                                                order.status?.toLowerCase() === 'pending' ? 'bg-[#FFB822]' : 'bg-red-500'
                                             }`}>
-                                                {order.order_status?.charAt(0).toUpperCase() + order.order_status?.slice(1)}
+                                                {order.status?.toUpperCase() || 'N/A'}
                                             </span>
                                         </td>
                                         <td className="py-4">

@@ -1,66 +1,109 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { ShoppingCart, Heart, ChevronRight } from 'lucide-react';
 
 const ProductCard = ({ product }) => {
-    const {
-        id,
-        name,
-        image,
-        price,
-        originalPrice,
-        category,
-        isOutOfStock
-    } = product;
+    const hasPromotion = product.promotions && product.promotions.length > 0;
+    const currentPrice = parseFloat(product.price || 0);
+    let originalPrice = null;
+    let badgeText = null;
+    let badgeColor = "bg-[#A3C93A]"; // Default green
+
+    if (hasPromotion) {
+        const promo = product.promotions[0];
+        const val = parseFloat(promo.discount_value || 0);
+        
+        switch (promo.type) {
+            case 'percentage':
+                badgeText = `${val}% OFF`;
+                originalPrice = currentPrice / (1 - (val / 100));
+                badgeColor = "bg-red-500";
+                break;
+            case 'fixed_amount':
+                badgeText = `${val.toLocaleString()} Ks OFF`;
+                originalPrice = currentPrice + val;
+                badgeColor = "bg-blue-500";
+                break;
+            case 'cashback':
+                badgeText = `Cashback`;
+                badgeColor = "bg-purple-500";
+                break;
+            case 'buy_one_get_one':
+                badgeText = `Buy 1 Get 1`;
+                badgeColor = "bg-orange-500";
+                break;
+            case 'buy_one_get_gift':
+                badgeText = `Buy 1 Get Gift`;
+                badgeColor = "bg-pink-500";
+                break;
+            default:
+                badgeText = `SALE`;
+        }
+    }
 
     return (
-        <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full border border-light-grey/50 group">
-            {/* Image Container */}
-            <div className="relative pt-[100%] overflow-hidden bg-[#f8fafc]">
-                {/* Placeholder image logic, replace with actual image later */}
-                <img
-                    src={image || "https://placehold.co/400x400/f8fafc/a3c93a?text=Product"}
-                    alt={name}
-                    className="absolute top-0 left-0 w-full h-full object-cover p-4 group-hover:scale-105 transition-transform duration-500"
-                />
-
-                {/* Discount Badge if originalPrice exists */}
-                {originalPrice && originalPrice > price && (
-                    <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                        Sale
+        <div className="bg-white rounded-[4px] border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full group overflow-hidden max-h-[380px]">
+            {/* Top Section: Image & Badge */}
+            <div className="relative aspect-[5/4] bg-white p-2 overflow-hidden flex-shrink-0">
+                {/* Promotion Badge */}
+                {badgeText && (
+                    <div className="absolute top-1.5 left-1.5 z-10">
+                        <span className={`${badgeColor} text-white text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-[2px] shadow-sm`}>
+                            {badgeText}
+                        </span>
                     </div>
                 )}
 
-                {/* Out of Stock Badge */}
-                {isOutOfStock && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <span className="bg-white text-text-dark font-bold px-4 py-2 rounded shadow">Out of Stock</span>
+                <Link to={`/products/${product.id}`} className="block w-full h-full">
+                    <img
+                        src={product.image || (product.pictures?.length > 0 ? `http://127.0.0.1:8000/storage/${product.pictures[0].image_path}` : "https://placehold.co/400x320/f8fafc/a3c93a?text=Product")}
+                        alt={product.name}
+                        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                    />
+                </Link>
+
+                {!!product.is_expired && (
+                    <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-20">
+                        <span className="bg-red-500 text-white text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-[2px]">Expired</span>
                     </div>
                 )}
             </div>
 
-            {/* Content Container */}
-            <div className="p-4 flex flex-col flex-grow">
-                <div className="text-xs text-text-muted mb-1 uppercase tracking-wider font-semibold">{category}</div>
-                <h3 className="text-lg font-semibold text-text-dark mb-2 line-clamp-2">{name}</h3>
+            {/* Middle Section: Name & Category */}
+            <div className="px-2.5 pt-1.5 pb-0.5 flex justify-between items-start gap-1">
+                <h3 className="text-[11px] font-bold text-gray-800 line-clamp-1 leading-tight flex-grow group-hover:text-[#A3C93A] transition-colors">
+                    {product.name}
+                </h3>
+                <span className="bg-gray-50 text-gray-400 text-[7px] font-black uppercase tracking-tighter px-1 py-0.5 rounded-[2px] border border-gray-100 whitespace-nowrap">
+                    {product.category?.name || product.category || 'General'}
+                </span>
+            </div>
 
-                <div className="mt-auto pt-4 flex items-center justify-between">
-                    <div className="flex flex-col">
-                        <span className="text-xl font-bold text-primary-green">${price.toFixed(2)}</span>
-                        {originalPrice && originalPrice > price && (
-                            <span className="text-sm text-text-muted line-through">${originalPrice.toFixed(2)}</span>
-                        )}
-                    </div>
-
-                    <Link
-                        to={`/products/${id}`}
-                        className={`px-4 py-2 rounded-md font-medium transition-colors ${isOutOfStock
-                                ? 'bg-light-grey text-text-muted cursor-not-allowed'
-                                : 'bg-primary-green text-white hover:bg-accent-green'
-                            }`}
-                    >
-                        View
-                    </Link>
+            {/* Price & View Link */}
+            <div className="px-2.5 py-1 flex justify-between items-end">
+                <div className="flex flex-wrap items-baseline gap-1">
+                    <span className="text-[12px] font-black text-red-500">
+                        Ks. {currentPrice.toLocaleString()}
+                    </span>
+                    {originalPrice && (
+                        <span className="text-[9px] text-gray-400 line-through">
+                            {originalPrice.toLocaleString()}
+                        </span>
+                    )}
                 </div>
+                <Link to={`/products/${product.id}`} className="text-[#A3C93A] text-[9px] font-black uppercase tracking-tighter border border-[#A3C93A]/20 px-1.5 py-0.5 rounded-[2px] flex items-center gap-0.5 hover:bg-[#A3C93A] hover:text-white transition-all">
+                    View <ChevronRight size={10} strokeWidth={3} />
+                </Link>
+            </div>
+
+            {/* Footer: Action Buttons */}
+            <div className="px-2.5 pb-2.5 mt-auto grid grid-cols-2 gap-1.5">
+                <button className="flex items-center justify-center gap-1 bg-[#A3C93A] hover:bg-[#8eb132] text-white py-1.5 rounded-[3px] text-[8px] font-black uppercase tracking-widest transition-all shadow-sm">
+                    <Heart size={10} fill="white" /> Wishlist
+                </button>
+                <button className="flex items-center justify-center gap-1 bg-[#A3C93A] hover:bg-[#8eb132] text-white py-1.5 rounded-[3px] text-[8px] font-black uppercase tracking-widest transition-all shadow-sm">
+                    <ShoppingCart size={10} /> Add
+                </button>
             </div>
         </div>
     );

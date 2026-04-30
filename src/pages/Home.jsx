@@ -1,123 +1,216 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { 
+    ChevronRight, 
+    Star, 
+    Zap,
+    TrendingUp,
+    Heart,
+    ShoppingCart,
+    BookOpen,
+    Calendar,
+    User,
+    Clock,
+    Package
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 import ProductCard from '../components/common/ProductCard';
 
 const Home = () => {
-    const [featuredProducts, setFeaturedProducts] = useState([]);
+    const [topSellers, setTopSellers] = useState([]);
+    const [specialOffers, setSpecialOffers] = useState([]);
+    const [healthTips, setHealthTips] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchHomeData = async () => {
+            setIsLoading(true);
             try {
-                // Fetching from your Laravel API
-                const response = await axios.get('http://localhost:8000/api/products');
-                // Let's just grab the first 4 products for the featured section
-                setFeaturedProducts(response.data.slice(0, 4));
+                const [topRes, specialRes, tipsRes] = await Promise.all([
+                    axios.get('http://127.0.0.1:8000/api/products/top-sellers'),
+                    axios.get('http://127.0.0.1:8000/api/products/special-offers'),
+                    axios.get('http://127.0.0.1:8000/api/health-tips')
+                ]);
+                
+                setTopSellers(topRes.data || []);
+                setSpecialOffers(specialRes.data || []);
+                setHealthTips(tipsRes.data?.slice(0, 4) || []);
                 setIsLoading(false);
             } catch (err) {
-                console.error("Error fetching products:", err);
-                setError("Failed to load featured products.");
+                console.error("Error fetching home data:", err);
+                setError("Failed to load storefront data. Please try again.");
                 setIsLoading(false);
             }
         };
-
-        fetchProducts();
+        fetchHomeData();
     }, []);
 
+    const SectionHeader = ({ title, subtitle, icon: Icon, linkTo, linkText }) => (
+        <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
+            <div>
+                <div className="flex items-center gap-2 mb-3">
+                    <Icon size={16} className="text-[#A3C93A] fill-[#A3C93A]" />
+                    <span className="text-xs font-black text-[#A3C93A] uppercase tracking-widest">{subtitle}</span>
+                </div>
+                <h2 className="text-4xl font-black text-gray-900 mb-2">{title}</h2>
+            </div>
+            {linkTo && (
+                <Link to={linkTo} className="group flex items-center gap-2 text-[#A3C93A] font-black text-sm uppercase tracking-widest hover:gap-3 transition-all">
+                    {linkText} <ChevronRight size={18} strokeWidth={3} />
+                </Link>
+            )}
+        </div>
+    );
+
+    const LoadingGrid = ({ count = 4 }) => (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[...Array(count)].map((_, i) => (
+                <div key={i} className="animate-pulse">
+                    <div className="aspect-[5/4] bg-gray-100 rounded-[4px] mb-4"></div>
+                    <div className="h-4 bg-gray-100 rounded w-3/4 mb-2"></div>
+                    <div className="h-4 bg-gray-100 rounded w-1/2"></div>
+                </div>
+            ))}
+        </div>
+    );
+
     return (
-        <div className="flex flex-col gap-12 py-8">
-            {/* Hero Section */}
-            <section className="bg-[#f8f9fa] py-16 text-center">
-                <div className="container mx-auto px-4 lg:px-8">
-                    <div className="flex flex-col md:flex-row items-center justify-between">
-                        <div className="md:w-1/2 text-left mb-8 md:mb-0 lg:pl-12">
-                            <h1 className="text-4xl md:text-5xl lg:text-[54px] font-bold text-primary-green leading-tight mb-4">
-                                Your Trusted Pharmacy
+        <div className="bg-white">
+            {/* Hero Section - Compact & Modern */}
+            <header className="relative bg-[#F8FAFC] py-12 md:py-20 overflow-hidden">
+                <div className="container mx-auto px-4 lg:px-12 relative z-10">
+                    <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+                        <div className="max-w-xl lg:w-1/2">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#A3C93A]/10 text-[#A3C93A] rounded-full text-xs font-black uppercase tracking-widest mb-6">
+                                <Zap size={14} className="fill-current" /> Fast Delivery Available
+                            </div>
+                            <h1 className="text-5xl md:text-6xl font-black text-gray-900 mb-6 leading-[1.1]">
+                                Your Health, <br/>
+                                Our <span className="text-[#A3C93A]">Priority.</span>
                             </h1>
-                            <p className="text-xl text-text-muted mb-8 font-light">
-                                Quality healthcare products with fast delivery to your doorstep.
+                            <p className="text-lg text-gray-500 font-medium mb-10 max-w-lg leading-relaxed">
+                                Access premium healthcare products and professional medical advice from the comfort of your home.
                             </p>
-                            <a href="/products" className="bg-primary-green hover:bg-accent-green text-white px-8 py-3 rounded text-lg font-medium transition-transform hover:scale-105 shadow-md hover:shadow-lg inline-block">
-                                Shop Now
-                            </a>
+                            <div className="flex flex-wrap gap-4">
+                                <Link to="/products" className="px-8 py-4 bg-[#A3C93A] text-white rounded-[4px] font-black uppercase tracking-widest shadow-xl shadow-[#A3C93A]/20 hover:bg-[#8eb132] transition-all">
+                                    Shop Now
+                                </Link>
+                                <Link to="/health-tips" className="px-8 py-4 bg-white text-gray-900 border border-gray-200 rounded-[4px] font-black uppercase tracking-widest hover:bg-gray-50 transition-all">
+                                    Health Tips
+                                </Link>
+                            </div>
                         </div>
-                        <div className="md:w-1/2">
-                            <img
-                                src="http://localhost/VitalCare/image/VitalCare_Home.png"
-                                alt="Pharmacist Illustration"
-                                className="w-full h-auto max-w-lg mx-auto"
-                            />
+                        
+                        {/* Hero Image Container */}
+                        <div className="lg:w-1/2 relative">
+                            <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
+                                <img 
+                                    src="/VitalCare_Home.png" 
+                                    alt="VitalCare Hero" 
+                                    className="w-full h-auto object-cover"
+                                    onError={(e) => e.target.src = "https://placehold.co/600x400/f8fafc/a3c93a?text=VitalCare+Pharmacy"}
+                                />
+                            </div>
+                            {/* Decorative background element */}
+                            <div className="absolute -bottom-6 -right-6 w-full h-full bg-[#A3C93A]/10 rounded-2xl -z-10"></div>
                         </div>
                     </div>
                 </div>
+            </header>
+
+            {/* Top Sellers Section */}
+            <section className="container mx-auto px-4 lg:px-12 py-16">
+                <SectionHeader 
+                    title="Top Sellers" 
+                    subtitle="Most Popular" 
+                    icon={TrendingUp} 
+                    linkTo="/products" 
+                    linkText="View All Products"
+                />
+                {isLoading ? (
+                    <LoadingGrid count={8} />
+                ) : (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        {topSellers.map(product => (
+                            <ProductCard key={product.id} product={product} />
+                        ))}
+                    </div>
+                )}
             </section>
 
-            {/* Features Section */}
-            <section className="py-12 bg-white">
-                <div className="container mx-auto px-4 text-center">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div className="flex flex-col items-center">
-                            <div className="text-primary-green mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/><path d="M14 9h4l4 4v4c0 .6-.4 1-1 1h-2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
-                            </div>
-                            <h5 className="text-xl font-semibold mb-2">Fast Delivery</h5>
-                            <p className="text-text-muted">Same-day delivery in Yangon area</p>
-                        </div>
-                        <div className="flex flex-col items-center">
-                            <div className="text-primary-green mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m11 11-4 4"/><path d="m13 13 4-4"/><circle cx="15" cy="9" r="6"/><circle cx="9" cy="15" r="6"/></svg>
-                            </div>
-                            <h5 className="text-xl font-semibold mb-2">Genuine Medicine</h5>
-                            <p className="text-text-muted">100% authentic pharmaceutical products</p>
-                        </div>
-                        <div className="flex flex-col items-center">
-                            <div className="text-primary-green mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-                            </div>
-                            <h5 className="text-xl font-semibold mb-2">Expert Support</h5>
-                            <p className="text-text-muted">Pharmacist consultation available</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Featured Products */}
-            <section className="container mx-auto px-4 lg:px-8">
-                <div className="flex justify-between items-end mb-8">
-                    <div>
-                        <h2 className="text-3xl font-bold text-text-dark mb-2">Featured Products</h2>
-                        <p className="text-text-muted">Handpicked health essentials for you</p>
-                    </div>
-                    <a href="/products" className="text-primary-green font-medium hover:text-accent-green hover:underline">
-                        View All
-                    </a>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Special Offers Section */}
+            <section className="bg-gray-50 py-16">
+                <div className="container mx-auto px-4 lg:px-12">
+                    <SectionHeader 
+                        title="Special Offers" 
+                        subtitle="Exclusive Deals" 
+                        icon={Star} 
+                    />
                     {isLoading ? (
-                        <div className="col-span-full py-12 text-center text-text-muted">Loading products...</div>
-                    ) : error ? (
-                        <div className="col-span-full py-12 text-center text-red-500">{error}</div>
-                    ) : featuredProducts.length > 0 ? (
-                        featuredProducts.map(product => (
-                            <ProductCard
-                                key={product.id}
-                                product={{
-                                    id: product.id,
-                                    name: product.name,
-                                    price: parseFloat(product.price),
-                                    category: product.category?.name || 'Healthcare',
-                                    // Use the first related picture as image if it exists
-                                    image: product.pictures?.length > 0 ? `http://localhost/VitalCare/uploads/${product.pictures[0].image_path}` : null,
-                                    isOutOfStock: product.is_expired // Using is_expired as out of stock proxy temporarily
-                                }}
-                            />
-                        ))
+                        <LoadingGrid count={8} />
                     ) : (
-                        <div className="col-span-full py-12 text-center text-text-muted">No products found.</div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            {specialOffers.map(product => (
+                                <ProductCard key={product.id} product={product} />
+                            ))}
+                        </div>
                     )}
                 </div>
+            </section>
+
+            {/* Health Tips Section */}
+            <section className="container mx-auto px-4 lg:px-12 py-16">
+                <SectionHeader 
+                    title="Health Tips" 
+                    subtitle="Expert Advice" 
+                    icon={BookOpen} 
+                    linkTo="/health-tips" 
+                    linkText="Read More Tips"
+                />
+                {isLoading ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {[1, 2, 3, 4].map(i => (
+                            <div key={i} className="animate-pulse bg-gray-50 aspect-[4/5] rounded-[4px]"></div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {healthTips.map(tip => (
+                            <Link 
+                                key={tip.id} 
+                                to={`/health-tips/${tip.id}`}
+                                className="group bg-white rounded-[4px] border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col overflow-hidden"
+                            >
+                                <div className="relative aspect-video overflow-hidden">
+                                    <img 
+                                        src={tip.image_path ? `http://127.0.0.1:8000/storage/${tip.image_path}` : "https://placehold.co/400x225/f8fafc/a3c93a?text=Health+Tip"} 
+                                        alt={tip.title}
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                    <div className="absolute top-2 right-2 px-2 py-0.5 bg-white/90 backdrop-blur-sm rounded-[2px] text-[8px] font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                                        <Clock size={10} className="text-[#A3C93A]" /> 5 min
+                                    </div>
+                                </div>
+                                <div className="p-4 flex-grow flex flex-col">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Calendar size={10} className="text-gray-400" />
+                                        <span className="text-[9px] font-bold text-gray-400 uppercase">{new Date(tip.created_at).toLocaleDateString()}</span>
+                                    </div>
+                                    <h3 className="text-sm font-bold text-gray-900 mb-2 group-hover:text-[#A3C93A] transition-colors line-clamp-2 leading-snug">
+                                        {tip.title}
+                                    </h3>
+                                    <div className="mt-auto pt-3 border-t border-gray-50 flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-full bg-[#A3C93A]/10 flex items-center justify-center text-[#A3C93A]">
+                                            <User size={10} />
+                                        </div>
+                                        <p className="text-[10px] font-bold text-gray-600 truncate">{tip.author?.name || 'Medical Team'}</p>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                )}
             </section>
         </div>
     );

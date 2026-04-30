@@ -293,7 +293,7 @@ const AdminProductList = () => {
                                 
                                 const allBatches = product.movements || [];
                                 const currentBatches = allBatches.filter(m => m.movement_type !== 'sold-out') || [];
-                                const totalStock = currentBatches.reduce((sum, m) => sum + parseInt(m.instock_quantity), 0);
+                                const totalStock = allBatches.reduce((sum, m) => sum + (parseInt(m.instock_quantity) || 0), 0);
                                 
                                 // Price reference comes from truly latest batch (even if disposed/sold) 
                                 // to stop the price "jumping" in the UI
@@ -306,7 +306,7 @@ const AdminProductList = () => {
                                 const mfgDate = physicalBatch?.manufactured_date ? new Date(physicalBatch.manufactured_date).toLocaleDateString() : (referenceBatch?.manufactured_date ? new Date(referenceBatch.manufactured_date).toLocaleDateString() : '-');
                                 const expireDate = physicalBatch?.expired_date ? new Date(physicalBatch.expired_date).toLocaleDateString() : (referenceBatch?.expired_date ? new Date(referenceBatch.expired_date).toLocaleDateString() : '-');
                                 
-                                const purchasePrice = referenceBatch?.purchase_price || 0;
+                                const purchasePrice = currentBatches[0]?.purchase_price || allBatches.find(m => parseFloat(m.purchase_price) > 0)?.purchase_price || 0;
                                 const salePrice = product.price || physicalBatch?.sale_price || referenceBatch?.sale_price || 0;
                                 
                                 const isLowStock = totalStock <= product.minimum_quantity;

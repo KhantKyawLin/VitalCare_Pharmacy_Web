@@ -11,12 +11,14 @@ const AdminLayout = () => {
     return (
         <div className="flex h-screen bg-[#f4f6f9] font-sans overflow-hidden">
             {/* Sidebar */}
-            <AdminSidebar isOpen={isSidebarOpen} />
+            <div className="print:hidden">
+                <AdminSidebar isOpen={isSidebarOpen} />
+            </div>
 
             {/* Main Content */}
             <div className="flex-grow flex flex-col min-w-0 h-full overflow-hidden">
                 {/* Admin Header */}
-                <header className="h-[60px] min-h-[60px] bg-white border-b border-gray-200 flex items-center justify-between px-4 z-10 shrink-0">
+                <header className="h-[60px] min-h-[60px] bg-white border-b border-gray-200 flex items-center justify-between px-4 z-10 shrink-0 print:hidden">
                     <div className="flex items-center">
                         <button 
                             onClick={toggleSidebar}
@@ -35,7 +37,7 @@ const AdminLayout = () => {
                     </div>
                 </header>
 
-                <main className="flex-grow p-6 overflow-y-auto w-full">
+                <main className="flex-grow p-6 overflow-y-auto w-full print:p-0">
                     <div className="max-w-full w-full mx-auto animate-in fade-in duration-300">
                         <Outlet />
                     </div>

@@ -9,6 +9,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Cart from './pages/Cart';
 import UserProfile from './pages/UserProfile';
+import HealthTips from './pages/HealthTips';
+import HealthTipDetail from './pages/HealthTipDetail';
 
 import AdminRoute from './components/auth/AdminRoute';
 import AdminLayout from './components/layout/AdminLayout';
@@ -25,6 +27,13 @@ import AdminPurchaseForm from './pages/admin/AdminPurchaseForm';
 import AdminSupplierList from './pages/admin/AdminSupplierList';
 import AdminPromotionList from './pages/admin/AdminPromotionList';
 import AdminPromotionForm from './pages/admin/AdminPromotionForm';
+import AdminPOS from './pages/admin/AdminPOS';
+import AdminOrderList from './pages/admin/AdminOrderList';
+import AdminOrderDetail from './pages/admin/AdminOrderDetail';
+import AdminHealthTipList from './pages/admin/AdminHealthTipList';
+import AdminHealthTipForm from './pages/admin/AdminHealthTipForm';
+import AdminHealthTipDetail from './pages/admin/AdminHealthTipDetail';
+
 const PublicLayout = () => {
   const location = useLocation();
   
@@ -39,7 +48,8 @@ const PublicLayout = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/orders" element={<UserProfile />} />
-          <Route path="/health-tips" element={<div className="container mx-auto p-8"><h1 className="text-3xl font-bold">Health Tips</h1><p className="mt-4">Page coming soon...</p></div>} />
+          <Route path="/health-tips" element={<HealthTips />} />
+          <Route path="/health-tips/:id" element={<HealthTipDetail />} />
           <Route path="/about" element={<div className="container mx-auto p-8"><h1 className="text-3xl font-bold">About Us</h1><p className="mt-4">Page coming soon...</p></div>} />
           <Route path="/contact" element={<div className="container mx-auto p-8"><h1 className="text-3xl font-bold">Contact Us</h1><p className="mt-4">Page coming soon...</p></div>} />
           <Route path="/login" element={<Login />} />
@@ -60,6 +70,7 @@ function App() {
         <Route path="/admin/*" element={<AdminRoute />}>
           <Route element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
+            <Route path="pos" element={<AdminPOS />} />
             <Route path="products" element={<AdminProductList />} />
             <Route path="products/:id" element={<AdminProductDetail />} />
             <Route path="products/create" element={<AdminProductForm />} />
@@ -72,12 +83,16 @@ function App() {
             <Route path="purchases/create" element={<AdminPurchaseForm />} />
             <Route path="suppliers" element={<AdminSupplierList />} />
             <Route path="inventory" element={<div className="p-8"><h2 className="text-2xl font-bold">Inventory Control</h2><p className="text-slate-500">Coming soon...</p></div>} />
-            <Route path="orders" element={<div className="p-8"><h2 className="text-2xl font-bold">Order Management</h2><p className="text-slate-500">Coming soon...</p></div>} />
+            <Route path="orders" element={<AdminOrderList />} />
+            <Route path="orders/:id" element={<AdminOrderDetail />} />
             <Route path="promotions" element={<AdminPromotionList />} />
             <Route path="promotions/create" element={<AdminPromotionForm />} />
             <Route path="promotions/view/:id" element={<AdminPromotionForm />} />
             <Route path="promotions/edit/:id" element={<AdminPromotionForm />} />
-            <Route path="health-tips" element={<div className="p-8"><h2 className="text-2xl font-bold">Health Tips CRUD</h2><p className="text-slate-500">Coming soon...</p></div>} />
+            <Route path="health-tips" element={<AdminHealthTipList />} />
+            <Route path="health-tips/create" element={<AdminHealthTipForm />} />
+            <Route path="health-tips/edit/:id" element={<AdminHealthTipForm />} />
+            <Route path="health-tips/:id" element={<AdminHealthTipDetail />} />
             <Route path="users" element={<div className="p-8"><h2 className="text-2xl font-bold">User & Staff Control</h2><p className="text-slate-500">Coming soon...</p></div>} />
             <Route path="messages" element={<div className="p-8"><h2 className="text-2xl font-bold">Contact Messages</h2><p className="text-slate-500">Coming soon...</p></div>} />
             <Route path="logs" element={<div className="p-8"><h2 className="text-2xl font-bold">Activity Audit Logs</h2><p className="text-slate-500">Coming soon...</p></div>} />
