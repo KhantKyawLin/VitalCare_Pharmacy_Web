@@ -24,7 +24,8 @@ import {
     Store,
     Bell,
     Truck,
-    Plus
+    Plus,
+    BarChart3
 } from 'lucide-react';
 
 const AdminSidebar = ({ isOpen }) => {
@@ -81,6 +82,7 @@ const AdminSidebar = ({ isOpen }) => {
     // Nav structure resembling the screenshot
     const navItems = [
         { name: 'Dashboard', path: '/admin', icon: <Gauge size={20} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff'] },
+        { name: 'Financial Reports', path: '/admin/reports', icon: <BarChart3 size={20} className="stroke-2" />, roles: ['admin', 'superadmin'] },
         { 
             name: 'Inventory', 
             icon: <Boxes size={20} className="stroke-2" />, 

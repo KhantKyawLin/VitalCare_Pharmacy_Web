@@ -129,9 +129,9 @@ const Home = () => {
                     linkText="View All Products"
                 />
                 {isLoading ? (
-                    <LoadingGrid count={8} />
+                    <LoadingGrid count={10} />
                 ) : (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                         {topSellers.map(product => (
                             <ProductCard key={product.id} product={product} />
                         ))}
@@ -148,9 +148,9 @@ const Home = () => {
                         icon={Star} 
                     />
                     {isLoading ? (
-                        <LoadingGrid count={8} />
+                        <LoadingGrid count={10} />
                     ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                             {specialOffers.map(product => (
                                 <ProductCard key={product.id} product={product} />
                             ))}

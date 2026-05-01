@@ -33,6 +33,9 @@ import AdminOrderDetail from './pages/admin/AdminOrderDetail';
 import AdminHealthTipList from './pages/admin/AdminHealthTipList';
 import AdminHealthTipForm from './pages/admin/AdminHealthTipForm';
 import AdminHealthTipDetail from './pages/admin/AdminHealthTipDetail';
+import AdminReports from './pages/admin/AdminReports';
+import AdminProfitLoss from './pages/admin/AdminProfitLoss';
+import AdminTopProfitableProducts from './pages/admin/AdminTopProfitableProducts';
 
 const PublicLayout = () => {
   const location = useLocation();
@@ -71,6 +74,9 @@ function App() {
           <Route element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="pos" element={<AdminPOS />} />
+            <Route path="reports" element={<AdminReports />} />
+            <Route path="profit-loss" element={<AdminProfitLoss />} />
+            <Route path="top-profitable" element={<AdminTopProfitableProducts />} />
             <Route path="products" element={<AdminProductList />} />
             <Route path="products/:id" element={<AdminProductDetail />} />
             <Route path="products/create" element={<AdminProductForm />} />

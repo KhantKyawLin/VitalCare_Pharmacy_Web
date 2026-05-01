@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
-import { 
-    ArrowLeft, 
-    Printer, 
-    ShoppingCart, 
-    User, 
-    Calendar, 
+import {
+    ArrowLeft,
+    Printer,
+    ShoppingCart,
+    User,
+    Calendar,
     CreditCard,
     CheckCircle,
     Store,
@@ -51,12 +51,12 @@ const AdminOrderDetail = () => {
                             <p className="text-sm text-gray-500">Order #{order.receipt_number || order.id}</p>
                         </div>
                     </div>
-                    <button 
-                        onClick={() => window.print()}
-                        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-all shadow-sm"
+                    <Link
+                        to="/admin/orders"
+                        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-all font-medium shadow-sm hover:shadow-md"
                     >
-                        <Printer size={18} /> Print Invoice
-                    </button>
+                        <ArrowLeft size={18} /> Back to Sale
+                    </Link>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -84,9 +84,9 @@ const AdminOrderDetail = () => {
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
                                                         {item.product?.pictures?.[0] && (
-                                                            <img 
-                                                                src={`http://127.0.0.1:8000/storage/${item.product.pictures[0].image_path}`} 
-                                                                alt="" 
+                                                            <img
+                                                                src={`http://127.0.0.1:8000/storage/${item.product.pictures[0].image_path}`}
+                                                                alt=""
                                                                 className="w-10 h-10 object-cover rounded-md border border-gray-100"
                                                             />
                                                         )}
@@ -126,7 +126,7 @@ const AdminOrderDetail = () => {
                     <div className="space-y-6">
                         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 space-y-4">
                             <h3 className="font-bold text-gray-800 border-b pb-3 border-gray-50 mb-4">Summary Information</h3>
-                            
+
                             <div className="space-y-4">
                                 <div className="flex items-start gap-3">
                                     <div className="bg-gray-100 p-2 rounded-lg text-gray-500">
@@ -144,9 +144,8 @@ const AdminOrderDetail = () => {
                                     </div>
                                     <div>
                                         <p className="text-[11px] font-bold text-gray-400 uppercase">Status</p>
-                                        <span className={`text-xs font-bold px-2 py-0.5 rounded-md ${
-                                            order.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                                        }`}>
+                                        <span className={`text-xs font-bold px-2 py-0.5 rounded-md ${order.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                                            }`}>
                                             {order.status?.toUpperCase()}
                                         </span>
                                     </div>
@@ -186,7 +185,7 @@ const AdminOrderDetail = () => {
                                         <div>
                                             <p className="text-[11px] font-bold text-gray-400 uppercase">Payment Info</p>
                                             <p className="text-xs text-gray-600">
-                                                Received: {parseFloat(order.received_amount || 0).toLocaleString()} Ks<br/>
+                                                Received: {parseFloat(order.received_amount || 0).toLocaleString()} Ks<br />
                                                 Change: {parseFloat(order.change_return || 0).toLocaleString()} Ks
                                             </p>
                                         </div>
@@ -194,6 +193,14 @@ const AdminOrderDetail = () => {
                                 )}
                             </div>
                         </div>
+
+                        {/* Print Action in Sidebar */}
+                        <button
+                            onClick={() => window.print()}
+                            className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-white border-2 border-gray-100 rounded-xl text-gray-700 hover:bg-gray-50 hover:border-[#8DB600]/30 hover:text-[#8DB600] transition-all font-bold shadow-sm group"
+                        >
+                            <Printer size={18} className="group-hover:scale-110 transition-transform" /> Print Invoice
+                        </button>
                     </div>
                 </div>
             </div>
@@ -202,8 +209,8 @@ const AdminOrderDetail = () => {
             <div className="hidden print:block fixed top-0 left-0 w-[80mm] text-black bg-white p-4 z-[9999] text-sm h-auto overflow-visible">
                 <div className="text-center">
                     <h2 className="font-bold text-xl mb-1">Vital Care Pharmacy</h2>
-                    <p className="text-xs text-gray-600 mb-4">Receipt #{order.receipt_number}<br/>{new Date(order.created_at).toLocaleString()}</p>
-                    
+                    <p className="text-xs text-gray-600 mb-4">Receipt #{order.receipt_number}<br />{new Date(order.created_at).toLocaleString()}</p>
+
                     <div className="border-t border-b border-dashed border-gray-400 py-2 mb-2 text-left">
                         <table className="w-full text-xs">
                             <thead>
@@ -224,7 +231,7 @@ const AdminOrderDetail = () => {
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <div className="text-right text-xs space-y-1 mb-4">
                         <p>Subtotal: {(parseFloat(order.total_amount) + parseFloat(order.discount_amount || 0)).toLocaleString()} Ks</p>
                         {parseFloat(order.discount_amount) > 0 && <p>Discount: -{parseFloat(order.discount_amount).toLocaleString()} Ks</p>}
@@ -232,7 +239,7 @@ const AdminOrderDetail = () => {
                         <p className="mt-2 font-medium">Paid: {parseFloat(order.received_amount || order.total_amount).toLocaleString()} Ks</p>
                         <p>Change: {parseFloat(order.change_return || 0).toLocaleString()} Ks</p>
                     </div>
-                    
+
                     <p className="text-xs font-bold mt-6 mb-1 text-center">Thank you for your purchase!</p>
                     <p className="text-[10px] text-center text-gray-500">Please keep receipt for returns/exchanges.</p>
                 </div>

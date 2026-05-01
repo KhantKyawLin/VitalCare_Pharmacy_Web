@@ -83,7 +83,8 @@ const AdminProductForm = () => {
     const [newUnitName, setNewUnitName] = useState('');
 
     const [formData, setFormData] = useState({
-        name: '', category_id: '', unit_id: '', minimum_quantity: '10', price: '', description: '', dosage: '', usage: '', side_effects: ''
+        name: '', category_id: '', unit_id: '', minimum_quantity: '10', price: '', description: '', dosage: '', usage: '', side_effects: '',
+        is_published: true
     });
 
     const [errors, setErrors] = useState({});
@@ -121,7 +122,8 @@ const AdminProductForm = () => {
                     description: product.description || '',
                     usage: product.usage || '',
                     side_effects: product.side_effects || '',
-                    dosage: product.dosage || ''
+                    dosage: product.dosage || '',
+                    is_published: product.is_published === 1 || product.is_published === true
                 });
 
                 if (product.pictures && product.pictures.length > 0) {
@@ -150,8 +152,8 @@ const AdminProductForm = () => {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
         if (errors[name]) setErrors(prev => ({ ...prev, [name]: null }));
     };
 
@@ -237,7 +239,13 @@ const AdminProductForm = () => {
         setErrors({});
 
         const data = new FormData();
-        Object.keys(formData).forEach(key => data.append(key, formData[key]));
+        Object.keys(formData).forEach(key => {
+            if (key === 'is_published') {
+                data.append(key, formData[key] ? '1' : '0');
+            } else {
+                data.append(key, formData[key]);
+            }
+        });
 
         // Gather filled slots
         let imageIndex = 0;
@@ -398,6 +406,26 @@ const AdminProductForm = () => {
                                     />
                                     <p className="text-xs text-gray-500 mt-1.5">Optional. Can be set during purchase.</p>
                                 </div>
+                            </div>
+
+                            <div className="pt-2">
+                                <label className="flex items-center gap-3 cursor-pointer group w-fit">
+                                    <div className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none border-2 border-transparent">
+                                        <input 
+                                            type="checkbox" 
+                                            name="is_published"
+                                            checked={formData.is_published}
+                                            onChange={handleChange}
+                                            className="sr-only"
+                                        />
+                                        <div className={`w-full h-full rounded-full transition-colors ${formData.is_published ? 'bg-[#6CA52C]' : 'bg-gray-200'}`}></div>
+                                        <div className={`absolute left-1 bg-white w-4 h-4 rounded-full transition-transform ${formData.is_published ? 'translate-x-5' : ''}`}></div>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-bold text-gray-700 group-hover:text-[#6CA52C] transition-colors">Publish to Storefront</span>
+                                        <span className="text-[11px] text-gray-400 font-medium">When enabled, customers can see and buy this product online</span>
+                                    </div>
+                                </label>
                             </div>
 
                             <div>

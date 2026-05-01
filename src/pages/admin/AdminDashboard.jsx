@@ -16,11 +16,12 @@ import { Link } from 'react-router-dom';
 const AdminDashboard = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
+    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/admin/dashboard');
+                const response = await axios.get('http://127.0.0.1:8000/api/admin/dashboard', getConfig());
                 setStats(response.data);
             } catch (error) {
                 console.error("Error fetching dashboard stats:", error);
