@@ -179,87 +179,131 @@ const AdminProfitLoss = () => {
                 </div>
             </div>
 
-            {/* Detailed Ledger Table */}
-            <div className="bg-white rounded border border-gray-100 shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                        <thead className="bg-gray-50 text-gray-400 uppercase text-[10px] font-black tracking-widest border-b border-gray-100">
-                            <tr>
-                                <th className="px-6 py-4">Timestamp</th>
-                                <th className="px-6 py-4">Transaction Type</th>
-                                <th className="px-6 py-4">Description</th>
-                                <th className="px-6 py-4 text-right">Revenue</th>
-                                <th className="px-6 py-4 text-right">Cost/Value</th>
-                                <th className="px-6 py-4 text-right">Profit Impact</th>
-                                <th className="px-6 py-4">Reference</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-50">
-                            {loading ? (
-                                [1, 2, 3, 4, 5].map(i => (
-                                    <tr key={i} className="animate-pulse">
-                                        <td colSpan="7" className="px-6 py-5 bg-gray-50/20"></td>
-                                    </tr>
-                                ))
-                            ) : filteredRecords.length > 0 ? (
-                                filteredRecords.map((record, idx) => (
-                                    <tr key={idx} className="hover:bg-gray-50/50 transition-colors">
-                                        <td className="px-6 py-4">
-                                            <div className="text-gray-500 font-medium">
-                                                {new Date(record.date).toLocaleDateString()}
-                                            </div>
-                                            <div className="text-[10px] text-gray-300">
-                                                {new Date(record.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                <div className={`p-1 rounded ${
-                                                    record.type === 'Sale' ? 'bg-blue-50 text-blue-500' :
-                                                    record.type === 'Inventory Loss' ? 'bg-orange-50 text-orange-500' :
-                                                    record.profit_impact > 0 ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'
-                                                }`}>
-                                                    {getTypeIcon(record.type)}
-                                                </div>
-                                                <span className="font-bold text-gray-600 uppercase tracking-tighter">
-                                                    {record.type}
-                                                </span>
-                                            </div>
-                                            <div className="text-[10px] text-gray-400 font-medium uppercase mt-0.5">
-                                                {record.category}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 font-bold text-gray-800">
+            {/* Detailed Ledger Cards */}
+            <div className="space-y-4">
+                {loading ? (
+                    [1, 2, 3].map(i => (
+                        <div key={i} className="bg-white rounded border border-gray-100 shadow-sm h-48 animate-pulse"></div>
+                    ))
+                ) : filteredRecords.length > 0 ? (
+                    filteredRecords.map((record, idx) => (
+                        <div key={idx} className="bg-white rounded border border-gray-100 shadow-sm overflow-hidden flex flex-col">
+                            {/* Card Header */}
+                            <div className="flex justify-between items-center bg-gray-50/50 px-6 py-4 border-b border-gray-100">
+                                <div className="flex items-center gap-3">
+                                    <div className={`p-2.5 rounded-full ${
+                                        record.type === 'Sale Order' ? 'bg-blue-50 text-blue-500' :
+                                        record.type === 'Inventory Loss' ? 'bg-orange-50 text-orange-500' :
+                                        record.profit_impact > 0 ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'
+                                    }`}>
+                                        {getTypeIcon(record.type)}
+                                    </div>
+                                    <div>
+                                        <div className="font-bold text-gray-800 flex items-center gap-2 text-base">
                                             {record.title}
-                                        </td>
-                                        <td className="px-6 py-4 text-right text-gray-500">
-                                            {record.revenue > 0 ? `${record.revenue.toLocaleString()} Ks` : '-'}
-                                        </td>
-                                        <td className="px-6 py-4 text-right text-red-400">
-                                            {record.cost > 0 ? `${record.cost.toLocaleString()} Ks` : '-'}
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <span className={`font-black ${record.profit_impact >= 0 ? 'text-[#8DB600]' : 'text-red-500'}`}>
-                                                {record.profit_impact > 0 ? '+' : ''}{record.profit_impact.toLocaleString()} Ks
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="text-[10px] font-black px-2 py-1 bg-gray-50 text-gray-400 rounded border border-gray-100 uppercase">
+                                            <span className="text-[10px] font-black px-2 py-0.5 bg-white text-gray-500 rounded border border-gray-200 uppercase shadow-sm">
                                                 {record.reference}
                                             </span>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="7" className="px-6 py-12 text-center text-gray-300 italic">
-                                        No financial records found. Try adjusting your date range or filters.
-                                    </td>
-                                </tr>
+                                        </div>
+                                        <div className="text-xs text-gray-400 font-medium mt-0.5 flex items-center gap-1">
+                                            <span className="uppercase tracking-wider font-bold text-gray-500">{record.type}</span> • {new Date(record.date).toLocaleDateString()} at {new Date(record.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-0.5">Net Profit Impact</span>
+                                    <span className={`text-xl font-black ${record.profit_impact >= 0 ? 'text-[#8DB600]' : 'text-red-500'}`}>
+                                        {record.profit_impact > 0 ? '+' : ''}{(record.profit_impact || 0).toLocaleString()} Ks
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Card Body (Order Items) */}
+                            {record.type === 'Sale Order' && record.items && (
+                                <div className="p-0 overflow-x-auto">
+                                    <table className="w-full text-left text-xs min-w-[600px]">
+                                        <thead className="bg-white text-gray-400 uppercase text-[10px] font-black tracking-widest border-b border-gray-50">
+                                            <tr>
+                                                <th className="px-6 py-3.5 font-medium">Product</th>
+                                                <th className="px-6 py-3.5 font-medium text-center">Quantity</th>
+                                                <th className="px-6 py-3.5 font-medium text-right">Selling Price</th>
+                                                <th className="px-6 py-3.5 font-medium text-right">Cost Price</th>
+                                                <th className="px-6 py-3.5 font-medium text-right">Subtotal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-50">
+                                            {record.items.map((item, i) => (
+                                                <tr key={i} className="hover:bg-gray-50/30 transition-colors">
+                                                    <td className="px-6 py-3.5 font-bold text-gray-700">
+                                                        {item.product_name}
+                                                        <span className="block text-[10px] font-medium text-gray-400 uppercase mt-0.5">{item.category}</span>
+                                                    </td>
+                                                    <td className="px-6 py-3.5 text-center text-gray-600 font-bold">{item.quantity}</td>
+                                                    <td className="px-6 py-3.5 text-right text-gray-500">{(item.original_price || 0).toLocaleString()} Ks</td>
+                                                    <td className="px-6 py-3.5 text-right text-red-400">{item.purchase_price > 0 ? (item.purchase_price || 0).toLocaleString() + ' Ks' : '-'}</td>
+                                                    <td className="px-6 py-3.5 text-right text-gray-800 font-bold">{(item.original_subtotal || 0).toLocaleString()} Ks</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             )}
-                        </tbody>
-                    </table>
-                </div>
+
+                            {/* Card Body (Other Types) */}
+                            {record.type !== 'Sale Order' && (
+                                <div className="p-6 bg-white flex flex-col md:flex-row justify-between items-start md:items-center border-t border-gray-50 text-sm">
+                                    <div className="flex gap-12">
+                                        <div>
+                                            <span className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Category</span>
+                                            <span className="font-bold text-gray-700">{record.category}</span>
+                                        </div>
+                                        <div>
+                                            <span className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Revenue</span>
+                                            <span className="font-bold text-gray-600">{record.revenue > 0 ? (record.revenue || 0).toLocaleString() + ' Ks' : '-'}</span>
+                                        </div>
+                                        <div>
+                                            <span className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Cost / Value</span>
+                                            <span className="font-bold text-red-400">{record.cost > 0 ? (record.cost || 0).toLocaleString() + ' Ks' : '-'}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Card Footer (Sale Summary) */}
+                            {record.type === 'Sale Order' && (
+                                <div className="bg-gray-50/30 p-6 border-t border-gray-100 flex flex-col items-end gap-2 text-sm">
+                                    <div className="flex justify-between w-64 text-gray-500">
+                                        <span>Subtotal</span>
+                                        <span>{(record.subtotal || 0).toLocaleString()} Ks</span>
+                                    </div>
+                                    <div className="flex justify-between w-64 text-red-500">
+                                        <span>Discount</span>
+                                        <span>-{(record.discount || 0).toLocaleString()} Ks</span>
+                                    </div>
+                                    <div className="flex justify-between w-64 text-gray-800 font-bold border-t border-gray-200 pt-2 mt-1">
+                                        <span>Total Amount</span>
+                                        <span className="text-[#8DB600]">{(record.revenue || 0).toLocaleString()} Ks</span>
+                                    </div>
+                                    <div className="flex justify-between w-64 text-red-400 pt-1">
+                                        <span>Total Cost</span>
+                                        <span>{record.cost > 0 ? (record.cost || 0).toLocaleString() + ' Ks' : '-'}</span>
+                                    </div>
+                                    <div className="flex justify-between w-64 font-black border-t border-gray-200 pt-2 mt-1">
+                                        <span className="text-gray-800">Gross Profit</span>
+                                        <span className={`${record.profit_impact >= 0 ? 'text-[#8DB600]' : 'text-red-500'}`}>
+                                            {record.profit_impact > 0 ? '+' : ''}{(record.profit_impact || 0).toLocaleString()} Ks
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ))
+                ) : (
+                    <div className="bg-white rounded border border-gray-100 p-12 text-center flex flex-col items-center justify-center text-gray-400 italic shadow-sm">
+                        <Receipt size={48} className="text-gray-200 mb-4" />
+                        <p>No financial records found. Try adjusting your date range or filters.</p>
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -267,12 +311,13 @@ const AdminProfitLoss = () => {
 
 const getTypeIcon = (type) => {
     switch(type) {
-        case 'Sale': return <ShoppingCart size={12} />;
-        case 'Inventory Loss': return <AlertTriangle size={12} />;
-        case 'External Expense': return <Wallet size={12} />;
-        case 'External Income': return <TrendingUp size={12} />;
-        default: return <Receipt size={12} />;
+        case 'Sale Order': return <ShoppingCart size={20} />;
+        case 'Inventory Loss': return <AlertTriangle size={20} />;
+        case 'External Expense': return <Wallet size={20} />;
+        case 'External Income': return <TrendingUp size={20} />;
+        default: return <Receipt size={20} />;
     }
 };
+
 
 export default AdminProfitLoss;

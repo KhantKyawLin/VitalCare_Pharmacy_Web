@@ -79,39 +79,43 @@ const AdminOrderDetail = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-50 text-gray-600">
-                                        {order.order_products?.map((item) => (
-                                            <tr key={item.id}>
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-3">
-                                                        {item.product?.pictures?.[0] && (
-                                                            <img
-                                                                src={`http://127.0.0.1:8000/storage/${item.product.pictures[0].image_path}`}
-                                                                alt=""
-                                                                className="w-10 h-10 object-cover rounded-md border border-gray-100"
-                                                            />
-                                                        )}
-                                                        <span className="font-medium">{item.product?.name}</span>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 text-center">{item.quantity}</td>
-                                                <td className="px-6 py-4 text-right">{parseFloat(item.price).toLocaleString()} Ks</td>
-                                                <td className="px-6 py-4 text-right font-bold text-gray-800">
-                                                    {(parseFloat(item.price) * item.quantity).toLocaleString()} Ks
-                                                </td>
-                                            </tr>
-                                        ))}
+                                        {order.order_products?.map((item) => {
+                                            const origPrice = parseFloat(item.original_price || item.price);
+                                            return (
+                                                <tr key={item.id}>
+                                                    <td className="px-6 py-4">
+                                                        <div className="flex items-center gap-3">
+                                                            {item.product?.pictures?.[0] && (
+                                                                <img
+                                                                    src={`http://127.0.0.1:8000/storage/${item.product.pictures[0].image_path}`}
+                                                                    alt=""
+                                                                    className="w-10 h-10 object-cover rounded-md border border-gray-100"
+                                                                />
+                                                            )}
+                                                            <span className="font-medium">{item.product?.name}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-center">{item.quantity}</td>
+                                                    <td className="px-6 py-4 text-right">{origPrice.toLocaleString()} Ks</td>
+                                                    <td className="px-6 py-4 text-right font-bold text-gray-800">
+                                                        {(origPrice * item.quantity).toLocaleString()} Ks
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </div>
                             <div className="p-6 bg-gray-50/50 border-t border-gray-100 space-y-2">
                                 <div className="flex justify-between text-sm text-gray-500">
                                     <span>Subtotal</span>
-                                    <span>{(parseFloat(order.total_amount) + parseFloat(order.discount_amount || 0)).toLocaleString()} Ks</span>
+                                    {/* Subtotal is sum of normal prices */}
+                                    <span>{order.order_products?.reduce((sum, item) => sum + (parseFloat(item.original_price || item.price) * item.quantity), 0).toLocaleString()} Ks</span>
                                 </div>
-                                {parseFloat(order.discount_amount) > 0 && (
+                                {(order.order_products?.reduce((sum, item) => sum + (parseFloat(item.original_price || item.price) * item.quantity), 0) - parseFloat(order.total_amount)) > 0 && (
                                     <div className="flex justify-between text-sm text-red-500 font-medium">
                                         <span>Discount</span>
-                                        <span>-{parseFloat(order.discount_amount).toLocaleString()} Ks</span>
+                                        <span>-{ (order.order_products?.reduce((sum, item) => sum + (parseFloat(item.original_price || item.price) * item.quantity), 0) - parseFloat(order.total_amount)).toLocaleString()} Ks</span>
                                     </div>
                                 )}
                                 <div className="flex justify-between text-lg font-black text-gray-800 pt-2 border-t border-gray-200">
@@ -225,7 +229,7 @@ const AdminOrderDetail = () => {
                                     <tr key={i}>
                                         <td className="py-1 pr-2">{op.product?.name}</td>
                                         <td className="text-right py-1">{op.quantity}</td>
-                                        <td className="text-right py-1">{(parseFloat(op.price) * op.quantity).toLocaleString()} Ks</td>
+                                        <td className="text-right py-1">{(parseFloat(op.original_price || op.price) * op.quantity).toLocaleString()} Ks</td>
                                     </tr>
                                 ))}
                             </tbody>

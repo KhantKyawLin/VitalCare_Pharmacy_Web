@@ -4,7 +4,7 @@ import { ShoppingCart, Heart, ChevronRight } from 'lucide-react';
 
 const ProductCard = ({ product }) => {
     const hasPromotion = product.promotions && product.promotions.length > 0;
-    const currentPrice = parseFloat(product.price || 0);
+    let currentPrice = parseFloat(product.price || 0);
     let originalPrice = null;
     let badgeText = null;
     let badgeColor = "bg-[#A3C93A]"; // Default green
@@ -12,16 +12,18 @@ const ProductCard = ({ product }) => {
     if (hasPromotion) {
         const promo = product.promotions[0];
         const val = parseFloat(promo.discount_value || 0);
-        
+
         switch (promo.type) {
             case 'percentage':
                 badgeText = `${val}% OFF`;
-                originalPrice = currentPrice / (1 - (val / 100));
+                originalPrice = currentPrice;
+                currentPrice = currentPrice - (currentPrice * (val / 100));
                 badgeColor = "bg-red-500";
                 break;
             case 'fixed_amount':
                 badgeText = `${val.toLocaleString()} Ks OFF`;
-                originalPrice = currentPrice + val;
+                originalPrice = currentPrice;
+                currentPrice = currentPrice - val;
                 badgeColor = "bg-blue-500";
                 break;
             case 'cashback':

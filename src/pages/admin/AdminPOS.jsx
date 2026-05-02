@@ -297,7 +297,7 @@ const AdminPOS = () => {
                                 <div key={item.product_id} className="flex flex-col p-3 border border-gray-100 rounded-xl hover:shadow-sm transition-all group">
                                     <div className="flex justify-between items-start mb-2">
                                         <p className="font-bold text-sm text-gray-800 flex-1">{item.name}</p>
-                                        <p className="font-bold text-sm text-gray-800 ml-2">{item.subtotal.toLocaleString()} Ks</p>
+                                        <p className="font-bold text-sm text-gray-800 ml-2">{(item.original_price * item.quantity).toLocaleString()} Ks</p>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <div className="flex items-center gap-3">
@@ -399,7 +399,7 @@ const AdminPOS = () => {
                                         <tr key={i}>
                                             <td className="py-1 pr-2">{op.product?.name}</td>
                                             <td className="text-right py-1">{op.quantity}</td>
-                                            <td className="text-right py-1">{(parseFloat(op.price) * op.quantity).toLocaleString()} Ks</td>
+                                            <td className="text-right py-1">{(parseFloat(op.original_price || op.price) * op.quantity).toLocaleString()} Ks</td>
                                         </tr>
                                     ))}
                                 </tbody>
