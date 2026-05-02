@@ -55,7 +55,7 @@ const AdminOrderDetail = () => {
                         to="/admin/orders"
                         className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-all font-medium shadow-sm hover:shadow-md"
                     >
-                        <ArrowLeft size={18} /> Back to Sale
+                        <ArrowLeft size={18} /> Back to Orders
                     </Link>
                 </div>
 

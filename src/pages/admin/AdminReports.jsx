@@ -104,14 +104,14 @@ const AdminReports = () => {
                         <p className="text-gray-500 text-sm italic">Track your pharmacy's financial performance at a glance.</p>
                     </div>
                 </div>
-                <div className="flex flex-col items-end gap-2">
-                    <div className="flex items-center gap-1 bg-white p-1 rounded border border-gray-100 shadow-sm">
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1 bg-white p-1 rounded border border-gray-100 shadow-sm h-[38px]">
                         {[{ id: 'today', label: 'Today' }, { id: 'last_7_days', label: '7 Days' }, { id: 'this_month', label: 'Month' }, { id: 'year_to_date', label: 'YTD' }].map(btn => (
                             <button key={btn.id} onClick={() => setRange(btn.id)} className={`px-4 py-1.5 rounded text-xs font-bold transition-all ${range === btn.id ? 'bg-[#8DB600] text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'}`}>{btn.label}</button>
                         ))}
                     </div>
-                    <Link to="/admin/profit-loss" className="px-4 py-1.5 bg-[#8DB600] text-white rounded text-xs font-bold hover:bg-[#7a9e00] transition-all shadow-sm flex items-center gap-2 mt-1">
-                        <ArrowRight size={14} />
+                    <Link to="/admin/profit-loss" className="px-4 h-[38px] bg-[#8DB600] text-white rounded text-xs font-bold hover:bg-[#7a9e00] transition-all shadow-sm flex items-center gap-2 uppercase tracking-wider">
+                        VIEW DETAILED LEDGER <ArrowRight size={14} />
                     </Link>
                 </div>
             </div>
