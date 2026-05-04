@@ -148,8 +148,11 @@ const AdminOrderList = () => {
                                 ))
                             ) : orders.length > 0 ? orders.map((order) => (
                                 <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 font-medium text-gray-600">
-                                        #{order.receipt_number ? order.receipt_number.split('-')[1] : `VC-${String(order.id).padStart(4, '0')}`}
+                                    <td className="px-6 py-4 font-bold text-gray-700">
+                                        {order.order_type === 'walk-in' 
+                                            ? <span className="text-blue-700">#{order.receipt_number ? order.receipt_number.split('-')[1] : order.id}</span>
+                                            : <span className="text-purple-700">#VC-{String(order.id).padStart(4, '0')}</span>
+                                        }
                                     </td>
                                     <td className="px-6 py-4">
                                         {order.order_type === 'walk-in' ? (

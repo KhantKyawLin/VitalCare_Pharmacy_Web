@@ -63,6 +63,19 @@ const ProductCard = ({ product }) => {
             return;
         }
 
+        if (user && user.role !== 'customer') {
+            import('sweetalert2').then(Swal => {
+                Swal.default.fire({
+                    title: 'Customer Action Only',
+                    text: 'Only registered customers can perform this action. Staff members should use the POS system for sales.',
+                    icon: 'warning',
+                    confirmButtonColor: '#A3C93A',
+                    confirmButtonText: 'I Understand'
+                });
+            });
+            return;
+        }
+
         setIsAddingCart(true);
         const result = await addToCart(product.id, 1);
         setIsAddingCart(false);
@@ -79,6 +92,19 @@ const ProductCard = ({ product }) => {
 
         if (!token) {
             showErrorToast('Please login to add items to wishlist');
+            return;
+        }
+
+        if (user && user.role !== 'customer') {
+            import('sweetalert2').then(Swal => {
+                Swal.default.fire({
+                    title: 'Customer Action Only',
+                    text: 'Only registered customers can perform this action.',
+                    icon: 'warning',
+                    confirmButtonColor: '#A3C93A',
+                    confirmButtonText: 'I Understand'
+                });
+            });
             return;
         }
 

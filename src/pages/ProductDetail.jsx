@@ -67,6 +67,19 @@ const ProductDetail = () => {
             return;
         }
 
+        if (user && user.role !== 'customer') {
+            import('sweetalert2').then(Swal => {
+                Swal.default.fire({
+                    title: 'Customer Action Only',
+                    text: 'Only registered customers can perform this action. Staff members should use the POS system for sales.',
+                    icon: 'warning',
+                    confirmButtonColor: '#A3C93A',
+                    confirmButtonText: 'I Understand'
+                });
+            });
+            return;
+        }
+
         setIsAdding(true);
         const result = await addToCart(product.id, quantity);
         setIsAdding(false);
@@ -81,6 +94,19 @@ const ProductDetail = () => {
     const handleWishlistToggle = async () => {
         if (!token) {
             showErrorToast('Please login to add items to wishlist');
+            return;
+        }
+
+        if (user && user.role !== 'customer') {
+            import('sweetalert2').then(Swal => {
+                Swal.default.fire({
+                    title: 'Customer Action Only',
+                    text: 'Only registered customers can perform this action.',
+                    icon: 'warning',
+                    confirmButtonColor: '#A3C93A',
+                    confirmButtonText: 'I Understand'
+                });
+            });
             return;
         }
 
@@ -120,7 +146,7 @@ const ProductDetail = () => {
         ? product.pictures.map(p => `http://127.0.0.1:8000/storage/${p.image_path}`)
         : ["https://placehold.co/600x600/f8fafc/a3c93a?text=Product"];
 
-    const showActionButtons = !user || user.role === 'customer';
+    const showActionButtons = true; // Show for everyone, handlers will manage restrictions
     const isWishlisted = isInWishlist(product.id);
 
     return (

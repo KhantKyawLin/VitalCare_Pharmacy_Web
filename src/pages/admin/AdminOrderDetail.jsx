@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import {
     ArrowLeft,
     Printer,
@@ -10,201 +11,389 @@ import {
     CreditCard,
     CheckCircle,
     Store,
-    Globe
+    Globe,
+    Save,
+    Image as ImageIcon,
+    Phone,
+    MapPin,
+    Package
 } from 'lucide-react';
 
 const AdminOrderDetail = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+
+    // Form state for status updates
+    const [status, setStatus] = useState('');
+    const [deliverStatus, setDeliverStatus] = useState('');
+    const [paymentStatus, setPaymentStatus] = useState('');
+    const [refundReason, setRefundReason] = useState('');
 
     const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 
     useEffect(() => {
-        const fetchOrder = async () => {
-            try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/admin/orders/${id}`, getConfig());
-                setOrder(response.data);
-            } catch (error) {
-                console.error("Error fetching order:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchOrder();
     }, [id]);
 
-    if (loading) return <div className="p-8 text-center animate-pulse">Loading order details...</div>;
+    const fetchOrder = async () => {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/api/admin/orders/${id}`, getConfig());
+            const data = response.data;
+            setOrder(data);
+            setStatus(data.status || 'pending');
+            // Walk-in orders are always delivered and paid by nature
+            const isWalkIn = data.order_type === 'walk-in';
+            setDeliverStatus(isWalkIn ? 'delivered' : (data.deliver_status || 'pending'));
+            setPaymentStatus(data.payment_status === 'refunded' ? 'refunded' : (isWalkIn ? 'paid' : (data.payment_status || 'pending')));
+            setRefundReason(data.refund_reason || '');
+        } catch (error) {
+            console.error("Error fetching order:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSave = async () => {
+        setSaving(true);
+        try {
+            await axios.put(`http://127.0.0.1:8000/api/admin/orders/${id}`, {
+                status,
+                deliver_status: deliverStatus,
+                payment_status: paymentStatus,
+                refund_reason: refundReason
+            }, getConfig());
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Order Updated',
+                text: 'The order statuses have been successfully updated.',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                navigate('/admin/orders');
+            });
+        } catch (error) {
+            Swal.fire('Error', 'Failed to update order statuses.', 'error');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const showPaymentSlip = () => {
+        if (!order.slip_image) {
+            Swal.fire('No Slip', 'No payment screenshot has been uploaded for this order.', 'info');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Payment Verification',
+            imageUrl: `http://127.0.0.1:8000/storage/${order.slip_image}`,
+            imageAlt: 'Payment Slip',
+            width: 'auto',
+            padding: '1em',
+            showCloseButton: true,
+            showConfirmButton: false,
+            customClass: {
+                image: 'max-h-[80vh] object-contain rounded-lg shadow-lg'
+            }
+        });
+    };
+
+    if (loading) return (
+        <div className="flex items-center justify-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8DB600]"></div>
+        </div>
+    );
+    
     if (!order) return <div className="p-8 text-center text-red-500">Order not found.</div>;
+
+    const isOnline = order.order_type === 'online';
 
     return (
         <div className="space-y-6 pb-12 print:p-0">
-            {/* Main Content (Hidden on Print) */}
-            <div className="print:hidden space-y-6">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Link to="/admin/orders" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                            <ArrowLeft size={20} />
-                        </Link>
-                        <div>
-                            <h2 className="text-2xl font-bold text-gray-800">Order Details</h2>
-                            <p className="text-sm text-gray-500">Order #{order.receipt_number || order.id}</p>
-                        </div>
+            {/* Header */}
+            <div className="print:hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="flex items-center gap-3">
+                    <div>
+                        <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                            Edit Order <span className="text-[#8DB600]">#{order.receipt_number || order.id}</span>
+                        </h2>
+                        <p className="text-sm text-gray-500 italic">Manage order lifecycle and verify payments.</p>
                     </div>
+                </div>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => window.print()}
+                        className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-all font-bold text-xs flex items-center gap-2 shadow-sm"
+                    >
+                        <Printer size={16} /> PRINT INVOICE
+                    </button>
                     <Link
                         to="/admin/orders"
-                        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-all font-medium shadow-sm hover:shadow-md"
+                        className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-all font-bold text-xs flex items-center gap-2 shadow-sm"
                     >
-                        <ArrowLeft size={18} /> Back to Orders
+                        <ArrowLeft size={16} /> BACK TO LIST
                     </Link>
                 </div>
+            </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Left Side: Order Items */}
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                            <div className="p-4 border-b border-gray-50 bg-gray-50/50">
-                                <h3 className="font-bold text-gray-700 flex items-center gap-2">
-                                    <ShoppingCart size={18} /> Order Items
-                                </h3>
-                            </div>
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left text-sm">
-                                    <thead className="text-gray-400 uppercase text-[11px] font-bold border-b border-gray-50">
-                                        <tr>
-                                            <th className="px-6 py-3">Product</th>
-                                            <th className="px-6 py-3 text-center">Quantity</th>
-                                            <th className="px-6 py-3 text-right">Price</th>
-                                            <th className="px-6 py-3 text-right">Subtotal</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-50 text-gray-600">
-                                        {order.order_products?.map((item) => {
-                                            const origPrice = parseFloat(item.original_price || item.price);
-                                            return (
-                                                <tr key={item.id}>
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex items-center gap-3">
-                                                            {item.product?.pictures?.[0] && (
-                                                                <img
-                                                                    src={`http://127.0.0.1:8000/storage/${item.product.pictures[0].image_path}`}
-                                                                    alt=""
-                                                                    className="w-10 h-10 object-cover rounded-md border border-gray-100"
-                                                                />
-                                                            )}
-                                                            <span className="font-medium">{item.product?.name}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 text-center">{item.quantity}</td>
-                                                    <td className="px-6 py-4 text-right">{origPrice.toLocaleString()} Ks</td>
-                                                    <td className="px-6 py-4 text-right font-bold text-gray-800">
-                                                        {(origPrice * item.quantity).toLocaleString()} Ks
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="p-6 bg-gray-50/50 border-t border-gray-100 space-y-2">
-                                <div className="flex justify-between text-sm text-gray-500">
-                                    <span>Subtotal</span>
-                                    {/* Subtotal is sum of normal prices */}
-                                    <span>{order.order_products?.reduce((sum, item) => sum + (parseFloat(item.original_price || item.price) * item.quantity), 0).toLocaleString()} Ks</span>
+            {/* Main Edit Form */}
+            <div className="print:hidden bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-4 border-b border-gray-50 bg-gray-50/50 flex items-center gap-2">
+                    <CheckCircle size={18} className="text-[#8DB600]" />
+                    <h3 className="font-bold text-gray-700">Order Management</h3>
+                </div>
+                <div className="p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {/* Info Block */}
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Customer Name</p>
+                                    <p className="text-sm font-bold text-gray-800">{order.user?.name || 'Walk-in Customer'}</p>
                                 </div>
-                                {(order.order_products?.reduce((sum, item) => sum + (parseFloat(item.original_price || item.price) * item.quantity), 0) - parseFloat(order.total_amount)) > 0 && (
-                                    <div className="flex justify-between text-sm text-red-500 font-medium">
-                                        <span>Discount</span>
-                                        <span>-{ (order.order_products?.reduce((sum, item) => sum + (parseFloat(item.original_price || item.price) * item.quantity), 0) - parseFloat(order.total_amount)).toLocaleString()} Ks</span>
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Order Date</p>
+                                    <p className="text-sm font-bold text-gray-800">{new Date(order.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Amount</p>
+                                <p className="text-lg font-black text-[#8DB600]">Ks. {parseFloat(order.total_amount).toLocaleString()}</p>
+                            </div>
+                            {isOnline && (
+                                <>
+                                    <div>
+                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 flex items-center gap-1"><MapPin size={10} /> Delivery Address</p>
+                                        <p className="text-xs font-medium text-gray-600">{order.delivery_address || 'No address provided'}</p>
                                     </div>
-                                )}
-                                <div className="flex justify-between text-lg font-black text-gray-800 pt-2 border-t border-gray-200">
-                                    <span>Total Amount</span>
-                                    <span className="text-[#8DB600]">{parseFloat(order.total_amount).toLocaleString()} Ks</span>
+                                    <div>
+                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 flex items-center gap-1"><Phone size={10} /> Contact Phone</p>
+                                        <p className="text-xs font-bold text-gray-800">{order.contact_phone || 'N/A'}</p>
+                                    </div>
+                                </>
+                            )}
+                            <div>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Payment Method</p>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm font-bold text-gray-700">{order.payment_method || 'Cash'}</span>
+                                    {order.payment_method === 'Online' && (
+                                        <button 
+                                            onClick={showPaymentSlip}
+                                            className="px-2 py-1 bg-blue-50 text-blue-600 rounded text-[10px] font-black hover:bg-blue-100 transition-colors border border-blue-100 flex items-center gap-1"
+                                        >
+                                            <ImageIcon size={12} /> CHECK SLIP
+                                        </button>
+                                    )}
                                 </div>
+                            </div>
+                        </div>
+
+                        {/* Status Selectors */}
+                        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4 bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Order Status</label>
+                                <select 
+                                    value={status} 
+                                    onChange={(e) => setStatus(e.target.value)}
+                                    disabled={order?.status === 'completed' || order?.status === 'cancelled'}
+                                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#8DB600] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                >
+                                    <option value="pending">Pending</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Delivery Status</label>
+                                <select 
+                                    value={deliverStatus} 
+                                    onChange={(e) => setDeliverStatus(e.target.value)}
+                                    disabled={order?.status === 'completed' || order?.status === 'cancelled'}
+                                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#8DB600] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                >
+                                    <option value="pending">Pending</option>
+                                    <option value="shipped">Shipped</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="returned">Returned</option>
+                                </select>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Payment Status</label>
+                                <select 
+                                    value={paymentStatus} 
+                                    onChange={(e) => setPaymentStatus(e.target.value)}
+                                    disabled={order?.payment_status === 'refunded'}
+                                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#8DB600] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                >
+                                    {/* If order is completed/cancelled, hide 'pending' option */}
+                                    {(order?.status !== 'completed' && order?.status !== 'cancelled') && (
+                                        <option value="pending">Unpaid / Pending</option>
+                                    )}
+                                    <option value="paid">Paid</option>
+                                    <option value="refunded">Refunded</option>
+                                </select>
+                            </div>
+
+                            {/* Refund Reason - Shows only if status is refunded */}
+                            {(paymentStatus === 'refunded' || order?.payment_status === 'refunded') && (
+                                <div className="sm:col-span-3 space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-300">
+                                    <label className="text-[10px] font-black text-red-500 uppercase tracking-widest">Refund Reason / Notes</label>
+                                    <textarea 
+                                        value={refundReason}
+                                        onChange={(e) => setRefundReason(e.target.value)}
+                                        placeholder="Enter reason for refund..."
+                                        disabled={order?.payment_status === 'refunded'}
+                                        className="w-full bg-white border border-red-100 rounded-lg px-3 py-2 text-sm outline-none focus:border-red-400 transition-colors min-h-[80px] disabled:bg-gray-50 disabled:text-gray-500"
+                                    />
+                                </div>
+                            )}
+
+                            <div className="sm:col-span-3 pt-2">
+                                <button
+                                    onClick={handleSave}
+                                    disabled={saving || order?.payment_status === 'refunded'}
+                                    className="w-full py-3 bg-[#8DB600] text-white rounded-lg font-bold hover:bg-[#7a9e00] transition-all shadow-md active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:bg-gray-400"
+                                >
+                                    {saving ? (
+                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                    ) : (
+                                        <><Save size={18} /> Save Changes</>
+                                    )}
+                                </button>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    {/* Right Side: Order Info */}
-                    <div className="space-y-6">
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 space-y-4">
-                            <h3 className="font-bold text-gray-800 border-b pb-3 border-gray-50 mb-4">Summary Information</h3>
-
-                            <div className="space-y-4">
-                                <div className="flex items-start gap-3">
-                                    <div className="bg-gray-100 p-2 rounded-lg text-gray-500">
-                                        <Calendar size={18} />
-                                    </div>
-                                    <div>
-                                        <p className="text-[11px] font-bold text-gray-400 uppercase">Order Date</p>
-                                        <p className="text-sm font-medium">{new Date(order.created_at).toLocaleString()}</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start gap-3">
-                                    <div className="bg-gray-100 p-2 rounded-lg text-gray-500">
-                                        <CheckCircle size={18} />
-                                    </div>
-                                    <div>
-                                        <p className="text-[11px] font-bold text-gray-400 uppercase">Status</p>
-                                        <span className={`text-xs font-bold px-2 py-0.5 rounded-md ${order.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                                            }`}>
-                                            {order.status?.toUpperCase()}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start gap-3">
-                                    <div className="bg-gray-100 p-2 rounded-lg text-gray-500">
-                                        {order.order_type === 'walk-in' ? <Store size={18} /> : <Globe size={18} />}
-                                    </div>
-                                    <div>
-                                        <p className="text-[11px] font-bold text-gray-400 uppercase">Order Type</p>
-                                        <p className="text-sm font-medium">{order.order_type === 'walk-in' ? 'POS / Walk-in' : 'Online Store'}</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start gap-3">
-                                    <div className="bg-gray-100 p-2 rounded-lg text-gray-500">
-                                        <User size={18} />
-                                    </div>
-                                    <div>
-                                        <p className="text-[11px] font-bold text-gray-400 uppercase">Customer / Cashier</p>
-                                        <p className="text-sm font-medium">
-                                            {order.order_type === 'walk-in' ? (
-                                                <>Walk-in <span className="text-[11px] text-gray-400">(Cashier: {order.cashier?.name})</span></>
-                                            ) : (
-                                                order.user?.name || 'Unknown'
-                                            )}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {order.order_type === 'walk-in' && (
-                                    <div className="flex items-start gap-3">
-                                        <div className="bg-gray-100 p-2 rounded-lg text-gray-500">
-                                            <CreditCard size={18} />
+            {/* Order Items Table */}
+            <div className="print:hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="p-4 border-b border-gray-50 bg-gray-50/50 flex items-center gap-2">
+                        <ShoppingCart size={18} className="text-gray-600" />
+                        <h3 className="font-bold text-gray-700">Purchased Items</h3>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left text-sm">
+                            <thead className="bg-gray-50 text-gray-400 uppercase text-[10px] font-black tracking-widest border-b border-gray-100">
+                                <tr>
+                                    <th className="px-6 py-3">Product</th>
+                                    <th className="px-6 py-3 text-center">Qty</th>
+                                    <th className="px-6 py-3 text-right">Unit Price</th>
+                                    <th className="px-6 py-3 text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-50 text-gray-600">
+                                {order.order_products?.map((item) => {
+                                    const price = parseFloat(item.price);
+                                    return (
+                                        <tr key={item.id} className="hover:bg-gray-50/30 transition-colors">
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center overflow-hidden border border-gray-200">
+                                                        {item.product?.pictures?.[0] ? (
+                                                            <img
+                                                                src={`http://127.0.0.1:8000/storage/${item.product.pictures[0].image_path}`}
+                                                                alt=""
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        ) : <Package size={18} className="text-gray-300" />}
+                                                    </div>
+                                                    <div>
+                                                        <span className="font-bold text-gray-800">{item.product?.name}</span>
+                                                        {item.is_gift && <span className="ml-2 px-1.5 py-0.5 bg-red-50 text-red-500 rounded text-[9px] font-black border border-red-100 uppercase">Gift</span>}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-center font-medium">{item.quantity}</td>
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex flex-col items-end">
+                                                    <span className="font-bold text-gray-700">{price.toLocaleString()} Ks</span>
+                                                    {parseFloat(item.original_price) > price && (
+                                                        <span className="text-[10px] text-gray-400 line-through">
+                                                            {parseFloat(item.original_price).toLocaleString()} Ks
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-right font-black text-gray-900">
+                                                {(price * item.quantity).toLocaleString()} Ks
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="p-6 bg-gray-50/50 border-t border-gray-100 flex justify-end">
+                        <div className="w-full max-w-xs space-y-2">
+                            {/* Calculate true subtotal from original prices if available */}
+                            {(() => {
+                                const subtotal = order.order_products?.reduce((acc, item) => {
+                                    return acc + (parseFloat(item.original_price || item.price) * item.quantity);
+                                }, 0);
+                                return (
+                                    <>
+                                        <div className="flex justify-between text-xs text-gray-500 font-bold uppercase tracking-widest">
+                                            <span>Subtotal</span>
+                                            <span>{subtotal.toLocaleString()} Ks</span>
                                         </div>
-                                        <div>
-                                            <p className="text-[11px] font-bold text-gray-400 uppercase">Payment Info</p>
-                                            <p className="text-xs text-gray-600">
-                                                Received: {parseFloat(order.received_amount || 0).toLocaleString()} Ks<br />
-                                                Change: {parseFloat(order.change_return || 0).toLocaleString()} Ks
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
+                                        {parseFloat(order.discount_amount) > 0 && (
+                                            <div className="flex justify-between text-xs text-red-500 font-bold uppercase tracking-widest">
+                                                <span>Total Discount</span>
+                                                <span>-{parseFloat(order.discount_amount).toLocaleString()} Ks</span>
+                                            </div>
+                                        )}
+                                    </>
+                                );
+                            })()}
+                            <div className="flex justify-between text-lg font-black text-gray-800 pt-2 border-t border-gray-200">
+                                <span>Total Pay</span>
+                                <span className="text-[#8DB600]">{parseFloat(order.total_amount).toLocaleString()} Ks</span>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        {/* Print Action in Sidebar */}
-                        <button
-                            onClick={() => window.print()}
-                            className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-white border-2 border-gray-100 rounded-xl text-gray-700 hover:bg-gray-50 hover:border-[#8DB600]/30 hover:text-[#8DB600] transition-all font-bold shadow-sm group"
-                        >
-                            <Printer size={18} className="group-hover:scale-110 transition-transform" /> Print Invoice
-                        </button>
+                <div className="space-y-6">
+                    {/* Additional Info / Internal Notes Card */}
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 space-y-4">
+                        <h3 className="font-bold text-gray-800 border-b pb-3 border-gray-100 mb-4 flex items-center gap-2">
+                             <Package size={18} className="text-gray-400" /> Logistics Detail
+                        </h3>
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Order Type</span>
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${order.order_type === 'walk-in' ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'}`}>
+                                    {order.order_type}
+                                </span>
+                            </div>
+                            {order.cashier && (
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Processed By</span>
+                                    <span className="text-xs font-bold text-gray-700">{order.cashier.name}</span>
+                                </div>
+                            )}
+                            {order.receipt_number && (
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Receipt #</span>
+                                    <span className="text-xs font-bold text-gray-700">{order.receipt_number}</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-[#8DB600] to-[#7a9e00] rounded-xl shadow-lg p-6 text-white text-center">
+                         <div className="bg-white/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
+                             <CreditCard size={24} />
+                         </div>
+                         <h4 className="font-bold mb-2">Need Help?</h4>
+                         <p className="text-xs text-white/80 leading-relaxed mb-4">If you find issues with payment slips, contact the customer directly at {order.contact_phone || 'the registered number'}.</p>
+                         <button className="w-full bg-white text-[#8DB600] py-2 rounded-lg font-black text-xs hover:bg-gray-100 transition-colors">CONTACT SUPPORT</button>
                     </div>
                 </div>
             </div>
@@ -213,7 +402,7 @@ const AdminOrderDetail = () => {
             <div className="hidden print:block fixed top-0 left-0 w-[80mm] text-black bg-white p-4 z-[9999] text-sm h-auto overflow-visible">
                 <div className="text-center">
                     <h2 className="font-bold text-xl mb-1">Vital Care Pharmacy</h2>
-                    <p className="text-xs text-gray-600 mb-4">Receipt #{order.receipt_number}<br />{new Date(order.created_at).toLocaleString()}</p>
+                    <p className="text-xs text-gray-600 mb-4">Receipt #{order.receipt_number || order.id}<br />{new Date(order.created_at).toLocaleString()}</p>
 
                     <div className="border-t border-b border-dashed border-gray-400 py-2 mb-2 text-left">
                         <table className="w-full text-xs">
@@ -227,9 +416,9 @@ const AdminOrderDetail = () => {
                             <tbody>
                                 {order.order_products?.map((op, i) => (
                                     <tr key={i}>
-                                        <td className="py-1 pr-2">{op.product?.name}</td>
+                                        <td className="py-1 pr-2">{op.product?.name} {op.is_gift ? '(Gift)' : ''}</td>
                                         <td className="text-right py-1">{op.quantity}</td>
-                                        <td className="text-right py-1">{(parseFloat(op.original_price || op.price) * op.quantity).toLocaleString()} Ks</td>
+                                        <td className="text-right py-1">{(parseFloat(op.price) * op.quantity).toLocaleString()} Ks</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -240,12 +429,9 @@ const AdminOrderDetail = () => {
                         <p>Subtotal: {(parseFloat(order.total_amount) + parseFloat(order.discount_amount || 0)).toLocaleString()} Ks</p>
                         {parseFloat(order.discount_amount) > 0 && <p>Discount: -{parseFloat(order.discount_amount).toLocaleString()} Ks</p>}
                         <p className="font-bold text-sm mt-1">Total: {parseFloat(order.total_amount).toLocaleString()} Ks</p>
-                        <p className="mt-2 font-medium">Paid: {parseFloat(order.received_amount || order.total_amount).toLocaleString()} Ks</p>
-                        <p>Change: {parseFloat(order.change_return || 0).toLocaleString()} Ks</p>
                     </div>
 
                     <p className="text-xs font-bold mt-6 mb-1 text-center">Thank you for your purchase!</p>
-                    <p className="text-[10px] text-center text-gray-500">Please keep receipt for returns/exchanges.</p>
                 </div>
             </div>
         </div>

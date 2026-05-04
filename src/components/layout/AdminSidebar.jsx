@@ -101,7 +101,7 @@ const AdminSidebar = ({ isOpen }) => {
             icon: <ShoppingCart size={20} className="stroke-2" />, 
             roles: ['admin', 'superadmin', 'staff'],
             children: [
-                { name: 'Point of Sale', path: '/admin/pos', icon: <ShoppingCart size={18} className="stroke-2 text-[#8DB600]" />, roles: ['admin', 'superadmin', 'staff'] },
+                { name: 'Point of Sale', path: '/admin/pos', icon: <ShoppingCart size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff'] },
                 { name: 'All Sales History', path: '/admin/orders', icon: <History size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff'] },
                 { name: 'New Purchase', path: '/admin/purchases/create', icon: <ShoppingCart size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff'] },
                 { name: 'Purchase History', path: '/admin/purchases', icon: <History size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff'] },
@@ -119,7 +119,7 @@ const AdminSidebar = ({ isOpen }) => {
             icon: <BookOpen size={20} className="stroke-2" />, 
             roles: ['admin', 'superadmin', 'pharmacist'],
             children: [
-                { name: 'New Health Tip', path: '/admin/health-tips/create', icon: <Plus size={18} className="stroke-2 text-green-500" />, roles: ['admin', 'superadmin', 'pharmacist'] },
+                { name: 'New Health Tip', path: '/admin/health-tips/create', icon: <Plus size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'pharmacist'] },
                 { name: 'Health Tip List', path: '/admin/health-tips', icon: <ClipboardList size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'pharmacist'] }
             ]
         },
