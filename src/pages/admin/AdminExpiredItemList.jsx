@@ -12,10 +12,12 @@ import {
     CheckSquare,
     Square
 } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const AdminExpiredItemList = () => {
-    const [activeTab, setActiveTab] = useState('expired'); // 'expired', 'expiring_soon', 'disposals'
+    const [searchParams] = useSearchParams();
+    const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'expired'); // 'expired', 'expiring_soon', 'disposals'
     const [data, setData] = useState({
         expired_items: [],
         expiring_soon: [],

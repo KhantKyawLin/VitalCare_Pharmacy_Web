@@ -56,21 +56,24 @@ const AdminDashboard = () => {
             subtitle: `${stats?.sales_change || 0}% from yesterday`,
             subtitleColor: (stats?.sales_change >= 0) ? 'text-[#8DB600]' : 'text-red-500',
             icon: <ShoppingCart className="text-[#8DB600]" size={28} />,
-            trendUp: stats?.sales_change >= 0
+            trendUp: stats?.sales_change >= 0,
+            link: `/admin/orders?date=${new Date().toISOString().split('T')[0]}`
         },
         { 
             title: "New Orders", 
             value: stats?.new_orders || 0, 
             subtitle: "0 today", 
             subtitleColor: "text-gray-500",
-            icon: <ClipboardList className="text-[#8DB600]" size={28} />
+            icon: <ClipboardList className="text-[#8DB600]" size={28} />,
+            link: "/admin/orders?order_type=online"
         },
         { 
             title: "Low Stock", 
             value: stats?.low_stock || 0, 
             subtitle: "Needs attention", 
             subtitleColor: "text-red-500",
-            icon: <AlertTriangle className="text-[#8DB600]" size={28} />
+            icon: <AlertTriangle className="text-[#8DB600]" size={28} />,
+            link: "/admin/reorder-alerts"
         },
         { 
             title: "Expiring Soon", 
@@ -79,7 +82,8 @@ const AdminDashboard = () => {
             subtitle: "Within next 30 days", 
             subtitleColor: "text-amber-500",
             icon: <Hourglass className="text-amber-500" size={28} />,
-            bgIconColor: "bg-amber-50"
+            bgIconColor: "bg-amber-50",
+            link: "/admin/expired?tab=expiring_soon"
         }
     ];
 
@@ -95,15 +99,19 @@ const AdminDashboard = () => {
             {/* Stat Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                 {statCards.map((card, idx) => (
-                    <div key={idx} className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm flex flex-col justify-between h-36">
+                    <Link 
+                        key={idx} 
+                        to={card.link}
+                        className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm flex flex-col justify-between h-36 hover:shadow-md hover:border-[#8DB600]/30 transition-all group"
+                    >
                         <div className="flex justify-between items-start">
                             <div className="space-y-1">
-                                <h3 className="text-gray-600 font-medium text-sm">{card.title}</h3>
+                                <h3 className="text-gray-600 font-medium text-sm group-hover:text-[#8DB600] transition-colors">{card.title}</h3>
                                 <div className={`text-3xl ${card.valueColor || 'text-gray-800'}`}>
                                     {card.value}
                                 </div>
                             </div>
-                            <div className={`${card.bgIconColor || ''} p-2 rounded-lg`}>
+                            <div className={`${card.bgIconColor || ''} p-2 rounded-lg group-hover:scale-110 transition-transform`}>
                                 {card.icon}
                             </div>
                         </div>
@@ -111,7 +119,7 @@ const AdminDashboard = () => {
                             {card.trendUp && <TrendingUp size={16} />}
                             {card.subtitle}
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
 

@@ -25,7 +25,8 @@ import {
     Bell,
     Truck,
     Plus,
-    BarChart3
+    BarChart3,
+    UserCircle
 } from 'lucide-react';
 
 const AdminSidebar = ({ isOpen }) => {
@@ -125,7 +126,15 @@ const AdminSidebar = ({ isOpen }) => {
         { name: 'User Management', path: '/admin/users', icon: <Users size={20} className="stroke-2" />, roles: ['admin', 'superadmin'] },
         { name: 'Contact Us', path: '/admin/messages', icon: <MessageSquare size={20} className="stroke-2" />, roles: ['admin', 'superadmin'] },
         { name: 'Activity Audit', path: '/admin/logs', icon: <History size={20} className="stroke-2" />, roles: ['admin', 'superadmin'] },
-        { name: 'Settings', path: '/admin/settings', icon: <Settings size={20} className="stroke-2" />, roles: ['admin', 'superadmin'] },
+        { 
+            name: 'Settings', 
+            icon: <Settings size={20} className="stroke-2" />, 
+            roles: ['admin', 'superadmin', 'staff', 'pharmacist'],
+            children: [
+                { name: 'Branding & UI', path: '/admin/settings', icon: <Store size={18} className="stroke-2" />, roles: ['admin', 'superadmin'] },
+                { name: 'Account Profile', path: '/admin/account-settings', icon: <UserCircle size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff', 'pharmacist'] }
+            ]
+        },
     ];
 
     const filteredItems = navItems.filter(item => item.roles.includes(user?.role))
@@ -240,10 +249,14 @@ const AdminSidebar = ({ isOpen }) => {
                                             } ${!isOpen && 'justify-center mx-1 px-0 py-3'}`
                                         }
                                     >
-                                        <span className={({ isActive }) => isActive ? 'text-[#6CA52C]' : 'text-gray-500 group-hover:text-[#6CA52C]'}>
-                                            {item.icon}
-                                        </span>
-                                        {isOpen && <span className="text-[15px]">{item.name}</span>}
+                                        {({ isActive }) => (
+                                            <>
+                                                <span className={isActive ? 'text-[#6CA52C]' : 'text-gray-500 group-hover:text-[#6CA52C]'}>
+                                                    {item.icon}
+                                                </span>
+                                                {isOpen && <span className="text-[15px]">{item.name}</span>}
+                                            </>
+                                        )}
                                     </NavLink>
                                 )}
                             </li>

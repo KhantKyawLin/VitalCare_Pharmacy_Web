@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { Search, ShoppingCart, Plus, Minus, Trash2, X, CreditCard, Banknote, QrCode, Printer, AlertTriangle } from 'lucide-react';
+import { Search, ShoppingCart, Plus, Minus, Trash2, X, CreditCard, Banknote, QrCode, Printer, AlertTriangle, Info, RefreshCw } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 // Barcode Scanner Hook
@@ -44,12 +44,27 @@ const AdminPOS = () => {
     const [receivedAmount, setReceivedAmount] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
     const [lastOrder, setLastOrder] = useState(null);
+    const [allPromotions, setAllPromotions] = useState([]);
 
     const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 
     useBarcodeScanner((barcode) => {
         searchAndAddProduct(barcode);
     });
+
+    useEffect(() => {
+        const fetchPromos = async () => {
+            try {
+                const res = await axios.get('http://127.0.0.1:8000/api/admin/promotions', getConfig());
+                const promos = Array.isArray(res.data?.promotions) ? res.data.promotions : [];
+                setAllPromotions(promos.filter(p => p.is_active));
+            } catch (err) {
+                console.error("Promo fetch error:", err);
+                setAllPromotions([]);
+            }
+        };
+        fetchPromos();
+    }, []);
 
     useEffect(() => {
         if (searchQuery.length < 2) {
@@ -90,84 +105,239 @@ const AdminPOS = () => {
         }
     };
 
-    const getProductPrice = (product) => {
-        let price = parseFloat(product.price);
-        const activePromo = product.promotions?.find(p => p.is_active);
-        if (activePromo) {
-            if (activePromo.type === 'percentage') {
-                price = price - (price * (parseFloat(activePromo.discount_value) / 100));
-            } else {
-                price = price - parseFloat(activePromo.discount_value);
+    const getProductPriceInfo = (product, quantity = 1) => {
+        let originalPrice = parseFloat(product.price || 0);
+        let finalPrice = originalPrice;
+        let promoData = product.promotions && product.promotions.length > 0 ? product.promotions[0] : null;
+        let discountAmount = 0;
+
+        // Strip promo to essential fields to prevent circular references and state bloat
+        let promoApplied = null;
+        if (promoData) {
+            promoApplied = {
+                id: promoData.id,
+                type: promoData.type,
+                discount_value: promoData.discount_value,
+                max_discount_amount: promoData.max_discount_amount,
+                min_qty_requirement: promoData.min_qty_requirement,
+                gift_qty: promoData.gift_qty,
+                gift_product_id: promoData.gift_product_id,
+                gift_product: promoData.gift_product ? { id: promoData.gift_product.id, name: promoData.gift_product.name, price: promoData.gift_product.price } : null
+            };
+        }
+
+        if (promoApplied) {
+            if (promoApplied.type === 'percentage') {
+                let discount = originalPrice * (parseFloat(promoApplied.discount_value || 0) / 100);
+                if (promoApplied.max_discount_amount && discount > parseFloat(promoApplied.max_discount_amount)) {
+                    discount = parseFloat(promoApplied.max_discount_amount);
+                }
+                finalPrice = originalPrice - discount;
+                discountAmount = discount;
+            } else if (promoApplied.type === 'fixed_amount') {
+                finalPrice = originalPrice - parseFloat(promoApplied.discount_value || 0);
+                discountAmount = parseFloat(promoApplied.discount_value || 0);
             }
         }
-        return Math.max(0, price);
+        return { 
+            originalPrice, 
+            finalPrice: Math.max(0, finalPrice), 
+            promo: promoApplied,
+            discountAmount
+        };
+    };
+
+    const applyCartGifts = (newCart) => {
+        try {
+            const regularItems = newCart.filter(item => !item.isGift);
+            const gifts = [];
+            const outOfStockGifts = [];
+            
+            regularItems.forEach(item => {
+                const p = item.promo;
+                if (p && (p.type === 'buy_one_get_one' || p.type === 'buy_one_get_gift')) {
+                    const minQty = parseInt(p.min_qty_requirement) || 1;
+                    const giftQtyPerSet = parseInt(p.gift_qty) || 0;
+                    
+                    if (item.quantity >= minQty && giftQtyPerSet > 0) {
+                        const expectedGiftQty = Math.floor(item.quantity / minQty) * giftQtyPerSet;
+                        const giftId = p.type === 'buy_one_get_one' ? item.product_id : p.gift_product_id;
+                        const giftProdObj = p.type === 'buy_one_get_one' ? item : p.gift_product;
+
+                        if (giftProdObj && giftId && expectedGiftQty > 0) {
+                            const giftStock = parseInt(giftProdObj.stock || giftProdObj.current_stock || 0);
+                            
+                            if (giftStock >= expectedGiftQty) {
+                                gifts.push({
+                                    product_id: giftId,
+                                    name: `[GIFT] ${giftProdObj.name || 'Product'}`,
+                                    original_price: parseFloat(giftProdObj.original_price || giftProdObj.price || 0),
+                                    price: 0,
+                                    quantity: expectedGiftQty,
+                                    subtotal: 0,
+                                    stock: giftStock,
+                                    isGift: true,
+                                    parent_id: item.product_id,
+                                    promo: null
+                                });
+                            } else if (!outOfStockGifts.includes(giftProdObj.name)) {
+                                outOfStockGifts.push(giftProdObj.name);
+                            }
+                        }
+                    }
+                }
+            });
+
+            if (outOfStockGifts.length > 0) {
+                setTimeout(() => {
+                    Swal.fire({
+                        title: 'Gift Stock Alert',
+                        text: `The free gift (${outOfStockGifts.join(', ')}) is currently out of stock and could not be added.`,
+                        icon: 'info',
+                        timer: 3000,
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false
+                    });
+                }, 100);
+            }
+            
+            return [...regularItems, ...gifts];
+        } catch (error) {
+            console.error("Critical error in gift application:", error);
+            return newCart.filter(item => !item.isGift);
+        }
     };
 
     const addToCart = (product) => {
-        const stock = product.current_stock || 0;
-        const existingInCart = cart.find(item => item.product_id === product.id);
+        const stock = parseInt(product.stock || product.current_stock || 0);
+        const existingInCart = cart.find(item => item.product_id === product.id && !item.isGift);
         const currentCartQty = existingInCart ? existingInCart.quantity : 0;
 
         if (stock <= 0) {
-            Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: `${product.name} is out of stock!`, showConfirmButton: false, timer: 2500 });
+            Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: `Out of Stock`, text: `${product.name} is not available.`, showConfirmButton: false, timer: 3000 });
             return;
         }
 
         if (currentCartQty >= stock) {
-            Swal.fire({ toast: true, position: 'top-end', icon: 'warning', title: `Only ${stock} unit(s) available for ${product.name}`, showConfirmButton: false, timer: 2500 });
+            Swal.fire({ toast: true, position: 'top-end', icon: 'warning', title: `Stock Limit`, text: `Only ${stock} units available for ${product.name}`, showConfirmButton: false, timer: 3000 });
             return;
         }
 
         setCart(prev => {
-            const existing = prev.find(item => item.product_id === product.id);
-            const price = getProductPrice(product);
+            const existing = prev.find(item => item.product_id === product.id && !item.isGift);
+            const { originalPrice, finalPrice, promo } = getProductPriceInfo(product, (existing?.quantity || 0) + 1);
+            
+            let newCart = [...prev];
+            
             if (existing) {
                 const newQty = existing.quantity + 1;
-                return prev.map(item =>
-                    item.product_id === product.id
-                        ? { ...item, quantity: newQty, subtotal: newQty * price }
+                newCart = newCart.map(item =>
+                    (item.product_id === product.id && !item.isGift)
+                        ? { ...item, quantity: newQty, subtotal: newQty * finalPrice }
                         : item
                 );
+            } else {
+                newCart.push({
+                    product_id: product.id,
+                    name: product.name,
+                    original_price: originalPrice,
+                    price: finalPrice,
+                    quantity: 1,
+                    subtotal: finalPrice,
+                    stock: stock,
+                    promo: promo,
+                    isGift: false
+                });
             }
-            return [...prev, {
-                product_id: product.id,
-                name: product.name,
-                original_price: parseFloat(product.price),
-                price: price,
-                quantity: 1,
-                subtotal: price,
-                stock: stock,
-                promo: product.promotions?.find(p => p.is_active)
-            }];
+
+            return applyCartGifts(newCart);
         });
         setSearchResults([]);
         setSearchQuery('');
     };
 
     const updateQuantity = (id, delta) => {
-        setCart(prev => prev.map(item => {
-            if (item.product_id === id) {
-                const maxStock = item.stock || 9999;
-                const newQty = Math.max(1, Math.min(item.quantity + delta, maxStock));
-                if (item.quantity + delta > maxStock) {
-                    Swal.fire({ toast: true, position: 'top-end', icon: 'warning', title: `Only ${maxStock} in stock`, showConfirmButton: false, timer: 2000 });
+        let showStockWarning = false;
+        let limitStock = 0;
+
+        setCart(prev => {
+            let newCart = prev.map(item => {
+                if (item.product_id === id && !item.isGift) {
+                    const maxStock = item.stock || 9999;
+                    if (item.quantity + delta > maxStock) {
+                        showStockWarning = true;
+                        limitStock = maxStock;
+                    }
+                    const newQty = Math.max(1, Math.min(item.quantity + delta, maxStock));
+                    return { ...item, quantity: newQty, subtotal: newQty * item.price };
                 }
-                return { ...item, quantity: newQty, subtotal: newQty * item.price };
-            }
-            return item;
-        }));
+                return item;
+            });
+            return applyCartGifts(newCart);
+        });
+
+        if (showStockWarning) {
+            Swal.fire({ toast: true, position: 'top-end', icon: 'warning', title: `Only ${limitStock} in stock`, showConfirmButton: false, timer: 2000 });
+        }
     };
 
-    const removeFromCart = (id) => {
-        setCart(prev => prev.filter(item => item.product_id !== id));
+    const removeFromCart = (id, isGift = false, parentId = null) => {
+        setCart(prev => {
+            // If we remove a main item, also remove its associated gifts
+            if (!isGift) {
+                return prev.filter(item => item.product_id !== id && item.parent_id !== id);
+            }
+            // If we remove a gift manually, just remove that gift
+            return prev.filter(item => !(item.product_id === id && item.isGift && item.parent_id === parentId));
+        });
     };
 
     const clearCart = () => setCart([]);
 
-    const subtotal = cart.reduce((sum, item) => sum + (item.original_price * item.quantity), 0);
-    const totalDiscount = cart.reduce((sum, item) => sum + ((item.original_price - item.price) * item.quantity), 0);
-    const grandTotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
-    const changeReturn = paymentMethod === 'cash' && receivedAmount ? parseFloat(receivedAmount) - grandTotal : 0;
+    // --- Totals Calculation (Memoized for performance and stability) ---
+    const { subtotal, itemLevelDiscount, orderLevelDiscount, totalDiscount, grandTotal, changeReturn, activeOrderPromo } = React.useMemo(() => {
+        const sub = cart.reduce((sum, item) => sum + (parseFloat(item.original_price || 0) * parseInt(item.quantity || 0)), 0);
+        
+        const itemDisc = cart.reduce((sum, item) => {
+            // Include gifts in discount calculation: their full original price is the discount
+            return sum + ((parseFloat(item.original_price || 0) - parseFloat(item.price || 0)) * parseInt(item.quantity || 0));
+        }, 0);
+
+        // Check if ANY item-level promotion is applied (Gifts or price discounts)
+        const hasItemLevelPromo = cart.some(item => item.isGift || (item.original_price > item.price));
+
+        const orderPromo = !hasItemLevelPromo ? allPromotions.find(p => 
+            p.promotion_scope === 'order' && 
+            sub >= parseFloat(p.min_order_value || 0)
+        ) : null;
+
+        let orderDisc = 0;
+        if (orderPromo) {
+            if (orderPromo.type === 'percentage') {
+                orderDisc = sub * (parseFloat(orderPromo.discount_value) / 100);
+                if (orderPromo.max_discount_amount && orderDisc > parseFloat(orderPromo.max_discount_amount)) {
+                    orderDisc = parseFloat(orderPromo.max_discount_amount);
+                }
+            } else {
+                orderDisc = parseFloat(orderPromo.discount_value);
+            }
+        }
+
+        const totalDisc = itemDisc + orderDisc;
+        const grand = Math.max(0, sub - totalDisc);
+        const change = (paymentMethod === 'cash' && receivedAmount) ? parseFloat(receivedAmount) - grand : 0;
+
+        return {
+            subtotal: sub,
+            itemLevelDiscount: itemDisc,
+            orderLevelDiscount: orderDisc,
+            totalDiscount: totalDisc,
+            grandTotal: grand,
+            changeReturn: change,
+            activeOrderPromo: orderPromo
+        };
+    }, [cart, allPromotions, paymentMethod, receivedAmount]);
 
     const handleCheckout = async () => {
         if (paymentMethod === 'cash' && (!receivedAmount || parseFloat(receivedAmount) < grandTotal)) {
@@ -214,7 +384,7 @@ const AdminPOS = () => {
     return (
         <div className="h-[calc(100vh-80px)] font-sans print:h-auto">
             {/* Main POS Interface (Hidden on Print) */}
-            <div className="flex gap-4 p-4 h-full print:hidden">
+            <div className="flex gap-4 p-4 h-full no-print">
                 {/* Left Panel: Products & Search */}
                 <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
                     <div className="p-4 border-b border-gray-100 bg-gray-50/50">
@@ -240,8 +410,8 @@ const AdminPOS = () => {
                         {searchResults.length > 0 ? (
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                 {searchResults.map(product => {
-                                    const finalPrice = getProductPrice(product);
-                                    const hasDiscount = finalPrice < product.price;
+                                    const { finalPrice, originalPrice, promo } = getProductPriceInfo(product);
+                                    const hasDiscount = finalPrice < originalPrice;
                                     const stock = product.current_stock || 0;
                                     const isOutOfStock = stock <= 0;
 
@@ -254,13 +424,15 @@ const AdminPOS = () => {
                                                 }`}
                                         >
                                             {hasDiscount && !isOutOfStock && <div className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">Sale</div>}
+                                            {promo?.type === 'buy_one_get_one' && !isOutOfStock && <div className="absolute top-0 right-0 bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">BOGO</div>}
+                                            {promo?.type === 'buy_one_get_gift' && !isOutOfStock && <div className="absolute top-0 right-0 bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">GIFT</div>}
                                             {isOutOfStock && <div className="absolute top-0 right-0 bg-gray-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg flex items-center gap-1"><AlertTriangle size={10} /> Out</div>}
                                             <p className="font-bold text-gray-800 text-sm mb-1 line-clamp-2">{product.name}</p>
                                             <p className="text-[11px] text-gray-400 mb-1">{product.category?.name}</p>
                                             <p className={`text-[10px] font-bold mb-2 ${stock <= 5 && stock > 0 ? 'text-orange-500' : stock > 5 ? 'text-green-600' : 'text-red-500'}`}>Stock: {stock}</p>
                                             <div className="mt-auto">
                                                 <span className="font-bold text-[#8DB600]">{finalPrice.toLocaleString()} Ks</span>
-                                                {hasDiscount && <span className="ml-2 text-xs line-through text-gray-400">{parseFloat(product.price).toLocaleString()}</span>}
+                                                {hasDiscount && <span className="ml-2 text-xs line-through text-gray-400">{originalPrice.toLocaleString()}</span>}
                                             </div>
                                         </button>
                                     )
@@ -293,21 +465,30 @@ const AdminPOS = () => {
                         {cart.length === 0 ? (
                             <div className="h-full flex items-center justify-center text-gray-400 text-sm italic">Cart is empty</div>
                         ) : (
-                            cart.map(item => (
-                                <div key={item.product_id} className="flex flex-col p-3 border border-gray-100 rounded-xl hover:shadow-sm transition-all group">
+                            cart.map((item, index) => (
+                                <div key={`${item.product_id}-${index}`} className={`flex flex-col p-3 border rounded-xl hover:shadow-sm transition-all group ${item.isGift ? 'bg-orange-50 border-orange-100' : 'bg-white border-gray-100'}`}>
                                     <div className="flex justify-between items-start mb-2">
-                                        <p className="font-bold text-sm text-gray-800 flex-1">{item.name}</p>
-                                        <p className="font-bold text-sm text-gray-800 ml-2">{(item.original_price * item.quantity).toLocaleString()} Ks</p>
+                                        <div className="flex-1">
+                                            <p className="font-bold text-sm text-gray-800">{item.name}</p>
+                                            {item.isGift && <span className="text-[10px] text-orange-600 font-bold uppercase tracking-wider">Automated Gift</span>}
+                                        </div>
+                                        <p className="font-bold text-sm text-gray-800 ml-2">{(item.price * item.quantity).toLocaleString()} Ks</p>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <div className="flex items-center gap-3">
-                                            <button onClick={() => updateQuantity(item.product_id, -1)} className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 text-gray-600 transition-colors"><Minus size={14} /></button>
-                                            <span className="font-bold text-sm w-4 text-center">{item.quantity}</span>
-                                            <button onClick={() => updateQuantity(item.product_id, 1)} className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 text-gray-600 transition-colors"><Plus size={14} /></button>
+                                            {!item.isGift ? (
+                                                <>
+                                                    <button onClick={() => updateQuantity(item.product_id, -1)} className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 text-gray-600 transition-colors"><Minus size={14} /></button>
+                                                    <span className="font-bold text-sm w-4 text-center">{item.quantity}</span>
+                                                    <button onClick={() => updateQuantity(item.product_id, 1)} className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 text-gray-600 transition-colors"><Plus size={14} /></button>
+                                                </>
+                                            ) : (
+                                                <span className="text-xs font-bold text-orange-600 bg-white px-2 py-1 rounded-full shadow-sm border border-orange-200">Qty: {item.quantity}</span>
+                                            )}
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            {item.original_price > item.price && <span className="text-[10px] bg-red-50 text-red-500 px-1.5 py-0.5 rounded font-bold border border-red-100">Discounted</span>}
-                                            <button onClick={() => removeFromCart(item.product_id)} className="text-gray-400 hover:text-red-500 transition-colors"><Trash2 size={16} /></button>
+                                            {item.original_price > item.price && !item.isGift && <span className="text-[10px] bg-red-50 text-red-500 px-1.5 py-0.5 rounded font-bold border border-red-100">Discounted</span>}
+                                            <button onClick={() => removeFromCart(item.product_id, item.isGift, item.parent_id)} className="text-gray-400 hover:text-red-500 transition-colors"><Trash2 size={16} /></button>
                                         </div>
                                     </div>
                                 </div>
@@ -318,10 +499,21 @@ const AdminPOS = () => {
                     <div className="p-5 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
                         <div className="space-y-2 mb-4 text-sm">
                             <div className="flex justify-between text-gray-500">
-                                <span>Subtotal</span>
+                                <span>Subtotal (Items)</span>
                                 <span>{subtotal.toLocaleString()} Ks</span>
                             </div>
-                            {totalDiscount > 0 && <div className="flex justify-between text-red-500"><span>Discount</span><span>-{totalDiscount.toLocaleString()} Ks</span></div>}
+                            {itemLevelDiscount > 0 && (
+                                <div className="flex justify-between text-red-500">
+                                    <span>Item Discounts</span>
+                                    <span>-{itemLevelDiscount.toLocaleString()} Ks</span>
+                                </div>
+                            )}
+                            {orderLevelDiscount > 0 && (
+                                <div className="flex justify-between text-purple-600 font-bold">
+                                    <span className="flex items-center gap-1">Order Cashback <Info size={12} className="cursor-help" title={activeOrderPromo?.title} /></span>
+                                    <span>-{orderLevelDiscount.toLocaleString()} Ks</span>
+                                </div>
+                            )}
                             <div className="flex justify-between font-black text-xl text-gray-800 mt-2 pt-2 border-t border-gray-200">
                                 <span>Total</span>
                                 <span className="text-[#8DB600]">{grandTotal.toLocaleString()} Ks</span>
@@ -340,7 +532,7 @@ const AdminPOS = () => {
 
             {/* --- Checkout Modal --- */}
             {showCheckout && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 print:hidden">
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 no-print">
                     <div className="bg-white rounded-2xl shadow-xl w-full max-w-[600px] overflow-hidden">
                         <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                             <h2 className="text-xl font-black text-gray-800">Process Payment</h2>
@@ -380,40 +572,51 @@ const AdminPOS = () => {
             )}
 
             {/* --- Printable Receipt Area (Only visible when printing) --- */}
-            <div className="hidden print:block fixed top-0 left-0 w-[80mm] text-black bg-white p-4 z-[9999] text-sm h-auto overflow-visible">
+            <style dangerouslySetInnerHTML={{ __html: `
+                @media print {
+                    .no-print { display: none !important; }
+                    .print-only { display: block !important; visibility: visible !important; }
+                    body { background: white !important; padding: 0 !important; margin: 0 !important; }
+                    @page { margin: 0; size: auto; }
+                }
+            ` }} />
+            
+            <div className="hidden print-only print:block w-[80mm] text-black bg-white p-4 font-mono">
                 {lastOrder && (
                     <div className="text-center">
-                        <h2 className="font-bold text-xl mb-1">Vital Care Pharmacy</h2>
-                        <p className="text-xs text-gray-600 mb-4">Receipt #{lastOrder.receipt_number}<br />{new Date(lastOrder.created_at).toLocaleString()}</p>
-                        <div className="border-t border-b border-dashed border-gray-400 py-2 mb-2 text-left">
-                            <table className="w-full text-xs">
+                        <h2 className="font-bold text-lg mb-1">Vital Care Pharmacy</h2>
+                        <p className="text-[10px] mb-4">Receipt #{lastOrder.receipt_number}<br />{new Date(lastOrder.created_at).toLocaleString()}</p>
+                        
+                        <div className="border-t border-b border-dashed border-black py-2 mb-2 text-left">
+                            <table className="w-full text-[10px]">
                                 <thead>
-                                    <tr className="border-b border-gray-300">
+                                    <tr className="border-b border-black">
                                         <th className="text-left pb-1">Item</th>
                                         <th className="text-right pb-1">Qty</th>
-                                        <th className="text-right pb-1">Amount</th>
+                                        <th className="text-right pb-1">Amt</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {lastOrder.order_products?.map((op, i) => (
+                                    {(lastOrder.order_products || lastOrder.orderProducts || [])?.map((op, i) => (
                                         <tr key={i}>
-                                            <td className="py-1 pr-2">{op.product?.name}</td>
-                                            <td className="text-right py-1">{op.quantity}</td>
-                                            <td className="text-right py-1">{(parseFloat(op.original_price || op.price) * op.quantity).toLocaleString()} Ks</td>
+                                            <td className="py-1 pr-1 leading-tight text-[9px]">{op.product?.name} {op.is_gift ? '(GIFT)' : ''}</td>
+                                            <td className="text-right py-1 align-top">{op.quantity}</td>
+                                            <td className="text-right py-1 align-top">{(parseFloat(op.price || 0) * op.quantity).toLocaleString()}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
-                        <div className="text-right text-xs space-y-1 mb-4">
-                            <p>Subtotal: {(parseFloat(lastOrder.total_amount) + parseFloat(lastOrder.discount_amount || 0)).toLocaleString()} Ks</p>
-                            {parseFloat(lastOrder.discount_amount) > 0 && <p>Discount: -{parseFloat(lastOrder.discount_amount).toLocaleString()} Ks</p>}
-                            <p className="font-bold text-sm mt-1">Total: {parseFloat(lastOrder.total_amount).toLocaleString()} Ks</p>
-                            <p className="mt-2 font-medium">Paid: {parseFloat(lastOrder.received_amount || lastOrder.total_amount).toLocaleString()} Ks</p>
-                            <p>Change: {parseFloat(lastOrder.change_return || 0).toLocaleString()} Ks</p>
+                        
+                        <div className="text-right text-[10px] space-y-0.5 mb-4">
+                            <div className="flex justify-between"><span>Subtotal:</span><span>{(parseFloat(lastOrder.total_amount) + parseFloat(lastOrder.discount_amount || 0)).toLocaleString()} Ks</span></div>
+                            {parseFloat(lastOrder.discount_amount) > 0 && <div className="flex justify-between"><span>Discount:</span><span>-{parseFloat(lastOrder.discount_amount).toLocaleString()} Ks</span></div>}
+                            <div className="flex justify-between font-bold text-xs pt-1 border-t border-dashed border-black"><span>TOTAL:</span><span>{parseFloat(lastOrder.total_amount).toLocaleString()} Ks</span></div>
+                            <div className="flex justify-between pt-1"><span>Paid:</span><span>{parseFloat(lastOrder.received_amount || lastOrder.total_amount).toLocaleString()} Ks</span></div>
+                            <div className="flex justify-between"><span>Change:</span><span>{parseFloat(lastOrder.change_return || 0).toLocaleString()} Ks</span></div>
                         </div>
-                        <p className="text-xs font-bold mt-6 mb-1 text-center">Thank you for your purchase!</p>
-                        <p className="text-[10px] text-center text-gray-500">Please keep receipt for returns/exchanges.</p>
+                        
+                        <p className="text-[10px] font-bold mt-4 mb-1 text-center italic uppercase">Thank you!</p>
                     </div>
                 )}
             </div>

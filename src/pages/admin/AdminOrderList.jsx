@@ -11,17 +11,18 @@ import {
     Store,
     Globe
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 const AdminOrderList = () => {
+    const [searchParams] = useSearchParams();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [filters, setFilters] = useState({
-        status: '',
-        order_type: '',
-        date: ''
+        status: searchParams.get('status') || '',
+        order_type: searchParams.get('order_type') || '',
+        date: searchParams.get('date') || ''
     });
 
     const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });

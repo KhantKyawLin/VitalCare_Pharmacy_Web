@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
-import { Menu, User as UserIcon } from 'lucide-react';
+import { Menu, User as UserIcon, UserCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 
 const AdminLayout = () => {
+    const { user } = useContext(AuthContext);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
@@ -30,10 +33,20 @@ const AdminLayout = () => {
 
                     <div className="flex items-center gap-4">
                         {/* Quick Action Profile */}
-                        <button className="flex items-center justify-center w-8 h-8 rounded-full bg-[#6CA52C] text-white hover:bg-[#5a8c24] transition-colors relative">
-                            <UserIcon size={16} className="fill-current" />
-                            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
-                        </button>
+                        <Link 
+                            to="/admin/account-settings"
+                            title="Account Settings"
+                            className="flex items-center justify-center w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 transition-all relative group border border-slate-200"
+                        >
+                            <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center">
+                                {user?.profile ? (
+                                    <img src={`http://localhost:8000/storage/${user.profile}`} alt="Profile" className="w-full h-full object-cover" />
+                                ) : (
+                                    <UserIcon size={18} className="text-slate-500 group-hover:text-[#6CA52C] transition-colors" />
+                                )}
+                            </div>
+                            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full z-10"></span>
+                        </Link>
                     </div>
                 </header>
 

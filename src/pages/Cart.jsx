@@ -8,22 +8,8 @@ const Cart = () => {
     const { cart, cartTotal, removeFromCart, updateQuantity, isLoading, refreshCart } = useContext(CartContext);
     const navigate = useNavigate();
 
-    const handleCheckout = async () => {
-        try {
-            // Note: address_id is hardcoded here for testing checkout
-            const response = await axios.post('http://localhost:8000/api/auth/checkout', {
-                address_id: 1,
-            });
-
-            if (response.data.message === 'Order placed successfully') {
-                alert('Order placed successfully!');
-                await refreshCart();
-                navigate('/orders'); // Redirect to orders page once it exists
-            }
-        } catch (error) {
-            console.error("Checkout failed:", error);
-            alert("Checkout failed. Please try again.");
-        }
+    const handleCheckout = () => {
+        navigate('/checkout');
     };
 
     if (isLoading) {

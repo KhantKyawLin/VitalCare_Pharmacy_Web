@@ -38,7 +38,10 @@ const AdminPromotionForm = () => {
         max_usage_per_bill: '',
         start_date: new Date().toISOString().split('T')[0],
         end_date: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString().split('T')[0],
-        is_active: true
+        is_active: true,
+        gift_product_id: '',
+        gift_qty: 0,
+        max_discount_amount: ''
     });
 
     const [products, setProducts] = useState([]);
@@ -80,7 +83,10 @@ const AdminPromotionForm = () => {
                             max_usage_per_bill: p.max_usage_per_bill || '',
                             start_date: p.start_date ? new Date(p.start_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
                             end_date: p.end_date ? new Date(p.end_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-                            is_active: !!p.is_active
+                            is_active: !!p.is_active,
+                            gift_product_id: p.gift_product_id || '',
+                            gift_qty: p.gift_qty || 0,
+                            max_discount_amount: p.max_discount_amount || ''
                         });
 
                         // Pre-select products
@@ -174,8 +180,19 @@ const AdminPromotionForm = () => {
             const payload = {
                 ...formData,
                 type: formData.discount_type,
-                product_ids: Array.from(selectedProducts)
+                product_ids: Array.from(selectedProducts),
+                // Ensure numeric values are sent or nullified
+                discount_value: (formData.discount_type === 'buy_one_get_one' || formData.discount_type === 'buy_one_get_gift') ? 0 : (formData.discount_value || 0),
+                gift_qty: (formData.discount_type === 'buy_one_get_one' || formData.discount_type === 'buy_one_get_gift') ? (formData.gift_qty || 1) : 0,
+                max_discount_amount: formData.max_discount_amount || null
             };
+
+            // For BOGO, the gift product is the same as the selected products. 
+            // In backend we might need a specific ID if it's a single product, but since it's a many-to-many, 
+            // we'll handle the logic in POS. For the DB, we just need to satisfy validation.
+            if (formData.discount_type === 'buy_one_get_one' && selectedProducts.size > 0) {
+                payload.gift_product_id = Array.from(selectedProducts)[0]; 
+            }
 
             if (isEditing) {
                 await axios.put(`http://127.0.0.1:8000/api/admin/promotions/${id}`, payload, getConfig());
@@ -261,7 +278,7 @@ const AdminPromotionForm = () => {
                             {formData.promotion_scope === 'item' ? (
                                 <div>
                                     <label className="text-sm font-bold text-gray-700 block mb-1 flex items-center gap-1">
-                                        Min Qty Requirement <span title="Minimum items a user must buy to get this discount"><Info size={14} className="text-gray-400 cursor-pointer" /></span>
+                                        Buy Quantity (X) <span title="How many items the customer must buy to trigger the promo"><Info size={14} className="text-gray-400 cursor-pointer" /></span>
                                     </label>
                                     <input
                                         type="number"
@@ -297,7 +314,7 @@ const AdminPromotionForm = () => {
                         </div>
 
                         <div className="col-span-1">
-                            <label className="text-sm font-bold text-gray-700 block mb-1">Discount Type *</label>
+                            <label className="text-sm font-bold text-gray-700 block mb-1">Discount / Promotion Type *</label>
                             <select
                                 name="discount_type"
                                 value={formData.discount_type}
@@ -307,8 +324,57 @@ const AdminPromotionForm = () => {
                             >
                                 <option value="percentage">Percentage (%)</option>
                                 <option value="fixed_amount">Fixed Amount</option>
+                                {formData.promotion_scope === 'item' && (
+                                    <>
+                                        <option value="buy_one_get_one">Buy X Get X (BOGO)</option>
+                                        <option value="buy_one_get_gift">Buy X Get Y (Free Gift)</option>
+                                    </>
+                                )}
                             </select>
                         </div>
+
+                        {/* Gift Configuration - Visible for BOGO/Gift types */}
+                        {(formData.discount_type === 'buy_one_get_one' || formData.discount_type === 'buy_one_get_gift') && (
+                            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5 p-4 bg-orange-50/50 rounded-lg border border-orange-100 animate-in slide-in-from-top-2 duration-300">
+                                <div className="col-span-1">
+                                    <label className="text-sm font-bold text-orange-800 block mb-1">Gift Product *</label>
+                                    <select
+                                        name="gift_product_id"
+                                        required
+                                        value={formData.gift_product_id}
+                                        onChange={handleChange}
+                                        disabled={isViewOnly || formData.discount_type === 'buy_one_get_one'}
+                                        className={`w-full px-4 py-2.5 rounded border border-orange-200 focus:border-orange-500 outline-none text-sm transition-all bg-white ${isViewOnly ? 'bg-gray-50' : ''}`}
+                                    >
+                                        <option value="">-- Select Free Gift --</option>
+                                        {formData.discount_type === 'buy_one_get_one' ? (
+                                             <option value="">Same as Selected Product</option>
+                                        ) : (
+                                            products.map(p => (
+                                                <option key={p.id} value={p.id}>{p.name}</option>
+                                            ))
+                                        )}
+                                    </select>
+                                    {formData.discount_type === 'buy_one_get_one' && (
+                                        <p className="text-[11px] text-orange-600 mt-1 font-medium italic">In BOGO mode, the gift is automatically the same as the purchased item.</p>
+                                    )}
+                                </div>
+                                <div className="col-span-1">
+                                    <label className="text-sm font-bold text-orange-800 block mb-1">Free Quantity *</label>
+                                    <input
+                                        type="number"
+                                        name="gift_qty"
+                                        min="1"
+                                        required
+                                        value={formData.gift_qty}
+                                        onChange={handleChange}
+                                        disabled={isViewOnly}
+                                        className={`w-full px-4 py-2.5 rounded border border-orange-200 focus:border-orange-500 outline-none text-sm transition-all ${isViewOnly ? 'bg-gray-50' : ''}`}
+                                        placeholder="e.g. 1"
+                                    />
+                                </div>
+                            </div>
+                        )}
 
                         <div className="col-span-1">
                             <label className="text-sm font-bold text-gray-700 block mb-1">Discount Value *</label>
@@ -321,15 +387,37 @@ const AdminPromotionForm = () => {
                                     name="discount_value"
                                     min="0"
                                     step="0.01"
-                                    required
+                                    required={formData.discount_type === 'percentage' || formData.discount_type === 'fixed_amount'}
                                     value={formData.discount_value}
                                     onChange={handleChange}
                                     placeholder={formData.discount_type === 'percentage' ? 'e.g. 10 for 10% off' : 'e.g. 500 for 500 MMK off'}
-                                    disabled={isViewOnly}
+                                    disabled={isViewOnly || formData.discount_type === 'buy_one_get_one' || formData.discount_type === 'buy_one_get_gift'}
                                     className={`w-full pl-12 pr-4 py-2.5 rounded border border-gray-200 focus:border-[#8DB600] focus:ring-1 focus:ring-[#8DB600] outline-none text-sm transition-all ${isViewOnly ? 'bg-gray-50' : ''}`}
                                 />
                             </div>
                         </div>
+
+                        {/* Capping Configuration - Visible for Percentage orders */}
+                        {formData.discount_type === 'percentage' && (
+                            <div className="col-span-1">
+                                <label className="text-sm font-bold text-gray-700 block mb-1 flex items-center gap-1">
+                                    Max Capping Amount <span title="Limit the maximum discount (e.g. 10% OFF up to 2000 Ks)"><Info size={14} className="text-gray-400 cursor-pointer" /></span>
+                                </label>
+                                <div className="relative">
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-bold">Ks.</span>
+                                    <input
+                                        type="number"
+                                        name="max_discount_amount"
+                                        min="0"
+                                        value={formData.max_discount_amount}
+                                        onChange={handleChange}
+                                        disabled={isViewOnly}
+                                        className={`w-full pl-9 pr-4 py-2.5 rounded border border-gray-200 focus:border-[#8DB600] focus:ring-1 focus:ring-[#8DB600] outline-none text-sm transition-all ${isViewOnly ? 'bg-gray-50' : ''}`}
+                                        placeholder="e.g. 2000"
+                                    />
+                                </div>
+                            </div>
+                        )}
 
                         <div className="col-span-1">
                             <label className="text-sm font-bold text-gray-700 block mb-1">Start Date *</label>
@@ -479,25 +567,35 @@ const AdminPromotionForm = () => {
                                     {filteredProducts.length > 0 ? filteredProducts.map(p => {
                                         const isSelected = selectedProducts.has(p.id);
                                         const activePromos = Array.isArray(p.active_promotions) ? p.active_promotions : [];
+                                        // "Other Promos" are active promos that are NOT the one we are currently editing
                                         const otherPromos = activePromos.filter(promo => promo.id !== Number(id));
+                                        const isLocked = otherPromos.length > 0;
 
                                         return (
-                                            <tr key={p.id} className={`border-b border-gray-50 hover:bg-gray-50 ${!isViewOnly ? 'cursor-pointer' : ''} ${isSelected ? 'bg-[#8DB600]/5' : ''}`} onClick={() => !isViewOnly && handleProductSelect(p.id)}>
+                                            <tr 
+                                                key={p.id} 
+                                                className={`border-b border-gray-50 transition-colors ${isLocked ? 'opacity-60 bg-gray-50 cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'} ${isSelected && !isLocked ? 'bg-[#8DB600]/5' : ''}`} 
+                                                onClick={() => !isViewOnly && !isLocked && handleProductSelect(p.id)}
+                                                title={isLocked ? `This product already has active promotions: ${otherPromos.map(op => op.title).join(', ')}` : ''}
+                                            >
                                                 <td className="py-2.5 px-4 text-center">
                                                     <input
                                                         type="checkbox"
                                                         checked={isSelected}
-                                                        disabled={isViewOnly}
+                                                        disabled={isViewOnly || isLocked}
                                                         onChange={() => { }} // Handle via row click
-                                                        className={`w-4 h-4 text-[#8DB600] rounded focus:ring-[#8DB600] accent-[#8DB600] ${!isViewOnly ? 'cursor-pointer' : ''}`}
+                                                        className={`w-4 h-4 text-[#8DB600] rounded focus:ring-[#8DB600] accent-[#8DB600] ${(!isViewOnly && !isLocked) ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                                                     />
                                                 </td>
-                                                <td className="py-2.5 px-4 font-bold text-gray-800">{p.name}</td>
+                                                <td className="py-2.5 px-4 font-bold text-gray-800 flex items-center gap-2">
+                                                    {p.name}
+                                                    {isLocked && <span title="Locked: Already has a promotion"><Info size={12} className="text-orange-400" /></span>}
+                                                </td>
                                                 <td className="py-2.5 px-4 text-gray-600">{p.category_name}</td>
-                                                <td className="py-2.5 px-4 text-gray-600">Ks. {parseFloat(p.price).toLocaleString()}</td>
+                                                <td className="py-2.5 px-4 text-gray-600">Ks. {p.price ? parseFloat(p.price).toLocaleString() : '0'}</td>
                                                 <td className="py-2.5 px-4">
                                                     {otherPromos.length > 0 ? (
-                                                        <span className="text-orange-500 text-[10px] font-bold px-2 py-0.5 bg-orange-50 rounded border border-orange-100">
+                                                        <span className="text-orange-500 text-[10px] font-bold px-2 py-0.5 bg-orange-50 rounded border border-orange-100 shadow-sm">
                                                             {otherPromos.map(op => op.title).join(', ')}
                                                         </span>
                                                     ) : (

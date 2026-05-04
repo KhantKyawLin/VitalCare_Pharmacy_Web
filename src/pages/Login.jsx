@@ -21,7 +21,12 @@ const Login = () => {
             const result = await login(email, password);
 
             if (result && result.success) {
-                navigate('/');
+                const userRole = result.user?.role;
+                if (['admin', 'staff', 'pharmacist', 'superadmin'].includes(userRole)) {
+                    navigate('/admin');
+                } else {
+                    navigate('/profile');
+                }
             } else {
                 setError(result?.error || 'Failed to login. Please check your credentials.');
             }
