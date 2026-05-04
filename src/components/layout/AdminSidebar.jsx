@@ -111,7 +111,7 @@ const AdminSidebar = ({ isOpen }) => {
         { 
             name: 'Promotions', 
             icon: <Percent size={20} className="stroke-2" />, 
-            roles: ['admin', 'superadmin', 'staff'],
+            roles: ['admin', 'superadmin', 'pharmacist'],
             path: '/admin/promotions'
         },
         { 

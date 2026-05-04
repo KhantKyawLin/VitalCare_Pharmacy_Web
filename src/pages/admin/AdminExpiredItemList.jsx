@@ -93,7 +93,6 @@ const AdminExpiredItemList = () => {
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',
-            confirmButtonColor: '#ef4444',
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Yes, Dispose Selected!'
         });

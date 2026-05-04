@@ -17,7 +17,9 @@ export const CartProvider = ({ children }) => {
         }
 
         try {
-            const response = await axios.get('http://localhost:8000/api/auth/cart');
+            const response = await axios.get('http://127.0.0.1:8000/api/auth/cart', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setCart(response.data);
         } catch (error) {
             console.error("Error fetching cart:", error);
@@ -34,15 +36,17 @@ export const CartProvider = ({ children }) => {
         if (!token) return { success: false, error: 'Please login to add items to cart' };
 
         try {
-            await axios.post('http://localhost:8000/api/auth/cart/add', {
+            const response = await axios.post('http://127.0.0.1:8000/api/auth/cart/add', {
                 product_id: productId,
                 quantity: quantity
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
             });
-            await fetchCart(); // Refresh cart data
-            return { success: true };
+            await fetchCart();
+            return { success: true, message: response.data?.message };
         } catch (error) {
             console.error("Error adding to cart:", error);
-            return { success: false, error: 'Failed to add item to cart' };
+            return { success: false, error: error.response?.data?.message || 'Failed to add item to cart' };
         }
     };
 
@@ -50,7 +54,9 @@ export const CartProvider = ({ children }) => {
         if (!token) return { success: false };
 
         try {
-            await axios.delete(`http://localhost:8000/api/auth/cart/remove/${productId}`);
+            await axios.delete(`http://127.0.0.1:8000/api/auth/cart/remove/${productId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             await fetchCart();
             return { success: true };
         } catch (error) {
@@ -62,28 +68,38 @@ export const CartProvider = ({ children }) => {
     const updateQuantity = async (productId, quantity) => {
         if (!token) return { success: false };
 
+        // Client-side validation: quantity must be 1-5
+        if (quantity < 1 || quantity > 5) {
+            return { success: false, error: 'Quantity must be between 1 and 5' };
+        }
+
         try {
-            await axios.patch(`http://localhost:8000/api/auth/cart/update/${productId}`, {
+            await axios.patch(`http://127.0.0.1:8000/api/auth/cart/update/${productId}`, {
                 quantity: quantity
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
             });
             await fetchCart();
             return { success: true };
         } catch (error) {
             console.error("Error updating quantity:", error);
-            return { success: false };
+            return { success: false, error: error.response?.data?.message || 'Failed to update quantity' };
         }
     };
 
-    const cartCount = cart?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
+    // Compute from the cart object returned by backend (cart.items is the array)
+    const cartItems = cart?.items || [];
+    const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
-    const cartTotal = cart?.items?.reduce((total, item) => {
+    const cartTotal = cartItems.reduce((total, item) => {
         const itemPrice = parseFloat(item.product?.price || 0);
         return total + (itemPrice * item.quantity);
-    }, 0) || 0;
+    }, 0);
 
     return (
         <CartContext.Provider value={{
             cart,
+            cartItems,
             cartCount,
             cartTotal,
             addToCart,

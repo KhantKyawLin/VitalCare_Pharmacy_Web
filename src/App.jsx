@@ -8,8 +8,14 @@ import ProductDetail from './pages/ProductDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Cart from './pages/Cart';
+import Wishlist from './pages/Wishlist';
 import Checkout from './pages/Checkout';
-import UserProfile from './pages/UserProfile';
+import OrderSuccess from './pages/OrderSuccess';
+import UserLayout from './components/layout/UserLayout';
+import UserDashboard from './pages/user/UserDashboard';
+import UserOrderHistory from './pages/user/UserOrderHistory';
+import UserOrderDetail from './pages/user/UserOrderDetail';
+import UserProfileSettings from './pages/user/UserProfileSettings';
 import HealthTips from './pages/HealthTips';
 import HealthTipDetail from './pages/HealthTipDetail';
 
@@ -52,9 +58,9 @@ const PublicLayout = () => {
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/orders" element={<UserProfile />} />
+          <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/health-tips" element={<HealthTips />} />
           <Route path="/health-tips/:id" element={<HealthTipDetail />} />
           <Route path="/about" element={<div className="container mx-auto p-8"><h1 className="text-3xl font-bold">About Us</h1><p className="mt-4">Page coming soon...</p></div>} />
@@ -78,9 +84,30 @@ function App() {
           <Route element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="pos" element={<AdminPOS />} />
-            <Route path="reports" element={<AdminReports />} />
-            <Route path="profit-loss" element={<AdminProfitLoss />} />
-            <Route path="top-profitable" element={<AdminTopProfitableProducts />} />
+
+            {/* Admin Only - Financials & Users */}
+            <Route element={<AdminRoute allowedRoles={['admin', 'superadmin']} />}>
+              <Route path="reports" element={<AdminReports />} />
+              <Route path="profit-loss" element={<AdminProfitLoss />} />
+              <Route path="top-profitable" element={<AdminTopProfitableProducts />} />
+              <Route path="users" element={<AdminUserList />} />
+              <Route path="logs" element={<div className="p-8"><h2 className="text-2xl font-bold">Activity Audit Logs</h2><p className="text-slate-500">Coming soon...</p></div>} />
+              <Route path="settings" element={<div className="p-8"><h2 className="text-2xl font-bold">Branding & Settings</h2><p className="text-slate-500">Coming soon...</p></div>} />
+            </Route>
+
+            {/* Admin & Pharmacist - Marketing & Content */}
+            <Route element={<AdminRoute allowedRoles={['admin', 'superadmin', 'pharmacist']} />}>
+              <Route path="promotions" element={<AdminPromotionList />} />
+              <Route path="promotions/create" element={<AdminPromotionForm />} />
+              <Route path="promotions/view/:id" element={<AdminPromotionForm />} />
+              <Route path="promotions/edit/:id" element={<AdminPromotionForm />} />
+              <Route path="health-tips" element={<AdminHealthTipList />} />
+              <Route path="health-tips/create" element={<AdminHealthTipForm />} />
+              <Route path="health-tips/edit/:id" element={<AdminHealthTipForm />} />
+              <Route path="health-tips/:id" element={<AdminHealthTipDetail />} />
+            </Route>
+
+            {/* General Staff - Inventory & Sales */}
             <Route path="products" element={<AdminProductList />} />
             <Route path="products/:id" element={<AdminProductDetail />} />
             <Route path="products/create" element={<AdminProductForm />} />
@@ -92,23 +119,19 @@ function App() {
             <Route path="purchases" element={<AdminPurchaseList />} />
             <Route path="purchases/create" element={<AdminPurchaseForm />} />
             <Route path="suppliers" element={<AdminSupplierList />} />
-            <Route path="inventory" element={<div className="p-8"><h2 className="text-2xl font-bold">Inventory Control</h2><p className="text-slate-500">Coming soon...</p></div>} />
             <Route path="orders" element={<AdminOrderList />} />
             <Route path="orders/:id" element={<AdminOrderDetail />} />
-            <Route path="promotions" element={<AdminPromotionList />} />
-            <Route path="promotions/create" element={<AdminPromotionForm />} />
-            <Route path="promotions/view/:id" element={<AdminPromotionForm />} />
-            <Route path="promotions/edit/:id" element={<AdminPromotionForm />} />
-            <Route path="health-tips" element={<AdminHealthTipList />} />
-            <Route path="health-tips/create" element={<AdminHealthTipForm />} />
-            <Route path="health-tips/edit/:id" element={<AdminHealthTipForm />} />
-            <Route path="health-tips/:id" element={<AdminHealthTipDetail />} />
-            <Route path="users" element={<AdminUserList />} />
             <Route path="messages" element={<div className="p-8"><h2 className="text-2xl font-bold">Contact Messages</h2><p className="text-slate-500">Coming soon...</p></div>} />
-            <Route path="logs" element={<div className="p-8"><h2 className="text-2xl font-bold">Activity Audit Logs</h2><p className="text-slate-500">Coming soon...</p></div>} />
-            <Route path="settings" element={<div className="p-8"><h2 className="text-2xl font-bold">Branding & Settings</h2><p className="text-slate-500">Coming soon...</p></div>} />
             <Route path="account-settings" element={<AdminProfileSettings />} />
           </Route>
+        </Route>
+
+        {/* User Dashboard Routes (Customer Portal) */}
+        <Route path="/profile" element={<UserLayout />}>
+          <Route index element={<UserDashboard />} />
+          <Route path="orders" element={<UserOrderHistory />} />
+          <Route path="orders/:id" element={<UserOrderDetail />} />
+          <Route path="settings" element={<UserProfileSettings />} />
         </Route>
 
         {/* Public Routes with Navbar/Footer */}

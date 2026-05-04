@@ -4,6 +4,7 @@ import { Search, Heart, ShoppingCart, User, Menu, X, LogOut } from 'lucide-react
 import Button from '../common/Button';
 import { AuthContext } from '../../context/AuthContext';
 import { CartContext } from '../../context/CartContext';
+import { WishlistContext } from '../../context/WishlistContext';
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -12,9 +13,9 @@ const Navbar = () => {
 
     const { user, token, logout } = useContext(AuthContext);
     const { cartCount } = useContext(CartContext);
+    const { wishlistCount } = useContext(WishlistContext);
 
     const isLoggedIn = !!token;
-    const wishlistCount = 0;
 
     const isActive = (path) => location.pathname === path;
 

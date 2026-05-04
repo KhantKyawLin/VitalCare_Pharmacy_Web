@@ -13,18 +13,22 @@ import {
 } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
+import { WishlistContext } from '../context/WishlistContext';
 import ProductCard from '../components/common/ProductCard';
+import { showSuccessToast, showErrorToast } from '../utils/toast';
 
 const ProductDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { addToCart } = useContext(CartContext);
-    const { token } = useContext(AuthContext);
+    const { user, token } = useContext(AuthContext);
+    const { addToWishlist, removeFromWishlist, isInWishlist } = useContext(WishlistContext);
 
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
+    const [isAddingWishlist, setIsAddingWishlist] = useState(false);
     const [error, setError] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('description');
@@ -59,8 +63,7 @@ const ProductDetail = () => {
 
     const handleAddToCart = async () => {
         if (!token) {
-            alert('Please login to add items to the cart');
-            navigate('/login');
+            showErrorToast('Please login to add items to cart');
             return;
         }
 
@@ -69,10 +72,31 @@ const ProductDetail = () => {
         setIsAdding(false);
 
         if (result.success) {
-            alert(`Added ${quantity} ${product.name}(s) to cart!`);
+            showSuccessToast(`Added ${quantity} ${product.name}(s) to cart!`);
         } else {
-            alert(result.error || 'Failed to add item to cart');
+            showErrorToast(result.error || 'Failed to add item to cart');
         }
+    };
+
+    const handleWishlistToggle = async () => {
+        if (!token) {
+            showErrorToast('Please login to add items to wishlist');
+            return;
+        }
+
+        setIsAddingWishlist(true);
+        if (isInWishlist(product.id)) {
+            await removeFromWishlist(product.id);
+            showSuccessToast('Removed from wishlist');
+        } else {
+            const result = await addToWishlist(product.id);
+            if (result.success) {
+                showSuccessToast('Product added to wishlist!');
+            } else {
+                showErrorToast(result.error || 'Failed to update wishlist');
+            }
+        }
+        setIsAddingWishlist(false);
     };
 
     if (isLoading) {
@@ -95,6 +119,9 @@ const ProductDetail = () => {
     const images = product.pictures?.length > 0 
         ? product.pictures.map(p => `http://127.0.0.1:8000/storage/${p.image_path}`)
         : ["https://placehold.co/600x600/f8fafc/a3c93a?text=Product"];
+
+    const showActionButtons = !user || user.role === 'customer';
+    const isWishlisted = isInWishlist(product.id);
 
     return (
         <div className="bg-white min-h-screen">
@@ -178,48 +205,54 @@ const ProductDetail = () => {
                             </span>
                         </div>
 
-                        {/* Quantity & Add to Cart */}
-                        <div className="flex flex-col gap-6 mb-12">
-                            <div className="flex items-center gap-6">
-                                <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">Quantity:</span>
-                                <div className="flex items-center bg-gray-50 rounded-[4px] border border-gray-200 overflow-hidden">
+                        {/* Quantity & Add to Cart (Only for Customers/Unauthenticated) */}
+                        {showActionButtons && (
+                            <div className="flex flex-col gap-6 mb-12">
+                                <div className="flex items-center gap-6">
+                                    <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">Quantity:</span>
+                                    <div className="flex items-center bg-gray-50 rounded-[4px] border border-gray-200 overflow-hidden">
+                                        <button 
+                                            onClick={() => handleQuantityChange('decrement')}
+                                            className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors font-black"
+                                        >
+                                            -
+                                        </button>
+                                        <input 
+                                            type="text" 
+                                            value={quantity} 
+                                            readOnly 
+                                            className="w-12 text-center bg-transparent font-black text-gray-800 outline-none"
+                                        />
+                                        <button 
+                                            onClick={() => handleQuantityChange('increment')}
+                                            className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors font-black"
+                                        >
+                                            +
+                                        </button>
+                                    </div>
+                                    <span className="text-xs font-bold text-gray-400 italic">
+                                        {product.unit?.name || 'Box'}
+                                    </span>
+                                </div>
+
+                                <div className="flex gap-4">
                                     <button 
-                                        onClick={() => handleQuantityChange('decrement')}
-                                        className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors font-black"
+                                        onClick={handleAddToCart}
+                                        disabled={product.is_expired || isAdding}
+                                        className="flex-grow bg-[#A3C93A] hover:bg-[#8eb132] text-white py-4 rounded-[4px] font-black uppercase tracking-widest shadow-xl shadow-[#A3C93A]/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:shadow-none"
                                     >
-                                        -
+                                        <ShoppingCart size={20} strokeWidth={3} /> {isAdding ? 'Adding...' : 'Add to Cart'}
                                     </button>
-                                    <input 
-                                        type="text" 
-                                        value={quantity} 
-                                        readOnly 
-                                        className="w-12 text-center bg-transparent font-black text-gray-800 outline-none"
-                                    />
                                     <button 
-                                        onClick={() => handleQuantityChange('increment')}
-                                        className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors font-black"
+                                        onClick={handleWishlistToggle}
+                                        disabled={isAddingWishlist}
+                                        className={`w-16 h-14 border-2 rounded-[4px] flex items-center justify-center transition-all shadow-sm ${isWishlisted ? 'border-[#A3C93A] bg-[#A3C93A] text-white hover:bg-[#8eb132] hover:border-[#8eb132]' : 'border-gray-100 text-gray-300 hover:text-red-500 hover:border-red-500'} disabled:opacity-50`}
                                     >
-                                        +
+                                        <Heart size={24} fill={isWishlisted ? "white" : "none"} />
                                     </button>
                                 </div>
-                                <span className="text-xs font-bold text-gray-400 italic">
-                                    {product.unit?.name || 'Box'}
-                                </span>
                             </div>
-
-                            <div className="flex gap-4">
-                                <button 
-                                    onClick={handleAddToCart}
-                                    disabled={product.is_expired || isAdding}
-                                    className="flex-grow bg-[#A3C93A] hover:bg-[#8eb132] text-white py-4 rounded-[4px] font-black uppercase tracking-widest shadow-xl shadow-[#A3C93A]/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:shadow-none"
-                                >
-                                    <ShoppingCart size={20} strokeWidth={3} /> {isAdding ? 'Adding...' : 'Add to Cart'}
-                                </button>
-                                <button className="w-16 h-14 border-2 border-gray-100 rounded-[4px] flex items-center justify-center text-gray-300 hover:text-red-500 hover:border-red-500 transition-all shadow-sm">
-                                    <Heart size={24} />
-                                </button>
-                            </div>
-                        </div>
+                        )}
 
                         {/* Product Highlights */}
                         <div className="bg-gray-50 rounded-xl p-8 border border-gray-100">

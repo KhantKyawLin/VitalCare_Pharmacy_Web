@@ -1,31 +1,67 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
-import { Trash2 } from 'lucide-react';
-import axios from 'axios';
+import { Trash2, ShoppingCart, ArrowLeft, ArrowRight } from 'lucide-react';
+import { showSuccessToast, showErrorToast, showWarningToast } from '../utils/toast';
+import Swal from 'sweetalert2';
 
 const Cart = () => {
-    const { cart, cartTotal, removeFromCart, updateQuantity, isLoading, refreshCart } = useContext(CartContext);
+    const { cart, cartItems, cartTotal, removeFromCart, updateQuantity, isLoading } = useContext(CartContext);
     const navigate = useNavigate();
+
+    const MAX_QTY = 5;
+    const MIN_QTY = 1;
 
     const handleCheckout = () => {
         navigate('/checkout');
     };
 
+    const handleRemove = async (productId, productName) => {
+        const result = await removeFromCart(productId);
+        if (result.success) {
+            showSuccessToast(`${productName} removed from cart`);
+        } else {
+            showErrorToast('Failed to remove item');
+        }
+    };
+
+    const handleQuantityChange = async (productId, newQty) => {
+        if (newQty > MAX_QTY) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Limit Exceeded',
+                text: `Maximum quantity per product is ${MAX_QTY}.`,
+                confirmButtonColor: '#8DB600',
+            });
+            return;
+        }
+        if (newQty < MIN_QTY) return;
+
+        const result = await updateQuantity(productId, newQty);
+        if (!result.success && result.error) {
+            showErrorToast(result.error);
+        }
+    };
+
     if (isLoading) {
-        return <div className="container mx-auto px-4 py-24 text-center text-text-muted">Loading cart...</div>;
+        return (
+            <div className="container mx-auto px-4 py-24 text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8DB600] mx-auto"></div>
+                <p className="mt-4 text-gray-500">Loading cart...</p>
+            </div>
+        );
     }
 
-    if (!cart || !cart.items || cart.items.length === 0) {
+    if (!cartItems || cartItems.length === 0) {
         return (
             <div className="container mx-auto px-4 py-24 text-center flex flex-col items-center">
-                <div className="w-24 h-24 bg-light-grey rounded-full flex items-center justify-center text-text-muted mb-6">
-                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 mb-6 border border-gray-100">
+                    <ShoppingCart size={40} />
                 </div>
-                <h2 className="text-2xl font-bold text-text-dark mb-4">Your cart is empty</h2>
-                <p className="text-text-muted mb-8 max-w-md">Looks like you haven't added any health products to your cart yet.</p>
-                <Link to="/products" className="bg-primary-green hover:bg-accent-green text-white px-8 py-3 rounded-md font-medium transition-colors">
-                    Start Shopping
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Your cart is empty</h2>
+                <p className="text-gray-500 mb-8 max-w-md">Looks like you haven't added any health products to your cart yet.</p>
+                <Link to="/products" className="bg-[#8DB600] hover:bg-[#769800] text-white px-8 py-3 rounded-[4px] font-bold transition-colors flex items-center gap-2">
+                    <ArrowLeft size={16} /> Start Shopping
                 </Link>
             </div>
         );
@@ -33,117 +69,133 @@ const Cart = () => {
 
     return (
         <div className="container mx-auto px-4 py-12">
-            <h1 className="text-3xl font-bold text-text-dark mb-8">Shopping Cart</h1>
+            <h1 className="text-3xl font-bold text-[#8DB600] mb-8">Your Shopping Cart</h1>
 
-            <div className="flex flex-col lg:flex-row gap-8">
-                {/* Cart Items */}
-                <div className="lg:w-2/3">
-                    <div className="bg-white rounded-xl shadow-sm border border-light-grey overflow-hidden">
-                        <div className="hidden md:grid grid-cols-12 gap-4 p-4 bg-gray-50 border-b border-light-grey text-sm font-semibold text-text-muted uppercase tracking-wider">
-                            <div className="col-span-6">Product</div>
-                            <div className="col-span-2 text-center">Price</div>
-                            <div className="col-span-2 text-center">Quantity</div>
-                            <div className="col-span-2 text-right">Total</div>
-                        </div>
-
-                        <div className="divide-y divide-light-grey">
-                            {cart.items.map(item => {
+            {/* Cart Table */}
+            <div className="bg-white rounded-[4px] border border-gray-100 shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                        <thead className="bg-gray-50 text-gray-500 text-sm font-medium border-b border-gray-200">
+                            <tr>
+                                <th className="px-6 py-4">Product</th>
+                                <th className="px-6 py-4">Price</th>
+                                <th className="px-6 py-4">Quantity</th>
+                                <th className="px-6 py-4">Subtotal</th>
+                                <th className="px-6 py-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                            {cartItems.map(item => {
                                 const product = item.product;
-                                const itemTotal = product.price * item.quantity;
-                                const imageUrl = product.pictures?.length > 0 ? `http://localhost/VitalCare/uploads/${product.pictures[0].image_path}` : "https://placehold.co/100x100/f8fafc/a3c93a?text=Product";
+                                if (!product) return null;
+                                
+                                const price = parseFloat(product.price || 0);
+                                const subtotal = price * item.quantity;
+                                const imageUrl = product.pictures?.length > 0 
+                                    ? `http://127.0.0.1:8000/storage/${product.pictures[0].image_path}` 
+                                    : "https://placehold.co/80x80/f8fafc/a3c93a?text=P";
 
                                 return (
-                                    <div key={item.id} className="p-4 md:grid md:grid-cols-12 md:gap-4 md:items-center flex flex-col sm:flex-row gap-4">
-
-                                        <div className="col-span-6 flex flex-row items-center gap-4">
-                                            <div className="w-20 h-20 bg-gray-100 rounded flex-shrink-0 overflow-hidden">
-                                                <img src={imageUrl} alt={product.name} className="w-full h-full object-cover" />
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <Link to={`/products/${product.id}`} className="font-semibold text-text-dark hover:text-primary-green transition-colors">
+                                    <tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
+                                        {/* Product */}
+                                        <td className="px-6 py-5">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-16 h-16 bg-white rounded-[4px] border border-gray-100 p-1 flex items-center justify-center shrink-0 overflow-hidden">
+                                                    <img src={imageUrl} alt={product.name} className="w-full h-full object-contain" />
+                                                </div>
+                                                <Link to={`/products/${product.id}`} className="font-bold text-gray-800 hover:text-[#8DB600] transition-colors text-sm">
                                                     {product.name}
                                                 </Link>
-                                                <span className="text-xs text-text-muted uppercase tracking-wider mt-1">{product.category?.name}</span>
-                                                <button
-                                                    onClick={() => removeFromCart(product.id)}
-                                                    className="text-red-500 hover:text-red-700 text-sm font-medium text-left mt-2 flex items-center gap-1 w-fit"
-                                                >
-                                                    <Trash2 size={14} /> Remove
-                                                </button>
                                             </div>
-                                        </div>
+                                        </td>
 
-                                        <div className="col-span-2 text-center font-medium md:mb-0 mb-2 before:content-['Price:'] md:before:content-none before:text-text-muted before:mr-2 before:text-sm md:flex-row flex items-baseline justify-between w-full md:w-auto">
-                                            ${parseFloat(product.price).toFixed(2)}
-                                        </div>
+                                        {/* Price */}
+                                        <td className="px-6 py-5">
+                                            <span className="text-[#8DB600] font-bold">
+                                                Ks. {price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                            </span>
+                                        </td>
 
-                                        <div className="col-span-2 flex justify-center w-full md:w-auto">
-                                            <div className="flex items-center border border-light-grey rounded-md overflow-hidden bg-white w-24">
-                                                <button
-                                                    onClick={() => updateQuantity(product.id, item.quantity - 1)}
-                                                    className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-primary-green hover:bg-gray-50 transition-colors"
-                                                    disabled={item.quantity <= 1}
-                                                >-</button>
-                                                <input
-                                                    type="text"
-                                                    readOnly
-                                                    value={item.quantity}
-                                                    className="w-8 h-8 text-center text-sm font-medium text-text-dark border-x border-light-grey outline-none"
-                                                />
-                                                <button
-                                                    onClick={() => updateQuantity(product.id, item.quantity + 1)}
-                                                    className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-primary-green hover:bg-gray-50 transition-colors"
-                                                >+</button>
+                                        {/* Quantity */}
+                                        <td className="px-6 py-5">
+                                            <div>
+                                                <div className="flex items-center border border-gray-200 rounded-[4px] overflow-hidden w-fit bg-white">
+                                                    <button
+                                                        onClick={() => handleQuantityChange(product.id, item.quantity - 1)}
+                                                        className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-[#8DB600] hover:bg-gray-50 transition-colors font-bold text-lg disabled:opacity-30"
+                                                        disabled={item.quantity <= MIN_QTY}
+                                                    >−</button>
+                                                    <input
+                                                        type="text"
+                                                        readOnly
+                                                        value={item.quantity}
+                                                        className="w-10 h-8 text-center text-sm font-bold text-gray-800 border-x border-gray-200 outline-none bg-gray-50"
+                                                    />
+                                                    <button
+                                                        onClick={() => handleQuantityChange(product.id, item.quantity + 1)}
+                                                        className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-[#8DB600] hover:bg-gray-50 transition-colors font-bold text-lg disabled:opacity-30"
+                                                        disabled={item.quantity >= MAX_QTY}
+                                                    >+</button>
+                                                </div>
+                                                {item.quantity >= MAX_QTY && (
+                                                    <p className="text-[10px] text-orange-500 mt-1 font-medium">
+                                                        Quantity must be between {MIN_QTY} and {MAX_QTY}
+                                                    </p>
+                                                )}
                                             </div>
-                                        </div>
+                                        </td>
 
-                                        <div className="col-span-2 text-right font-bold text-primary-green md:mb-0 mb-0 before:content-['Subtotal:'] md:before:content-none before:text-text-muted before:font-normal before:mr-2 before:text-sm md:flex-row flex items-baseline justify-between w-full md:w-auto">
-                                            ${itemTotal.toFixed(2)}
-                                        </div>
+                                        {/* Subtotal */}
+                                        <td className="px-6 py-5">
+                                            <span className="font-bold text-gray-800">
+                                                Ks. {subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                            </span>
+                                        </td>
 
-                                    </div>
+                                        {/* Actions */}
+                                        <td className="px-6 py-5">
+                                            <button
+                                                onClick={() => handleRemove(product.id, product.name)}
+                                                className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-[4px] transition-colors flex items-center gap-1.5"
+                                            >
+                                                <Trash2 size={13} /> Remove
+                                            </button>
+                                        </td>
+                                    </tr>
                                 );
                             })}
-                        </div>
-                    </div>
+                        </tbody>
+                        <tfoot>
+                            <tr className="border-t border-gray-200">
+                                <td colSpan="3" className="px-6 py-5 text-right font-bold text-gray-800 text-base">
+                                    Total:
+                                </td>
+                                <td className="px-6 py-5">
+                                    <span className="font-bold text-[#8DB600] text-lg">
+                                        Ks. {cartTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    </span>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
+            </div>
 
-                {/* Order Summary */}
-                <div className="lg:w-1/3">
-                    <div className="bg-white rounded-xl shadow-sm border border-light-grey p-6 sticky top-24">
-                        <h2 className="text-xl font-bold text-text-dark mb-6">Order Summary</h2>
-
-                        <div className="flex justify-between items-center mb-4 text-text-muted">
-                            <span>Subtotal ({cart.items.length} items)</span>
-                            <span className="font-medium text-text-dark">${cartTotal.toFixed(2)}</span>
-                        </div>
-
-                        <div className="flex justify-between items-center mb-4 text-text-muted">
-                            <span>Shipping</span>
-                            <span className="font-medium text-text-dark">Free</span>
-                        </div>
-
-                        <hr className="my-4 border-light-grey" />
-
-                        <div className="flex justify-between items-center mb-8">
-                            <span className="text-lg font-bold text-text-dark">Total</span>
-                            <span className="text-2xl font-bold text-primary-green">${cartTotal.toFixed(2)}</span>
-                        </div>
-
-                        <button
-                            onClick={handleCheckout}
-                            className="w-full bg-primary-green text-white hover:bg-accent-green font-bold py-3 px-4 rounded-md transition-all shadow-md hover:shadow-lg flex justify-center items-center gap-2"
-                        >
-                            Proceed to Checkout
-                        </button>
-
-                        <div className="mt-4 text-center">
-                            <Link to="/products" className="text-sm font-medium text-primary-green hover:underline">
-                                Continue Shopping
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+            {/* Bottom Actions */}
+            <div className="flex justify-between items-center mt-8">
+                <Link 
+                    to="/products" 
+                    className="flex items-center gap-2 border border-gray-300 text-gray-700 px-5 py-2.5 rounded-[4px] font-medium hover:bg-gray-50 transition-colors text-sm"
+                >
+                    <ArrowLeft size={16} /> Continue Shopping
+                </Link>
+                <button
+                    onClick={handleCheckout}
+                    className="flex items-center gap-2 bg-[#8DB600] hover:bg-[#769800] text-white px-6 py-2.5 rounded-[4px] font-bold transition-colors shadow-md hover:shadow-lg text-sm"
+                >
+                    Proceed to Checkout <ArrowRight size={16} />
+                </button>
             </div>
         </div>
     );

@@ -1,8 +1,20 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Heart, ChevronRight } from 'lucide-react';
+import { AuthContext } from '../../context/AuthContext';
+import { CartContext } from '../../context/CartContext';
+import { WishlistContext } from '../../context/WishlistContext';
+import { showSuccessToast, showErrorToast } from '../../utils/toast';
 
 const ProductCard = ({ product }) => {
+    const navigate = useNavigate();
+    const { user, token } = useContext(AuthContext);
+    const { addToCart } = useContext(CartContext);
+    const { addToWishlist, removeFromWishlist, isInWishlist } = useContext(WishlistContext);
+
+    const [isAddingCart, setIsAddingCart] = useState(false);
+    const [isAddingWishlist, setIsAddingWishlist] = useState(false);
+
     const hasPromotion = product.promotions && product.promotions.length > 0;
     let currentPrice = parseFloat(product.price || 0);
     let originalPrice = null;
@@ -43,22 +55,76 @@ const ProductCard = ({ product }) => {
         }
     }
 
+    const handleAddToCart = async (e) => {
+        e.preventDefault();
+        
+        if (!token) {
+            showErrorToast('Please login to add items to cart');
+            return;
+        }
+
+        setIsAddingCart(true);
+        const result = await addToCart(product.id, 1);
+        setIsAddingCart(false);
+
+        if (result.success) {
+            showSuccessToast('Product added to cart!');
+        } else {
+            showErrorToast(result.error || 'Failed to add item to cart');
+        }
+    };
+
+    const handleWishlistToggle = async (e) => {
+        e.preventDefault();
+
+        if (!token) {
+            showErrorToast('Please login to add items to wishlist');
+            return;
+        }
+
+        setIsAddingWishlist(true);
+        if (isInWishlist(product.id)) {
+            await removeFromWishlist(product.id);
+            showSuccessToast('Removed from wishlist');
+        } else {
+            const result = await addToWishlist(product.id);
+            if (result.success) {
+                showSuccessToast('Product added to wishlist!');
+            } else {
+                showErrorToast(result.error || 'Failed to update wishlist');
+            }
+        }
+        setIsAddingWishlist(false);
+    };
+
+    // Determine if we should show the action buttons
+    // Only show if user is NOT logged in (to redirect to login), OR if user is a customer
+    const showActionButtons = true; // Show for everyone (guests and all roles) for visibility/testing
+    const isWishlisted = isInWishlist(product.id);
+
     return (
-        <div className="bg-white rounded-[4px] border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full group overflow-hidden max-h-[380px]">
-            {/* Top Section: Image & Badge */}
-            <div className="relative aspect-[5/4] bg-white p-2 overflow-hidden flex-shrink-0">
+        <div className="bg-white rounded-[8px] border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full group overflow-hidden">
+            {/* Top Section: Image & Badges */}
+            <div className="relative aspect-square bg-white p-4 overflow-hidden flex-shrink-0">
                 {/* Promotion Badge */}
                 {badgeText && (
-                    <div className="absolute top-1.5 left-1.5 z-10">
-                        <span className={`${badgeColor} text-white text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-[2px] shadow-sm`}>
+                    <div className="absolute top-2 left-2 z-10">
+                        <span className="bg-[#A3C93A] text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-sm">
                             {badgeText}
                         </span>
                     </div>
                 )}
+                
+                {/* Top Seller Badge */}
+                <div className="absolute top-2 right-2 z-10">
+                    <span className="bg-[#10b981] text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-sm">
+                        Top Seller
+                    </span>
+                </div>
 
                 <Link to={`/products/${product.id}`} className="block w-full h-full">
                     <img
-                        src={product.image || (product.pictures?.length > 0 ? `http://127.0.0.1:8000/storage/${product.pictures[0].image_path}` : "https://placehold.co/400x320/f8fafc/a3c93a?text=Product")}
+                        src={product.image || (product.pictures?.length > 0 ? `http://127.0.0.1:8000/storage/${product.pictures[0].image_path}` : "https://placehold.co/400x400/f8fafc/a3c93a?text=Product")}
                         alt={product.name}
                         className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                     />
@@ -66,47 +132,59 @@ const ProductCard = ({ product }) => {
 
                 {!!product.is_expired && (
                     <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-20">
-                        <span className="bg-red-500 text-white text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-[2px]">Expired</span>
+                        <span className="bg-red-500 text-white text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded">Expired</span>
                     </div>
                 )}
             </div>
 
             {/* Middle Section: Name & Category */}
-            <div className="px-2.5 pt-1.5 pb-0.5 flex justify-between items-start gap-1">
-                <h3 className="text-[11px] font-bold text-gray-800 line-clamp-1 leading-tight flex-grow group-hover:text-[#A3C93A] transition-colors">
+            <div className="px-3 pt-2 flex justify-between items-start gap-2">
+                <h3 className="text-[12px] font-bold text-gray-800 line-clamp-1 leading-tight flex-grow group-hover:text-[#A3C93A] transition-colors">
                     {product.name}
                 </h3>
-                <span className="bg-gray-50 text-gray-400 text-[7px] font-black uppercase tracking-tighter px-1 py-0.5 rounded-[2px] border border-gray-100 whitespace-nowrap">
+                <span className="bg-gray-50 text-gray-400 text-[9px] font-bold px-1.5 py-0.5 rounded border border-gray-100 whitespace-nowrap">
                     {product.category?.name || product.category || 'General'}
                 </span>
             </div>
 
             {/* Price & View Link */}
-            <div className="px-2.5 py-1 flex justify-between items-end">
-                <div className="flex flex-wrap items-baseline gap-1">
-                    <span className="text-[12px] font-black text-red-500">
-                        Ks. {currentPrice.toLocaleString()}
+            <div className="px-3 py-2 flex justify-between items-center">
+                <div className="flex flex-wrap items-baseline gap-1.5">
+                    <span className="text-sm font-bold text-red-500">
+                        {currentPrice.toLocaleString(undefined, {minimumFractionDigits: 2})} Ks.
                     </span>
                     {originalPrice && (
-                        <span className="text-[9px] text-gray-400 line-through">
-                            {originalPrice.toLocaleString()}
+                        <span className="text-[11px] text-gray-400 line-through">
+                            {originalPrice.toLocaleString(undefined, {minimumFractionDigits: 2})} Ks.
                         </span>
                     )}
                 </div>
-                <Link to={`/products/${product.id}`} className="text-[#A3C93A] text-[9px] font-black uppercase tracking-tighter border border-[#A3C93A]/20 px-1.5 py-0.5 rounded-[2px] flex items-center gap-0.5 hover:bg-[#A3C93A] hover:text-white transition-all">
-                    View <ChevronRight size={10} strokeWidth={3} />
+                <Link to={`/products/${product.id}`} className="text-[#A3C93A] border border-[#A3C93A]/30 px-1.5 py-0.5 rounded text-[9px] font-bold flex items-center gap-0.5 hover:bg-[#A3C93A] hover:text-white transition-all">
+                    View <ChevronRight size={10} />
                 </Link>
             </div>
 
             {/* Footer: Action Buttons */}
-            <div className="px-2.5 pb-2.5 mt-auto grid grid-cols-2 gap-1.5">
-                <button className="flex items-center justify-center gap-1 bg-[#A3C93A] hover:bg-[#8eb132] text-white py-1.5 rounded-[3px] text-[8px] font-black uppercase tracking-widest transition-all shadow-sm">
-                    <Heart size={10} fill="white" /> Wishlist
-                </button>
-                <button className="flex items-center justify-center gap-1 bg-[#A3C93A] hover:bg-[#8eb132] text-white py-1.5 rounded-[3px] text-[8px] font-black uppercase tracking-widest transition-all shadow-sm">
-                    <ShoppingCart size={10} /> Add
-                </button>
-            </div>
+            {showActionButtons && (
+                <div className="px-3 pb-3 mt-auto grid grid-cols-2 gap-2">
+                    <button 
+                        onClick={handleWishlistToggle}
+                        disabled={isAddingWishlist}
+                        className={`flex items-center justify-center gap-1 bg-[#A3C93A] hover:bg-[#8eb132] text-white py-2 rounded text-[9px] font-bold transition-all shadow-sm disabled:opacity-50`}
+                    >
+                        <Heart size={12} fill={isWishlisted ? "white" : "none"} /> 
+                        {isAddingWishlist ? '...' : 'Add to Wishlist'}
+                    </button>
+                    <button 
+                        onClick={handleAddToCart}
+                        disabled={product.is_expired || isAddingCart}
+                        className="flex items-center justify-center gap-1 bg-[#A3C93A] hover:bg-[#8eb132] text-white py-2 rounded text-[9px] font-bold transition-all shadow-sm disabled:opacity-50"
+                    >
+                        <ShoppingCart size={12} /> 
+                        {isAddingCart ? '...' : 'Add to Cart'}
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

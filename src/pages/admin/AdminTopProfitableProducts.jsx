@@ -180,7 +180,7 @@ const AdminTopProfitableProducts = () => {
                 <div>
                     <h4 className="text-sm font-bold text-blue-800 uppercase tracking-tight">Business Insight</h4>
                     <p className="text-xs text-blue-600 leading-relaxed mt-0.5">
-                        Focus on products with high margins (>20%) but low sales volume to identify potential marketing opportunities.
+                        Focus on products with high margins ({'>'}20%) but low sales volume to identify potential marketing opportunities.
                         Products with low margins but high volume are your "Cash Cows" — keep them well-stocked!
                     </p>
                 </div>
