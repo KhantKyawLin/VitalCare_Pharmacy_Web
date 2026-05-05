@@ -20,6 +20,7 @@ import HealthTips from './pages/HealthTips';
 import HealthTipDetail from './pages/HealthTipDetail';
 
 import AdminRoute from './components/auth/AdminRoute';
+import ForcePasswordChangeModal from './components/auth/ForcePasswordChangeModal';
 import AdminLayout from './components/layout/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProductList from './pages/admin/AdminProductList';
@@ -78,6 +79,7 @@ const PublicLayout = () => {
 function App() {
   return (
     <Router>
+      <ForcePasswordChangeModal />
       <Routes>
         {/* Admin Routes - No Public Navbar/Footer */}
         <Route path="/admin/*" element={<AdminRoute />}>

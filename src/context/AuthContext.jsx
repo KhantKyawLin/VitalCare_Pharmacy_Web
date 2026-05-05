@@ -25,7 +25,11 @@ export const AuthProvider = ({ children }) => {
                     setUser(response.data);
                 } catch (error) {
                     console.error("Error fetching user:", error);
-                    logout(); // Invalid token
+                    if (error.response?.status === 401) {
+                        logout(true); // Token invalid, clear locally without API call
+                    } else {
+                        setIsLoading(false);
+                    }
                 }
             } else {
                 setUser(null);
@@ -81,9 +85,9 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = async () => {
+    const logout = async (skipApi = false) => {
         try {
-            if (token) {
+            if (token && !skipApi) {
                 // Inform backend
                 await axios.post('http://127.0.0.1:8000/api/auth/logout');
             }
@@ -94,6 +98,7 @@ export const AuthProvider = ({ children }) => {
             setToken(null);
             setUser(null);
             localStorage.removeItem('token');
+            delete axios.defaults.headers.common['Authorization'];
         }
     };
 
