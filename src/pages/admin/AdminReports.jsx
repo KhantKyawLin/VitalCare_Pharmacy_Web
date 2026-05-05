@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import {
     TrendingUp, TrendingDown, DollarSign, ShoppingCart, AlertTriangle,
     ArrowRight, PieChart, BarChart3, Plus, Trash2, Edit, X, Receipt,
-    Wallet, ArrowDownCircle, ArrowUpCircle, Info
+    Wallet, ArrowDownCircle, ArrowUpCircle, Info, RotateCcw
 } from 'lucide-react';
 
 const API = 'http://127.0.0.1:8000/api/admin';
@@ -117,8 +117,9 @@ const AdminReports = () => {
             </div>
 
             {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
                 <StatCard title="Total Revenue" value={summary?.total_revenue} icon={<DollarSign className="text-blue-600" />} trend={summary?.revenue_trend} color="blue" />
+                <StatCard title="Total Refunds" value={summary?.total_refunds} icon={<RotateCcw className="text-purple-600" />} subtitle="Money Returned" color="purple" />
                 <StatCard title="Gross Profit" value={summary?.gross_profit} icon={<TrendingUp className="text-green-600" />} subtitle={`Margin: ${summary?.margin}%`} color="green" />
                 <StatCard title="Inventory Losses" value={summary?.total_losses} icon={<AlertTriangle className="text-red-600" />} subtitle="Expired & Damaged" color="red" />
                 <StatCard title="Operating Expenses" value={summary?.external_expenses} icon={<Wallet className="text-orange-600" />} subtitle="Utility & Bills" color="orange" />
@@ -313,6 +314,7 @@ const StatCard = ({ title, value, icon, trend, subtitle, color }) => {
         green: "bg-green-50 border-green-100 text-green-600",
         red: "bg-red-50 border-red-100 text-red-600",
         orange: "bg-orange-50 border-orange-100 text-orange-600",
+        purple: "bg-purple-50 border-purple-100 text-purple-600",
         lime: "bg-[#8DB600]/5 border-[#8DB600]/10 text-[#8DB600]"
     };
     return (

@@ -1,6 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { Eye, EyeOff } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -12,6 +14,8 @@ const Register = () => {
         address: '',
         gender: ''
     });
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -47,6 +51,15 @@ const Register = () => {
             const result = await register(formData);
 
             if (result && result.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Account Created!',
+                    text: `Welcome to Vital Care, ${formData.name}! Your account has been successfully created.`,
+                    timer: 3000,
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    toast: true
+                });
                 navigate('/');
             } else {
                 setError(result?.error || 'Registration failed. Please check your inputs.');
@@ -168,27 +181,45 @@ const Register = () => {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-text-dark mb-1">Password *</label>
-                            <input
-                                name="password"
-                                type="password"
-                                required
-                                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-green focus:border-primary-green sm:text-sm"
-                                placeholder="Password"
-                                value={formData.password}
-                                onChange={handleChange}
-                            />
+                            <div className="relative">
+                                <input
+                                    name="password"
+                                    type={showPassword ? "text" : "password"}
+                                    required
+                                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-green focus:border-primary-green sm:text-sm pr-10"
+                                    placeholder="Password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-text-dark mb-1">Confirm Password *</label>
-                            <input
-                                name="password_confirmation"
-                                type="password"
-                                required
-                                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-green focus:border-primary-green sm:text-sm"
-                                placeholder="Confirm Password"
-                                value={formData.password_confirmation}
-                                onChange={handleChange}
-                            />
+                            <div className="relative">
+                                <input
+                                    name="password_confirmation"
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    required
+                                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-green focus:border-primary-green sm:text-sm pr-10"
+                                    placeholder="Confirm Password"
+                                    value={formData.password_confirmation}
+                                    onChange={handleChange}
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                >
+                                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
+                            </div>
                         </div>
                     </div>
 

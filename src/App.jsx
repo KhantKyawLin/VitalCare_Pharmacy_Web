@@ -46,6 +46,7 @@ import AdminProfitLoss from './pages/admin/AdminProfitLoss';
 import AdminTopProfitableProducts from './pages/admin/AdminTopProfitableProducts';
 import AdminProfileSettings from './pages/admin/AdminProfileSettings';
 import AdminUserList from './pages/admin/AdminUserList';
+import AdminActivityLogs from './pages/admin/AdminActivityLogs';
 
 const PublicLayout = () => {
   const location = useLocation();
@@ -93,7 +94,7 @@ function App() {
               <Route path="profit-loss" element={<AdminProfitLoss />} />
               <Route path="top-profitable" element={<AdminTopProfitableProducts />} />
               <Route path="users" element={<AdminUserList />} />
-              <Route path="logs" element={<div className="p-8"><h2 className="text-2xl font-bold">Activity Audit Logs</h2><p className="text-slate-500">Coming soon...</p></div>} />
+              <Route path="logs" element={<AdminActivityLogs />} />
               <Route path="settings" element={<div className="p-8"><h2 className="text-2xl font-bold">Branding & Settings</h2><p className="text-slate-500">Coming soon...</p></div>} />
             </Route>
 

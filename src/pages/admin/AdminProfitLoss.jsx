@@ -14,7 +14,8 @@ import {
     Info,
     ArrowLeft,
     Tag,
-    Receipt
+    Receipt,
+    RotateCcw
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -193,6 +194,7 @@ const AdminProfitLoss = () => {
                                 <div className="flex items-center gap-3">
                                     <div className={`p-2.5 rounded-full ${
                                         record.type === 'Sale Order' ? 'bg-blue-50 text-blue-500' :
+                                        record.type === 'Refunded Order' ? 'bg-purple-50 text-purple-500' :
                                         record.type === 'Inventory Loss' ? 'bg-orange-50 text-orange-500' :
                                         record.profit_impact > 0 ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'
                                     }`}>
@@ -219,7 +221,7 @@ const AdminProfitLoss = () => {
                             </div>
 
                             {/* Card Body (Order Items) */}
-                            {record.type === 'Sale Order' && record.items && (
+                            {(record.type === 'Sale Order' || record.type === 'Refunded Order') && record.items && (
                                 <div className="p-0 overflow-x-auto">
                                     <table className="w-full text-left text-xs min-w-[600px]">
                                         <thead className="bg-white text-gray-400 uppercase text-[10px] font-black tracking-widest border-b border-gray-50">
@@ -270,7 +272,7 @@ const AdminProfitLoss = () => {
                             )}
 
                             {/* Card Footer (Sale Summary) */}
-                            {record.type === 'Sale Order' && (
+                            {(record.type === 'Sale Order' || record.type === 'Refunded Order') && (
                                 <div className="bg-gray-50/30 p-6 border-t border-gray-100 flex flex-col items-end gap-2 text-sm">
                                     <div className="flex justify-between w-64 text-gray-500">
                                         <span>Subtotal</span>
@@ -312,6 +314,7 @@ const AdminProfitLoss = () => {
 const getTypeIcon = (type) => {
     switch(type) {
         case 'Sale Order': return <ShoppingCart size={20} />;
+        case 'Refunded Order': return <RotateCcw size={20} />;
         case 'Inventory Loss': return <AlertTriangle size={20} />;
         case 'External Expense': return <Wallet size={20} />;
         case 'External Income': return <TrendingUp size={20} />;

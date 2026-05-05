@@ -5,6 +5,7 @@ import Button from '../common/Button';
 import { AuthContext } from '../../context/AuthContext';
 import { CartContext } from '../../context/CartContext';
 import { WishlistContext } from '../../context/WishlistContext';
+import Swal from 'sweetalert2';
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -28,8 +29,31 @@ const Navbar = () => {
     ];
 
     const handleLogout = async () => {
-        await logout();
-        navigate('/');
+        const result = await Swal.fire({
+            title: 'Logout Confirmation',
+            text: 'Are you sure you want to sign out?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, Logout',
+            cancelButtonText: 'Cancel'
+        });
+
+        if (result.isConfirmed) {
+            await logout();
+            navigate('/');
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Logged Out',
+                text: 'You have been successfully signed out.',
+                timer: 1500,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        }
     }
 
     return (

@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { NavLink, useLocation, useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import Swal from 'sweetalert2';
 import { 
     LayoutDashboard, 
     Pill, 
@@ -71,8 +72,31 @@ const AdminSidebar = ({ isOpen }) => {
     };
 
     const handleLogout = async () => {
-        await logout();
-        navigate('/login');
+        const result = await Swal.fire({
+            title: 'Logout Confirmation',
+            text: 'Are you sure you want to sign out from the Admin Panel?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, Logout',
+            cancelButtonText: 'Cancel'
+        });
+
+        if (result.isConfirmed) {
+            await logout();
+            navigate('/login');
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Logged Out',
+                text: 'You have been successfully signed out.',
+                timer: 1500,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        }
     };
 
     const isPathActive = (path) => {

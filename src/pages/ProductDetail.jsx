@@ -67,7 +67,7 @@ const ProductDetail = () => {
             return;
         }
 
-        if (user && user.role !== 'customer') {
+        if (user && user.role !== 'user') {
             import('sweetalert2').then(Swal => {
                 Swal.default.fire({
                     title: 'Customer Action Only',
@@ -97,7 +97,7 @@ const ProductDetail = () => {
             return;
         }
 
-        if (user && user.role !== 'customer') {
+        if (user && user.role !== 'user') {
             import('sweetalert2').then(Swal => {
                 Swal.default.fire({
                     title: 'Customer Action Only',
