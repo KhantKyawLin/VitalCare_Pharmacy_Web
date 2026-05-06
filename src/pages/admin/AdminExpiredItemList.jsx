@@ -217,7 +217,7 @@ const AdminExpiredItemList = () => {
                             ↑ {data.stats.currently_expired_qty} units wasted
                         </p>
                     </div>
-                    <div className="bg-[#8DB600] text-white p-3 rounded-xl shadow-lg shadow-[#8DB600]/20">
+                    <div className="bg-primary-green text-white p-3 rounded-xl shadow-lg shadow-primary-green/20">
                         <Clock size={24} />
                     </div>
                 </div>
@@ -245,7 +245,7 @@ const AdminExpiredItemList = () => {
                             Total disposed items
                         </p>
                     </div>
-                    <div className="bg-gray-50 text-[#8DB600] p-3 rounded-xl">
+                    <div className="bg-gray-50 text-primary-green p-3 rounded-xl">
                         <Trash2 size={24} />
                     </div>
                 </div>
@@ -270,10 +270,10 @@ const AdminExpiredItemList = () => {
                 <div className="flex gap-8 border-b border-gray-100">
                     <button 
                         onClick={() => setActiveTab('expired')}
-                        className={`pb-4 pt-4 px-1 text-[13px] font-bold flex items-center gap-2 border-b-2 transition-all ${activeTab === 'expired' ? 'border-[#8DB600] text-[#8DB600]' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+                        className={`pb-4 pt-4 px-1 text-[13px] font-bold flex items-center gap-2 border-b-2 transition-all ${activeTab === 'expired' ? 'border-primary-green text-primary-green' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
                     >
                         <Clock size={16} strokeWidth={2.5}/> Currently Expired 
-                        <span className="bg-[#8DB600] text-white text-[10px] px-2 py-0.5 rounded-full">{data.expired_items.length}</span>
+                        <span className="bg-primary-green text-white text-[10px] px-2 py-0.5 rounded-full">{data.expired_items.length}</span>
                     </button>
                     <button 
                         onClick={() => setActiveTab('expiring_soon')}
@@ -310,7 +310,7 @@ const AdminExpiredItemList = () => {
                                 <select 
                                     value={expiringDays}
                                     onChange={(e) => setExpiringDays(e.target.value)}
-                                    className="border border-gray-200 text-gray-700 rounded-lg px-3 py-1.5 text-sm font-semibold focus:border-[#8DB600] outline-none"
+                                    className="border border-gray-200 text-gray-700 rounded-lg px-3 py-1.5 text-sm font-semibold focus:border-primary-green outline-none"
                                 >
                                     <option value={30}>Next 30 Days</option>
                                     <option value={60}>Next 60 Days</option>
@@ -363,7 +363,7 @@ const AdminExpiredItemList = () => {
                                     <th className="py-3 px-6 w-12 pt-4">
                                         <button onClick={() => handleSelectAll(selectedItems.length !== displayedList.length, displayedList)}>
                                             {selectedItems.length > 0 && selectedItems.length === displayedList.length 
-                                                ? <CheckSquare size={16} className="text-[#8DB600]"/> 
+                                                ? <CheckSquare size={16} className="text-primary-green"/> 
                                                 : <Square size={16} className="text-gray-300"/>}
                                         </button>
                                     </th>
@@ -411,7 +411,7 @@ const AdminExpiredItemList = () => {
                                             <td className="py-4 px-6 w-12">
                                                 <button onClick={() => handleSelectItem(item.id)}>
                                                     {selectedItems.includes(item.id)
-                                                        ? <CheckSquare size={16} className="text-[#8DB600]"/> 
+                                                        ? <CheckSquare size={16} className="text-primary-green"/> 
                                                         : <Square size={16} className="text-white bg-white border border-gray-300 rounded-sm"/>}
                                                 </button>
                                             </td>
@@ -434,11 +434,11 @@ const AdminExpiredItemList = () => {
                                         </td>
                                         <td className="py-4 px-6">
                                             {isDisposalRecord ? (
-                                                <span className={`px-2 py-1 rounded text-[10px] font-bold shadow-sm whitespace-nowrap ${daysDiff < 0 ? 'bg-[#8DB600] text-white' : 'bg-red-500 text-white'}`}>
+                                                <span className={`px-2 py-1 rounded text-[10px] font-bold shadow-sm whitespace-nowrap ${daysDiff < 0 ? 'bg-primary-green text-white' : 'bg-red-500 text-white'}`}>
                                                     {daysDiff < 0 ? 'Expired' : 'Disposed early'}
                                                 </span>
                                             ) : isExpired ? (
-                                                <span className="px-2 py-1 bg-[#8DB600] text-white rounded text-[10px] font-bold shadow-sm whitespace-nowrap">
+                                                <span className="px-2 py-1 bg-primary-green text-white rounded text-[10px] font-bold shadow-sm whitespace-nowrap">
                                                     {Math.abs(daysDiff)} days
                                                 </span>
                                             ) : (

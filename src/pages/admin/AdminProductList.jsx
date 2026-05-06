@@ -59,7 +59,8 @@ const AdminProductList = () => {
                 ...getConfig(),
                 params: {
                     page: currentPage,
-                    search: search
+                    search: search,
+                    per_page: 8
                 }
             });
             setProducts(response.data.data);
@@ -120,8 +121,8 @@ const AdminProductList = () => {
             text: `You want to delete ${name}?`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#94a3b8',
             confirmButtonText: 'Yes, delete it!'
         });
 
@@ -145,7 +146,7 @@ const AdminProductList = () => {
                     <Package size={26} className="text-gray-800" strokeWidth={2.5} />
                     <h2 className="text-[22px] text-gray-800 font-bold">Products Management</h2>
                 </div>
-                <Link to="/admin/products/create" className="bg-[#8DB600] text-white px-5 py-2.5 rounded shadow flex items-center gap-2 hover:bg-[#7a9e00] transition-colors text-[14px] font-bold">
+                <Link to="/admin/products/create" className="bg-primary-green text-white px-5 py-2.5 rounded shadow flex items-center gap-2 hover:bg-primary-dark transition-colors text-[14px] font-bold">
                     <Plus size={18} strokeWidth={3} /> Add New Product
                 </Link>
             </div>
@@ -159,7 +160,7 @@ const AdminProductList = () => {
                         <h3 className="text-3xl font-bold text-gray-800">{metrics.total_products}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">In your inventory</p>
                     </div>
-                    <div className="bg-green-50 p-2.5 rounded-lg text-[#8DB600]">
+                    <div className="bg-primary-light p-2.5 rounded-lg text-primary-green">
                         <Package size={24} />
                     </div>
                 </div>
@@ -183,7 +184,7 @@ const AdminProductList = () => {
                         <h3 className="text-3xl font-bold text-gray-800">{metrics.expiring_soon}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">Within 30 days</p>
                     </div>
-                    <div className="bg-green-50 p-2.5 rounded-lg text-[#8DB600]">
+                    <div className="bg-primary-light p-2.5 rounded-lg text-primary-green">
                         <Clock size={24} />
                     </div>
                 </div>
@@ -195,7 +196,7 @@ const AdminProductList = () => {
                         <h3 className="text-3xl font-bold text-gray-800">{metrics.active_suppliers}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">Providing products</p>
                     </div>
-                    <div className="bg-green-50 p-2.5 rounded-lg text-[#8DB600]">
+                    <div className="bg-primary-light p-2.5 rounded-lg text-primary-green">
                         <Truck size={24} />
                     </div>
                 </div>
@@ -210,8 +211,8 @@ const AdminProductList = () => {
                         <h3 className="text-lg font-bold text-gray-800">All Products</h3>
                     </div>
                     <div className="flex items-center gap-3 w-full md:w-auto">
-                        <div className="relative flex w-full md:w-72 rounded-lg overflow-hidden border border-gray-200 focus-within:border-[#8DB600] focus-within:ring-2 focus-within:ring-[#8DB600]/30 transition-all bg-gray-50 focus-within:bg-white text-gray-600">
-                            <button onClick={fetchProducts} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#8DB600] transition-colors">
+                        <div className="relative flex w-full md:w-72 rounded-lg overflow-hidden border border-gray-200 focus-within:border-primary-green focus-within:ring-2 focus-within:ring-primary-green/30 transition-all bg-gray-50 focus-within:bg-white text-gray-600">
+                            <button onClick={fetchProducts} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-green transition-colors">
                                 <Search size={16} />
                             </button>
                             <input
@@ -250,7 +251,7 @@ const AdminProductList = () => {
                                             { id: 'visibility', label: 'Visibility' },
                                         ].map(col => (
                                             <label key={col.id} className="flex items-center px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-50 group">
-                                                <div className={`w-4 h-4 rounded border flex items-center justify-center mr-3 transition-colors ${visibleColumns[col.id] ? 'bg-[#8DB600] border-[#8DB600]' : 'border-gray-300 bg-white group-hover:border-[#8DB600]'}`}>
+                                                <div className={`w-4 h-4 rounded border flex items-center justify-center mr-3 transition-colors ${visibleColumns[col.id] ? 'bg-primary-green border-primary-green' : 'border-gray-300 bg-white group-hover:border-primary-green'}`}>
                                                     {visibleColumns[col.id] && <Check size={10} className="text-white" strokeWidth={4} />}
                                                 </div>
                                                 <input
@@ -274,7 +275,7 @@ const AdminProductList = () => {
                                             { id: 'mfg_date', label: 'MFG Date' },
                                         ].map(col => (
                                             <label key={col.id} className="flex items-center px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-50 group">
-                                                <div className={`w-4 h-4 rounded border flex items-center justify-center mr-3 transition-colors ${visibleColumns[col.id] ? 'bg-[#8DB600] border-[#8DB600]' : 'border-gray-300 bg-white group-hover:border-[#8DB600]'}`}>
+                                                <div className={`w-4 h-4 rounded border flex items-center justify-center mr-3 transition-colors ${visibleColumns[col.id] ? 'bg-primary-green border-primary-green' : 'border-gray-300 bg-white group-hover:border-primary-green'}`}>
                                                     {visibleColumns[col.id] && <Check size={10} className="text-white" strokeWidth={4} />}
                                                 </div>
                                                 <input
@@ -322,18 +323,14 @@ const AdminProductList = () => {
                                     </tr>
                                 ))
                             ) : products.length > 0 ? products.map((product, index) => {
-                                const realIndex = (currentPage - 1) * 15 + index + 1;
+                                const realIndex = (currentPage - 1) * 8 + index + 1;
                                 const formattedId = `VC-${String(product.id).padStart(4, '0')}`;
 
                                 const allBatches = product.movements || [];
-                                const currentBatches = allBatches.filter(m => m.movement_type !== 'sold-out') || [];
                                 const totalStock = allBatches.reduce((sum, m) => sum + (parseInt(m.instock_quantity) || 0), 0);
-
-                                // Price reference comes from truly latest batch (even if disposed/sold) 
-                                // to stop the price "jumping" in the UI
+                                const currentBatches = allBatches.filter(m => m.movement_type !== 'sold-out') || [];
+                                
                                 const referenceBatch = allBatches.length > 0 ? allBatches[0] : null;
-
-                                // Physical info comes from what's actually on the shelf right now
                                 const physicalBatch = currentBatches.length > 0 ? currentBatches[0] : null;
 
                                 const supplierName = physicalBatch?.purchase_product?.purchase?.supplier?.name || referenceBatch?.purchase_product?.purchase?.supplier?.name || '-';
@@ -378,7 +375,7 @@ const AdminProductList = () => {
                                                 </div>
                                                 <div className="w-full bg-gray-200 h-[3px] rounded-full overflow-hidden">
                                                     <div
-                                                        className={`h-full rounded-full ${isLowStock ? 'bg-yellow-400' : 'bg-green-600'}`}
+                                                        className={`h-full rounded-full ${isLowStock ? 'bg-yellow-400' : 'bg-primary-green'}`}
                                                         style={{ width: `${Math.min((totalStock / (product.minimum_quantity * 5 || 1)) * 100, 100)}%` }}
                                                     ></div>
                                                 </div>
@@ -418,7 +415,7 @@ const AdminProductList = () => {
                                         {visibleColumns.discount && (
                                             <td className="py-3.5">
                                                 {activePromotion ? (
-                                                    <span className="px-2.5 py-1 bg-[#8DB600]/10 text-[#8DB600] rounded-full text-[11px] font-bold border border-[#8DB600]/20 flex items-center gap-1 w-fit">
+                                                    <span className="px-2.5 py-1 bg-primary-light text-primary-green rounded-full text-[11px] font-bold border border-primary-green/20 flex items-center gap-1 w-fit">
                                                         <Check size={12} strokeWidth={3} /> Yes
                                                     </span>
                                                 ) : (
@@ -431,8 +428,7 @@ const AdminProductList = () => {
 
                                         {visibleColumns.status && (
                                             <td className="py-3.5">
-                                                <span className={`px-3 py-1 rounded text-[11px] font-bold text-white shadow-sm inline-block min-w-[70px] text-center ${isLowStock ? 'bg-yellow-500' : 'bg-[#1E8449]'
-                                                    }`}>
+                                                <span className={`px-3 py-1 rounded text-[11px] font-bold text-white shadow-sm inline-block min-w-[70px] text-center ${isLowStock ? 'bg-yellow-500' : 'bg-primary-dark'}`}>
                                                     {statusString}
                                                 </span>
                                             </td>
@@ -442,7 +438,7 @@ const AdminProductList = () => {
                                             <td className="py-3.5">
                                                 <button
                                                     onClick={() => handleTogglePublish(product.id, product.is_published)}
-                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${product.is_published ? 'bg-[#8DB600]' : 'bg-gray-200'}`}
+                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${product.is_published ? 'bg-primary-green' : 'bg-gray-200'}`}
                                                 >
                                                     <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${product.is_published ? 'translate-x-6' : 'translate-x-1'}`} />
                                                 </button>
@@ -451,15 +447,15 @@ const AdminProductList = () => {
 
                                         <td className="py-3.5 align-middle">
                                             <div className="flex items-center justify-center gap-2">
-                                                <Link to={`/admin/products/${product.id}`} className="p-1.5 border border-[#00b0e4]/30 text-[#00b0e4] hover:bg-[#00b0e4] hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer">
+                                                <Link to={`/admin/products/${product.id}`} className="p-1.5 border border-primary-green/30 text-primary-green hover:bg-primary-green hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer">
                                                     <Eye size={14} strokeWidth={2.5} />
                                                 </Link>
-                                                <Link to={`/admin/products/edit/${product.id}`} className="p-1.5 border border-[#3b82f6]/30 text-[#3b82f6] hover:bg-[#3b82f6] hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer">
+                                                <Link to={`/admin/products/edit/${product.id}`} className="p-1.5 border border-accent-green/30 text-accent-green hover:bg-accent-green hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer">
                                                     <Edit size={14} strokeWidth={2.5} />
                                                 </Link>
                                                 <button
                                                     onClick={() => handleDelete(product.id, product.name)}
-                                                    className="p-1.5 border border-[#ef4444]/30 text-[#ef4444] hover:bg-[#ef4444] hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
+                                                    className="p-1.5 border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
                                                 >
                                                     <Trash2 size={14} strokeWidth={2.5} />
                                                 </button>
@@ -488,7 +484,7 @@ const AdminProductList = () => {
                         <button
                             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                             disabled={currentPage === 1}
-                            className="px-5 py-2 border border-gray-200 rounded-lg text-red-700 font-bold hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                            className="px-5 py-2 border border-gray-200 rounded-lg text-primary-green font-bold hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
                         >
                             Previous
                         </button>
@@ -496,7 +492,7 @@ const AdminProductList = () => {
                         <button
                             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                             disabled={currentPage === totalPages}
-                            className="px-5 py-2 border border-gray-200 rounded-lg text-red-700 font-bold hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                            className="px-5 py-2 border border-gray-200 rounded-lg text-primary-green font-bold hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
                         >
                             Next
                         </button>

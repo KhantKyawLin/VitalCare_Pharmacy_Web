@@ -105,8 +105,8 @@ const AdminCategoryList = () => {
             text: `You want to delete category "${name}"?`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#94a3b8',
             confirmButtonText: 'Yes, delete it!'
         });
 
@@ -137,7 +137,7 @@ const AdminCategoryList = () => {
                 </div>
                 <button 
                     onClick={() => handleOpenModal()}
-                    className="bg-[#8DB600] text-white px-5 py-2.5 rounded shadow flex items-center gap-2 hover:bg-[#7a9e00] transition-colors text-[14px] font-bold"
+                    className="bg-primary-green text-white px-5 py-2.5 rounded shadow flex items-center gap-2 hover:bg-primary-dark transition-colors text-[14px] font-bold"
                 >
                     <Plus size={18} strokeWidth={3}/> Add New Category
                 </button>
@@ -151,7 +151,7 @@ const AdminCategoryList = () => {
                         <h3 className="text-3xl font-bold text-gray-800">{stats.total_categories}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">In your system</p>
                     </div>
-                    <div className="bg-green-50 p-2.5 rounded-lg text-[#8DB600]">
+                    <div className="bg-primary-light p-2.5 rounded-lg text-primary-green">
                         <Tag size={24} />
                     </div>
                 </div>
@@ -162,7 +162,7 @@ const AdminCategoryList = () => {
                         <h3 className="text-3xl font-bold text-gray-800">{stats.total_products}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">Across all categories</p>
                     </div>
-                    <div className="bg-green-50 p-2.5 rounded-lg text-[#8DB600]">
+                    <div className="bg-primary-light p-2.5 rounded-lg text-primary-green">
                         <Package size={24} />
                     </div>
                 </div>
@@ -173,7 +173,7 @@ const AdminCategoryList = () => {
                         <h3 className="text-3xl font-bold text-gray-800">{stats.avg_products}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">Distribution</p>
                     </div>
-                    <div className="bg-green-50 p-2.5 rounded-lg text-[#8DB600]">
+                    <div className="bg-primary-light p-2.5 rounded-lg text-primary-green">
                         <Calculator size={24} />
                     </div>
                 </div>
@@ -184,7 +184,7 @@ const AdminCategoryList = () => {
                         <h3 className="text-[20px] font-bold text-gray-800 truncate max-w-[180px]">{stats.top_category?.name || 'N/A'}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">{stats.top_category?.count || 0} products</p>
                     </div>
-                    <div className="bg-green-50 p-2.5 rounded-lg text-[#8DB600]">
+                    <div className="bg-primary-light p-2.5 rounded-lg text-primary-green">
                         <Star size={24} />
                     </div>
                 </div>
@@ -197,7 +197,7 @@ const AdminCategoryList = () => {
                         <LayoutGrid size={20} className="text-gray-800 font-bold"/>
                         <h3 className="text-lg font-bold text-gray-800">All Categories</h3>
                     </div>
-                    <div className="relative flex w-full md:w-72 rounded-lg overflow-hidden border border-gray-200 focus-within:border-[#8DB600] focus-within:ring-2 focus-within:ring-[#8DB600]/30 transition-all bg-gray-50 focus-within:bg-white text-gray-600">
+                    <div className="relative flex w-full md:w-72 rounded-lg overflow-hidden border border-gray-200 focus-within:border-primary-green focus-within:ring-2 focus-within:ring-primary-green/30 transition-all bg-gray-50 focus-within:bg-white text-gray-600">
                         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input 
                             type="text" 
@@ -224,7 +224,7 @@ const AdminCategoryList = () => {
                         <tbody className="text-gray-700 align-middle">
                             {loading ? (
                                 [1, 2, 3].map(i => (
-                                    <tr key={i} className="animate-pulse border-b border-gray-50">
+                                    <tr key={i} className="animate-pulse border-b border-gray-100">
                                         <td colSpan="6" className="py-5"><div className="h-4 bg-gray-100 rounded w-full"></div></td>
                                     </tr>
                                 ))
@@ -247,13 +247,13 @@ const AdminCategoryList = () => {
                                             <div className="flex items-center justify-center gap-2">
                                                 <button 
                                                     onClick={() => handleOpenModal(cat)}
-                                                    className="p-1.5 border border-[#3b82f6]/30 text-[#3b82f6] hover:bg-[#3b82f6] hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
+                                                    className="p-1.5 border border-accent-green/30 text-accent-green hover:bg-accent-green hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
                                                 >
                                                     <Edit size={14} strokeWidth={2.5}/>
                                                 </button>
                                                 <button 
                                                     onClick={() => handleDelete(cat.id, cat.name)}
-                                                    className="p-1.5 border border-[#ef4444]/30 text-[#ef4444] hover:bg-[#ef4444] hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
+                                                    className="p-1.5 border border-red-100 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
                                                 >
                                                     <Trash2 size={14} strokeWidth={2.5}/>
                                                 </button>
@@ -291,7 +291,7 @@ const AdminCategoryList = () => {
                                 <input 
                                     type="text" 
                                     required
-                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#8DB600] focus:ring-4 focus:ring-[#8DB600]/10 outline-none transition-all text-sm"
+                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-green focus:ring-4 focus:ring-primary-green/10 outline-none transition-all text-sm"
                                     placeholder="e.g. Pain Killers"
                                     value={formData.name}
                                     onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -308,7 +308,7 @@ const AdminCategoryList = () => {
                                 <button 
                                     type="submit"
                                     disabled={saving}
-                                    className="flex-1 px-4 py-2.5 rounded-xl bg-[#8DB600] text-white font-bold hover:bg-[#7a9e00] shadow-lg shadow-[#8DB600]/20 transition-all text-sm disabled:opacity-50"
+                                    className="flex-1 px-4 py-2.5 rounded-xl bg-primary-green text-white font-bold hover:bg-primary-dark shadow-lg shadow-primary-green/20 transition-all text-sm disabled:opacity-50"
                                 >
                                     {saving ? 'Saving...' : editingCategory ? 'Update Category' : 'Create Category'}
                                 </button>

@@ -134,7 +134,7 @@ const AdminUnitList = () => {
                 </div>
                 <button 
                     onClick={() => handleOpenModal()}
-                    className="bg-[#8DB600] text-white px-5 py-2.5 rounded shadow flex items-center gap-2 hover:bg-[#7a9e00] transition-colors text-[14px] font-bold"
+                    className="bg-primary-green text-white px-5 py-2.5 rounded shadow flex items-center gap-2 hover:bg-primary-dark transition-colors text-[14px] font-bold"
                 >
                     <Plus size={18} strokeWidth={3}/> Add New Unit
                 </button>
@@ -144,22 +144,22 @@ const AdminUnitList = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
                 <div className="bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] p-6 flex justify-between items-start border border-gray-100">
                     <div>
-                        <p className="text-sm text-gray-500 mb-1 font-medium tracking-wide border-l-4 border-[#8DB600] pl-3">Total Units</p>
+                        <p className="text-sm text-gray-500 mb-1 font-medium tracking-wide border-l-4 border-primary-green pl-3">Total Units</p>
                         <h3 className="text-4xl font-black text-gray-800 mt-2">{stats.total_units}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">Measurement units in system</p>
                     </div>
-                    <div className="bg-green-50 p-3 rounded-2xl text-[#8DB600]">
+                    <div className="bg-primary-light p-3 rounded-2xl text-primary-green">
                         <Hash size={32} />
                     </div>
                 </div>
 
                 <div className="bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] p-6 flex justify-between items-start border border-gray-100">
                     <div>
-                        <p className="text-sm text-gray-500 mb-1 font-medium tracking-wide border-l-4 border-[#8DB600] pl-3">Most Used Unit</p>
+                        <p className="text-sm text-gray-500 mb-1 font-medium tracking-wide border-l-4 border-primary-green pl-3">Most Used Unit</p>
                         <h3 className="text-4xl font-black text-gray-800 mt-2 truncate max-w-[200px]">{stats.most_used_unit?.name || 'N/A'}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">Used in {stats.most_used_unit?.count || 0} products</p>
                     </div>
-                    <div className="bg-green-50 p-3 rounded-2xl text-[#8DB600]">
+                    <div className="bg-primary-light p-3 rounded-2xl text-primary-green">
                         <TrendingUp size={32} />
                     </div>
                 </div>
@@ -172,7 +172,7 @@ const AdminUnitList = () => {
                         <LayoutGrid size={20} className="text-gray-800 font-bold"/>
                         <h3 className="text-lg font-bold text-gray-800">All Units</h3>
                     </div>
-                    <div className="relative flex w-full md:w-72 rounded-lg overflow-hidden border border-gray-200 focus-within:border-[#8DB600] focus-within:ring-2 focus-within:ring-[#8DB600]/30 transition-all bg-gray-50 focus-within:bg-white text-gray-600">
+                    <div className="relative flex w-full md:w-72 rounded-lg overflow-hidden border border-gray-200 focus-within:border-primary-green focus-within:ring-2 focus-within:ring-primary-green/30 transition-all bg-gray-50 focus-within:bg-white text-gray-600">
                         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input 
                             type="text" 
@@ -222,13 +222,13 @@ const AdminUnitList = () => {
                                             <div className="flex items-center justify-center gap-2">
                                                 <button 
                                                     onClick={() => handleOpenModal(unit)}
-                                                    className="p-1.5 border border-[#3b82f6]/30 text-[#3b82f6] hover:bg-[#3b82f6] hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
+                                                    className="p-1.5 border border-accent-green/30 text-accent-green hover:bg-accent-green hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
                                                 >
                                                     <Edit size={14} strokeWidth={2.5}/>
                                                 </button>
                                                 <button 
                                                     onClick={() => handleDelete(unit.id, unit.name)}
-                                                    className="p-1.5 border border-[#ef4444]/30 text-[#ef4444] hover:bg-[#ef4444] hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
+                                                    className="p-1.5 border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
                                                 >
                                                     <Trash2 size={14} strokeWidth={2.5}/>
                                                 </button>
@@ -266,7 +266,7 @@ const AdminUnitList = () => {
                                 <input 
                                     type="text" 
                                     required
-                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#8DB600] focus:ring-4 focus:ring-[#8DB600]/10 outline-none transition-all text-sm"
+                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-green focus:ring-4 focus:ring-primary-green/10 outline-none transition-all text-sm"
                                     placeholder="e.g. Bottle, Box, Tablet"
                                     value={formData.name}
                                     onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -283,7 +283,7 @@ const AdminUnitList = () => {
                                 <button 
                                     type="submit"
                                     disabled={saving}
-                                    className="flex-1 px-4 py-2.5 rounded-xl bg-[#8DB600] text-white font-bold hover:bg-[#7a9e00] shadow-lg shadow-[#8DB600]/20 transition-all text-sm disabled:opacity-50"
+                                    className="flex-1 px-4 py-2.5 rounded-xl bg-primary-green text-white font-bold hover:bg-primary-dark shadow-lg shadow-primary-green/20 transition-all text-sm disabled:opacity-50"
                                 >
                                     {saving ? 'Saving...' : editingUnit ? 'Update Unit' : 'Create Unit'}
                                 </button>

@@ -209,8 +209,8 @@ const AdminPurchaseForm = () => {
             {/* Header Area */}
             <div className="flex justify-between items-center bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
                 <div className="flex items-center gap-4">
-                    <div className="bg-[#8DB600]/10 p-3 rounded-xl">
-                        <ShoppingCart className="text-[#8DB600]" size={28} />
+                    <div className="bg-primary-light p-3 rounded-xl">
+                        <ShoppingCart className="text-primary-green" size={28} />
                     </div>
                     <div>
                         <h2 className="text-2xl font-black text-gray-800 tracking-tight">Create New Purchase</h2>
@@ -232,14 +232,14 @@ const AdminPurchaseForm = () => {
                         {/* Supplier Selection */}
                         <div className="space-y-2">
                             <label className="text-[13px] font-bold text-gray-500 ml-1 flex items-center gap-2">
-                                <Truck size={14} className="text-[#8DB600]"/> 
+                                <Truck size={14} className="text-primary-green"/> 
                                 Supplier <span className="text-red-500">*</span>
                             </label>
                             <select 
                                 required
                                 value={formData.supplier_id}
                                 onChange={(e) => setFormData({...formData, supplier_id: e.target.value})}
-                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl px-5 py-4 focus:bg-white focus:border-[#8DB600] transition-all outline-none appearance-none"
+                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl px-5 py-4 focus:bg-white focus:border-primary-green transition-all outline-none appearance-none"
                                 style={{ backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.25rem center', backgroundSize: '1.2em' }}
                             >
                                 <option value="">Select Supplier</option>
@@ -250,7 +250,7 @@ const AdminPurchaseForm = () => {
                         {/* Team Member (Read-only as per logic) */}
                         <div className="space-y-2">
                             <label className="text-[13px] font-bold text-gray-500 ml-1 flex items-center gap-2">
-                                <UserIcon size={14} className="text-[#8DB600]"/>
+                                <UserIcon size={14} className="text-primary-green"/>
                                 Team Member
                             </label>
                             <div className="w-full bg-gray-100 border border-gray-200 text-gray-500 font-bold text-[15px] rounded-2xl px-5 py-4 flex items-center">
@@ -261,7 +261,7 @@ const AdminPurchaseForm = () => {
                         {/* Purchase Date */}
                         <div className="space-y-2">
                             <label className="text-[13px] font-bold text-gray-500 ml-1 flex items-center gap-2">
-                                <Calendar size={14} className="text-[#8DB600]"/>
+                                <Calendar size={14} className="text-primary-green"/>
                                 Purchase Date <span className="text-red-500">*</span>
                             </label>
                             <input 
@@ -269,14 +269,14 @@ const AdminPurchaseForm = () => {
                                 required
                                 value={formData.purchase_date}
                                 onChange={(e) => setFormData({...formData, purchase_date: e.target.value})}
-                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl px-5 py-4 focus:bg-white focus:border-[#8DB600] transition-all outline-none"
+                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl px-5 py-4 focus:bg-white focus:border-primary-green transition-all outline-none"
                             />
                         </div>
 
                         {/* Extra Fees */}
                         <div className="space-y-2">
                             <label className="text-[13px] font-bold text-gray-500 ml-1 flex items-center gap-2">
-                                <DollarSign size={14} className="text-[#8DB600]"/>
+                                <DollarSign size={14} className="text-primary-green"/>
                                 Delivery Fee
                             </label>
                             <input 
@@ -284,13 +284,13 @@ const AdminPurchaseForm = () => {
                                 placeholder="0"
                                 value={deliveryFee}
                                 onChange={(e) => setDeliveryFee(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl px-5 py-4 focus:bg-white focus:border-[#8DB600] transition-all outline-none"
+                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl px-5 py-4 focus:bg-white focus:border-primary-green transition-all outline-none"
                             />
                         </div>
                         
                         <div className="space-y-2">
                             <label className="text-[13px] font-bold text-gray-500 ml-1 flex items-center gap-2">
-                                <DollarSign size={14} className="text-[#8DB600]"/>
+                                <DollarSign size={14} className="text-primary-green"/>
                                 Tax (%)
                             </label>
                             <input 
@@ -298,7 +298,7 @@ const AdminPurchaseForm = () => {
                                 placeholder="0%"
                                 value={taxFee}
                                 onChange={(e) => setTaxFee(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl px-5 py-4 focus:bg-white focus:border-[#8DB600] transition-all outline-none"
+                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl px-5 py-4 focus:bg-white focus:border-primary-green transition-all outline-none"
                             />
                         </div>
                     </div>
@@ -314,7 +314,7 @@ const AdminPurchaseForm = () => {
                             <input 
                                 type="text"
                                 placeholder="Search product to add (min 2 chars)..."
-                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl pl-14 pr-6 py-4 focus:bg-white focus:border-[#8DB600] transition-all outline-none shadow-inner"
+                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl pl-14 pr-6 py-4 focus:bg-white focus:border-primary-green transition-all outline-none shadow-inner"
                                 value={productSearch}
                                 onChange={(e) => handleProductSearch(e.target.value)}
                                 onFocus={() => productSearch.length >= 2 && setIsSearching(true)}
@@ -330,13 +330,13 @@ const AdminPurchaseForm = () => {
                                             className="flex items-center gap-4 p-4 hover:bg-green-50 cursor-pointer border-b border-gray-50 last:border-0 transition-colors group"
                                         >
                                             <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-white transition-colors">
-                                                <Package size={20} className="text-gray-400 group-hover:text-[#8DB600]"/>
+                                                <Package size={20} className="text-gray-400 group-hover:text-primary-green"/>
                                             </div>
                                             <div className="flex-1">
                                                 <p className="font-bold text-gray-800">{p.name}</p>
                                                 <p className="text-[11px] text-gray-500 font-bold">{p.category?.name} • Tk. {parseFloat(p.price || 0).toLocaleString()}</p>
                                             </div>
-                                            <Plus size={18} className="text-gray-300 group-hover:text-[#8DB600]" />
+                                            <Plus size={18} className="text-gray-300 group-hover:text-primary-green" />
                                         </div>
                                     ))}
                                 </div>
@@ -372,7 +372,7 @@ const AdminPurchaseForm = () => {
                                                 min="1"
                                                 value={item.quantity}
                                                 onChange={(e) => updateItem(idx, 'quantity', e.target.value === '' ? '' : parseInt(e.target.value))}
-                                                className="w-20 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-bold focus:border-[#8DB600] outline-none transition-all"
+                                                className="w-20 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-bold focus:border-primary-green outline-none transition-all"
                                             />
                                         </td>
                                         <td className="py-5 px-4">
@@ -382,7 +382,7 @@ const AdminPurchaseForm = () => {
                                                     type="number"
                                                     value={item.purchase_price}
                                                     onChange={(e) => updateItem(idx, 'purchase_price', e.target.value === '' ? '' : parseFloat(e.target.value))}
-                                                    className="w-28 bg-gray-50 border border-gray-200 rounded-xl pl-9 pr-3 py-2.5 font-bold focus:border-[#8DB600] outline-none transition-all"
+                                                    className="w-28 bg-gray-50 border border-gray-200 rounded-xl pl-9 pr-3 py-2.5 font-bold focus:border-primary-green outline-none transition-all"
                                                 />
                                             </div>
                                         </td>
@@ -393,7 +393,7 @@ const AdminPurchaseForm = () => {
                                                     type="number"
                                                     value={item.sale_price}
                                                     onChange={(e) => updateItem(idx, 'sale_price', e.target.value === '' ? '' : parseFloat(e.target.value))}
-                                                    className="w-28 bg-green-50/50 border border-green-100 rounded-xl pl-9 pr-3 py-2.5 font-bold text-[#6a8700] focus:border-[#8DB600] outline-none transition-all"
+                                                    className="w-28 bg-primary-light border border-primary-green/20 rounded-xl pl-9 pr-3 py-2.5 font-bold text-primary-green focus:border-primary-green outline-none transition-all"
                                                 />
                                             </div>
                                         </td>
@@ -403,7 +403,7 @@ const AdminPurchaseForm = () => {
                                                 value={item.manufactured_date}
                                                 max={new Date().toISOString().split('T')[0]}
                                                 onChange={(e) => updateItem(idx, 'manufactured_date', e.target.value)}
-                                                className="bg-gray-50 border border-gray-200 rounded-xl px-2 py-2.5 font-bold text-[13px] focus:border-[#8DB600] outline-none transition-all"
+                                                className="bg-gray-50 border border-gray-200 rounded-xl px-2 py-2.5 font-bold text-[13px] focus:border-primary-green outline-none transition-all"
                                             />
                                         </td>
                                         <td className="py-5 px-4">
@@ -413,7 +413,7 @@ const AdminPurchaseForm = () => {
                                                 min={new Date().toISOString().split('T')[0]}
                                                 value={item.expired_date}
                                                 onChange={(e) => updateItem(idx, 'expired_date', e.target.value)}
-                                                className="bg-gray-50 border border-gray-200 rounded-xl px-2 py-2.5 font-bold text-[13px] focus:border-[#8DB600] outline-none transition-all text-red-500"
+                                                className="bg-gray-50 border border-gray-200 rounded-xl px-2 py-2.5 font-bold text-[13px] focus:border-primary-green outline-none transition-all text-red-500"
                                             />
                                         </td>
                                         <td className="py-5 px-4">
@@ -448,7 +448,7 @@ const AdminPurchaseForm = () => {
                     <div className="bg-gray-800 p-8 flex flex-col md:flex-row justify-between items-center gap-6">
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-white/10 rounded-2xl">
-                                <DollarSign size={24} className="text-[#8DB600]" />
+                                <DollarSign size={24} className="text-primary-green" />
                             </div>
                             <div>
                                 <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Purchase Grand Total</p>
@@ -467,7 +467,7 @@ const AdminPurchaseForm = () => {
                             <button 
                                 type="submit"
                                 disabled={loading || formData.items.length === 0}
-                                className="px-10 py-4 bg-[#8DB600] hover:bg-[#7a9d00] text-white rounded-2xl font-black flex items-center gap-3 shadow-xl shadow-[#8DB600]/20 transition-all disabled:opacity-50 disabled:scale-100 active:scale-95 group"
+                                className="px-10 py-4 bg-primary-green hover:bg-primary-dark text-white rounded-2xl font-black flex items-center gap-3 shadow-xl shadow-primary-green/20 transition-all disabled:opacity-50 disabled:scale-100 active:scale-95 group"
                             >
                                 {loading ? (
                                     <>Saving...</>

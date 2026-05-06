@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { NavLink, useLocation, useNavigate, Link } from 'react-router-dom';
+import { useSettings } from '../../context/SettingsContext';
 import { AuthContext } from '../../context/AuthContext';
 import Swal from 'sweetalert2';
 import { 
@@ -11,6 +12,7 @@ import {
 } from 'lucide-react';
 
 const UserSidebar = ({ isOpen }) => {
+    const { settings } = useSettings();
     const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
@@ -61,11 +63,16 @@ const UserSidebar = ({ isOpen }) => {
                 to="/"
                 className={`h-[60px] min-h-[60px] flex items-center border-b border-gray-200 shrink-0 transition-all hover:opacity-80 active:scale-95 duration-200 ${!isOpen ? 'justify-center px-0' : 'px-4'}`}
             >
-                <img src="http://localhost/VitalCare/image/VitalCare_Logo.png" alt="Logo" className={`${!isOpen ? 'w-10 h-10' : 'w-8 h-8 mr-3'} object-contain transition-all`} />
+                <img 
+                    src={settings.site_logo ? `http://127.0.0.1:8000/storage/${settings.site_logo}` : "http://localhost/VitalCare/image/VitalCare_Logo.png"} 
+                    alt="Logo" 
+                    className={`${!isOpen ? 'w-10 h-10' : 'w-8 h-8 mr-3'} object-contain transition-all`} 
+                />
                 {isOpen && (
                     <div className="flex flex-col">
-                        <span className="font-bold text-[#A3C93A] text-lg leading-tight tracking-tight">Vital Care</span>
-                        <span className="font-bold text-[#A3C93A] text-lg leading-tight tracking-tight">Pharmacy</span>
+                        <span className="font-bold text-primary-green text-[16px] leading-tight tracking-tight whitespace-nowrap overflow-hidden text-ellipsis max-w-[170px]">
+                            {settings.site_name}
+                        </span>
                     </div>
                 )}
             </Link>
@@ -81,12 +88,12 @@ const UserSidebar = ({ isOpen }) => {
                                 <Link 
                                     to={item.path}
                                     className={`flex items-center justify-between px-4 py-3 mx-2 rounded-lg cursor-pointer transition-colors ${
-                                        isActiveMenu ? 'bg-green-50/50 text-[#6CA52C]' : 'text-gray-700 hover:bg-gray-50'
+                                        isActiveMenu ? 'bg-primary-light text-primary-green' : 'text-gray-700 hover:bg-gray-50'
                                     } ${!isOpen && 'justify-center mx-1 px-0 py-3'}`}
                                     title={!isOpen ? item.name : ""}
                                 >
                                     <div className="flex items-center gap-3">
-                                        <span className={`${isActiveMenu ? 'text-[#6CA52C]' : 'text-gray-500'}`}>
+                                        <span className={`${isActiveMenu ? 'text-primary-green' : 'text-gray-500'}`}>
                                             {item.icon}
                                         </span>
                                         {isOpen && <span className={`font-semibold text-[15px]`}>{item.name}</span>}

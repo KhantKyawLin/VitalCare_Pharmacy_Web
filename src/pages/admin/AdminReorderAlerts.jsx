@@ -102,7 +102,7 @@ const AdminReorderAlerts = () => {
                             ↓ Below 30% of reorder level
                         </p>
                     </div>
-                    <div className="bg-[#8DB600] text-white p-3 rounded shadow-sm z-10">
+                    <div className="bg-primary-green text-white p-3 rounded shadow-sm z-10">
                         <AlertTriangle size={24} />
                     </div>
                 </div>
@@ -153,15 +153,15 @@ const AdminReorderAlerts = () => {
             {/* List */}
             <div className="bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100 pb-2 overflow-hidden mt-6">
                 <div className="px-6 py-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4 bg-white">
-                    <div className="flex items-center gap-3 text-[#A3C93A]">
-                        <div className="p-1.5 rounded bg-green-50 border border-green-100">
+                    <div className="flex items-center gap-3 text-primary-green">
+                        <div className="p-1.5 rounded bg-primary-light border border-primary-green/20">
                             <ShoppingCart size={18} strokeWidth={2.5}/>
                         </div>
                         <h3 className="text-[16px] font-bold text-gray-800 tracking-tight">Active Reorder Alerts</h3>
                     </div>
 
                     <div className="flex items-center gap-3 ml-auto">
-                        <div className="relative flex w-64 rounded overflow-hidden border border-gray-200 bg-white focus-within:border-[#8DB600] transition-all">
+                        <div className="relative flex w-64 rounded overflow-hidden border border-gray-200 bg-white focus-within:border-primary-green transition-all">
                             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                             <input 
                                 type="text" 
@@ -174,7 +174,7 @@ const AdminReorderAlerts = () => {
                         
                         <button 
                             onClick={() => navigate('/admin/purchases/create')}
-                            className="bg-[#8DB600] text-white px-5 py-2 rounded border-2 border-[#8DB600] hover:bg-[#7fa400] hover:border-[#7fa400] transition-all text-[13px] font-bold shadow-md flex items-center gap-2"
+                            className="bg-primary-green text-white px-5 py-2 rounded border-2 border-primary-green hover:bg-primary-dark hover:border-primary-dark transition-all text-[13px] font-bold shadow-md flex items-center gap-2"
                         >
                             <Plus size={16} strokeWidth={3}/> CREATE PURCHASE ORDER
                         </button>
@@ -235,7 +235,7 @@ const AdminReorderAlerts = () => {
                                             <div className="flex justify-center items-center">
                                                 <button 
                                                     onClick={() => handleReorder(item)}
-                                                    className="bg-[#8DB600] text-white hover:bg-[#7fa400] px-5 py-2 rounded text-[11px] font-black uppercase shadow-sm transition-all flex items-center gap-2 whitespace-nowrap border-2 border-[#8DB600]"
+                                                    className="bg-primary-green text-white hover:bg-primary-dark px-5 py-2 rounded text-[11px] font-black uppercase shadow-sm transition-all flex items-center gap-2 whitespace-nowrap border-2 border-primary-green"
                                                     title="Reorder"
                                                 >
                                                     <ShoppingCart size={14} strokeWidth={3}/> Reorder

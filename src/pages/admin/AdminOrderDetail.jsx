@@ -104,7 +104,7 @@ const AdminOrderDetail = () => {
 
     if (loading) return (
         <div className="flex items-center justify-center min-h-[400px]">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8DB600]"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-green"></div>
         </div>
     );
     
@@ -119,7 +119,7 @@ const AdminOrderDetail = () => {
                 <div className="flex items-center gap-3">
                     <div>
                         <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                            Edit Order <span className="text-[#8DB600]">#{order.receipt_number || order.id}</span>
+                            Edit Order <span className="text-primary-green">#{order.receipt_number || order.id}</span>
                         </h2>
                         <p className="text-sm text-gray-500 italic">Manage order lifecycle and verify payments.</p>
                     </div>
@@ -143,7 +143,7 @@ const AdminOrderDetail = () => {
             {/* Main Edit Form */}
             <div className="print:hidden bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-4 border-b border-gray-50 bg-gray-50/50 flex items-center gap-2">
-                    <CheckCircle size={18} className="text-[#8DB600]" />
+                    <CheckCircle size={18} className="text-primary-green" />
                     <h3 className="font-bold text-gray-700">Order Management</h3>
                 </div>
                 <div className="p-6">
@@ -162,7 +162,7 @@ const AdminOrderDetail = () => {
                             </div>
                             <div>
                                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Amount</p>
-                                <p className="text-lg font-black text-[#8DB600]">Ks. {parseFloat(order.total_amount).toLocaleString()}</p>
+                                <p className="text-lg font-black text-primary-green">Ks. {parseFloat(order.total_amount).toLocaleString()}</p>
                             </div>
                             {isOnline && (
                                 <>
@@ -200,7 +200,7 @@ const AdminOrderDetail = () => {
                                     value={status} 
                                     onChange={(e) => setStatus(e.target.value)}
                                     disabled={order?.status === 'completed' || order?.status === 'cancelled'}
-                                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#8DB600] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary-green transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
                                 >
                                     <option value="pending">Pending</option>
                                     <option value="completed">Completed</option>
@@ -213,7 +213,7 @@ const AdminOrderDetail = () => {
                                     value={deliverStatus} 
                                     onChange={(e) => setDeliverStatus(e.target.value)}
                                     disabled={order?.status === 'completed' || order?.status === 'cancelled'}
-                                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#8DB600] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary-green transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
                                 >
                                     <option value="pending">Pending</option>
                                     <option value="shipped">Shipped</option>
@@ -227,7 +227,7 @@ const AdminOrderDetail = () => {
                                     value={paymentStatus} 
                                     onChange={(e) => setPaymentStatus(e.target.value)}
                                     disabled={order?.payment_status === 'refunded'}
-                                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#8DB600] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary-green transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
                                 >
                                     {/* If order is completed/cancelled, hide 'pending' option */}
                                     {(order?.status !== 'completed' && order?.status !== 'cancelled') && (
@@ -256,7 +256,7 @@ const AdminOrderDetail = () => {
                                 <button
                                     onClick={handleSave}
                                     disabled={saving || order?.payment_status === 'refunded'}
-                                    className="w-full py-3 bg-[#8DB600] text-white rounded-lg font-bold hover:bg-[#7a9e00] transition-all shadow-md active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:bg-gray-400"
+                                    className="w-full py-3 bg-primary-green text-white rounded-lg font-bold hover:bg-primary-dark transition-all shadow-md active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:bg-gray-400"
                                 >
                                     {saving ? (
                                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -353,7 +353,7 @@ const AdminOrderDetail = () => {
                             })()}
                             <div className="flex justify-between text-lg font-black text-gray-800 pt-2 border-t border-gray-200">
                                 <span>Total Pay</span>
-                                <span className="text-[#8DB600]">{parseFloat(order.total_amount).toLocaleString()} Ks</span>
+                                <span className="text-primary-green">{parseFloat(order.total_amount).toLocaleString()} Ks</span>
                             </div>
                         </div>
                     </div>
@@ -387,13 +387,13 @@ const AdminOrderDetail = () => {
                         </div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-[#8DB600] to-[#7a9e00] rounded-xl shadow-lg p-6 text-white text-center">
+                    <div className="bg-gradient-to-br from-primary-green to-primary-dark rounded-xl shadow-lg p-6 text-white text-center">
                          <div className="bg-white/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
                              <CreditCard size={24} />
                          </div>
                          <h4 className="font-bold mb-2">Need Help?</h4>
                          <p className="text-xs text-white/80 leading-relaxed mb-4">If you find issues with payment slips, contact the customer directly at {order.contact_phone || 'the registered number'}.</p>
-                         <button className="w-full bg-white text-[#8DB600] py-2 rounded-lg font-black text-xs hover:bg-gray-100 transition-colors">CONTACT SUPPORT</button>
+                         <button className="w-full bg-white text-primary-green py-2 rounded-lg font-black text-xs hover:bg-gray-100 transition-colors">CONTACT SUPPORT</button>
                     </div>
                 </div>
             </div>

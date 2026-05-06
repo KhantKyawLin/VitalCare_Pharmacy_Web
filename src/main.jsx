@@ -6,14 +6,18 @@ import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
 
+import { SettingsProvider } from './context/SettingsContext'
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-      <CartProvider>
-        <WishlistProvider>
-          <App />
-        </WishlistProvider>
-      </CartProvider>
+      <SettingsProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <App />
+          </WishlistProvider>
+        </CartProvider>
+      </SettingsProvider>
     </AuthProvider>
   </StrictMode>,
 )

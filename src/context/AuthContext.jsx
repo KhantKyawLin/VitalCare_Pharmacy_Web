@@ -9,12 +9,33 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('token') || null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Set axios default authorization header
-    if (token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    } else {
-        delete axios.defaults.headers.common['Authorization'];
-    }
+    // Update axios header when token changes
+    useEffect(() => {
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        } else {
+            delete axios.defaults.headers.common['Authorization'];
+        }
+    }, [token]);
+
+    // Global interceptor for 401 errors
+    useEffect(() => {
+        const interceptor = axios.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response?.status === 401) {
+                    // Only logout if we had a token (to avoid infinite loops on login page)
+                    if (localStorage.getItem('token')) {
+                        console.warn("Session expired or invalid token. Logging out.");
+                        logout(true); 
+                    }
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        return () => axios.interceptors.response.eject(interceptor);
+    }, []);
 
     // Check if user is logged in on mount
     useEffect(() => {

@@ -19,7 +19,7 @@ const ProductCard = ({ product }) => {
     let currentPrice = parseFloat(product.price || 0);
     let originalPrice = null;
     let badgeText = null;
-    let badgeColor = "bg-[#A3C93A]"; // Default green
+    let badgeColor = "bg-primary-green"; // Default branding color
 
     if (hasPromotion) {
         const promo = product.promotions[0];
@@ -69,7 +69,7 @@ const ProductCard = ({ product }) => {
                     title: 'Customer Action Only',
                     text: 'Only registered customers can perform this action. Staff members should use the POS system for sales.',
                     icon: 'warning',
-                    confirmButtonColor: '#A3C93A',
+                    confirmButtonColor: 'var(--primary-color)',
                     confirmButtonText: 'I Understand'
                 });
             });
@@ -135,7 +135,7 @@ const ProductCard = ({ product }) => {
                 {/* Promotion Badge */}
                 {badgeText && (
                     <div className="absolute top-2 left-2 z-10">
-                        <span className="bg-[#A3C93A] text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-sm">
+                        <span className="bg-primary-green text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-sm">
                             {badgeText}
                         </span>
                     </div>
@@ -165,7 +165,7 @@ const ProductCard = ({ product }) => {
 
             {/* Middle Section: Name & Category */}
             <div className="px-3 pt-2 flex justify-between items-start gap-2">
-                <h3 className="text-[12px] font-bold text-gray-800 line-clamp-1 leading-tight flex-grow group-hover:text-[#A3C93A] transition-colors">
+                <h3 className="text-[12px] font-bold text-gray-800 line-clamp-1 leading-tight flex-grow group-hover:text-primary-green transition-colors">
                     {product.name}
                 </h3>
                 <span className="bg-gray-50 text-gray-400 text-[9px] font-bold px-1.5 py-0.5 rounded border border-gray-100 whitespace-nowrap">
@@ -185,7 +185,7 @@ const ProductCard = ({ product }) => {
                         </span>
                     )}
                 </div>
-                <Link to={`/products/${product.id}`} className="text-[#A3C93A] border border-[#A3C93A]/30 px-1.5 py-0.5 rounded text-[9px] font-bold flex items-center gap-0.5 hover:bg-[#A3C93A] hover:text-white transition-all">
+                <Link to={`/products/${product.id}`} className="text-primary-green border border-primary-green/30 px-1.5 py-0.5 rounded text-[9px] font-bold flex items-center gap-0.5 hover:bg-primary-green hover:text-white transition-all">
                     View <ChevronRight size={10} />
                 </Link>
             </div>
@@ -196,7 +196,7 @@ const ProductCard = ({ product }) => {
                     <button 
                         onClick={handleWishlistToggle}
                         disabled={isAddingWishlist}
-                        className={`flex items-center justify-center gap-1 bg-[#A3C93A] hover:bg-[#8eb132] text-white py-2 rounded text-[9px] font-bold transition-all shadow-sm disabled:opacity-50`}
+                        className={`flex items-center justify-center gap-1 bg-primary-green hover:bg-primary-dark text-white py-2 rounded text-[9px] font-bold transition-all shadow-sm disabled:opacity-50`}
                     >
                         <Heart size={12} fill={isWishlisted ? "white" : "none"} /> 
                         {isAddingWishlist ? '...' : 'Add to Wishlist'}
@@ -204,7 +204,7 @@ const ProductCard = ({ product }) => {
                     <button 
                         onClick={handleAddToCart}
                         disabled={product.is_expired || isAddingCart}
-                        className="flex items-center justify-center gap-1 bg-[#A3C93A] hover:bg-[#8eb132] text-white py-2 rounded text-[9px] font-bold transition-all shadow-sm disabled:opacity-50"
+                        className="flex items-center justify-center gap-1 bg-primary-green hover:bg-primary-dark text-white py-2 rounded text-[9px] font-bold transition-all shadow-sm disabled:opacity-50"
                     >
                         <ShoppingCart size={12} /> 
                         {isAddingCart ? '...' : 'Add to Cart'}

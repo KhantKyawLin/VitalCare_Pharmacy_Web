@@ -395,7 +395,7 @@ const AdminPOS = () => {
                                 placeholder="Scan Barcode or Search Products..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#8DB600] outline-none text-gray-700 shadow-sm transition-all"
+                                className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-green outline-none text-gray-700 shadow-sm transition-all"
                                 autoFocus
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' && searchQuery) {
@@ -420,7 +420,7 @@ const AdminPOS = () => {
                                             key={product.id}
                                             onClick={() => addToCart(product)}
                                             disabled={isOutOfStock}
-                                            className={`bg-white p-4 rounded-xl shadow-sm border transition-all text-left flex flex-col group relative overflow-hidden ${isOutOfStock ? 'border-red-100 opacity-60 cursor-not-allowed' : 'border-gray-100 hover:border-[#8DB600] hover:shadow-md'
+                                            className={`bg-white p-4 rounded-xl shadow-sm border transition-all text-left flex flex-col group relative overflow-hidden ${isOutOfStock ? 'border-red-100 opacity-60 cursor-not-allowed' : 'border-gray-100 hover:border-primary-green hover:shadow-md'
                                                 }`}
                                         >
                                             {hasDiscount && !isOutOfStock && <div className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">Sale</div>}
@@ -431,7 +431,7 @@ const AdminPOS = () => {
                                             <p className="text-[11px] text-gray-400 mb-1">{product.category?.name}</p>
                                             <p className={`text-[10px] font-bold mb-2 ${stock <= 5 && stock > 0 ? 'text-orange-500' : stock > 5 ? 'text-green-600' : 'text-red-500'}`}>Stock: {stock}</p>
                                             <div className="mt-auto">
-                                                <span className="font-bold text-[#8DB600]">{finalPrice.toLocaleString()} Ks</span>
+                                                <span className="font-bold text-primary-green">{finalPrice.toLocaleString()} Ks</span>
                                                 {hasDiscount && <span className="ml-2 text-xs line-through text-gray-400">{originalPrice.toLocaleString()}</span>}
                                             </div>
                                         </button>
@@ -451,7 +451,7 @@ const AdminPOS = () => {
                 <div className="w-[400px] bg-white rounded-2xl shadow-sm border border-gray-200 flex flex-col flex-shrink-0">
                     <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
                         <h2 className="font-bold text-gray-800 flex items-center gap-2">
-                            <ShoppingCart size={18} className="text-[#8DB600]" />
+                            <ShoppingCart size={18} className="text-primary-green" />
                             Current Order
                         </h2>
                         {cart.length > 0 && (
@@ -516,13 +516,13 @@ const AdminPOS = () => {
                             )}
                             <div className="flex justify-between font-black text-xl text-gray-800 mt-2 pt-2 border-t border-gray-200">
                                 <span>Total</span>
-                                <span className="text-[#8DB600]">{grandTotal.toLocaleString()} Ks</span>
+                                <span className="text-primary-green">{grandTotal.toLocaleString()} Ks</span>
                             </div>
                         </div>
                         <button
                             disabled={cart.length === 0}
                             onClick={() => setShowCheckout(true)}
-                            className="w-full py-4 bg-[#8DB600] text-white rounded-xl font-bold text-lg hover:bg-[#7a9e00] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[#8DB600]/20"
+                            className="w-full py-4 bg-primary-green text-white rounded-xl font-bold text-lg hover:bg-primary-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-primary-green/20"
                         >
                             Checkout ({cart.reduce((s, i) => s + i.quantity, 0)} items)
                         </button>
@@ -541,7 +541,7 @@ const AdminPOS = () => {
                         <div className="p-6 grid grid-cols-2 gap-6">
                             <div className="space-y-3">
                                 <p className="font-bold text-sm text-gray-500 uppercase tracking-widest mb-4">Payment Method</p>
-                                <button onClick={() => setPaymentMethod('cash')} className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${paymentMethod === 'cash' ? 'border-[#8DB600] bg-[#8DB600]/5 text-[#8DB600]' : 'border-gray-100 hover:border-gray-200 text-gray-600'}`}><Banknote size={24} /> <span className="font-bold">Cash</span></button>
+                                <button onClick={() => setPaymentMethod('cash')} className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${paymentMethod === 'cash' ? 'border-primary-green bg-primary-light text-primary-green' : 'border-gray-100 hover:border-gray-200 text-gray-600'}`}><Banknote size={24} /> <span className="font-bold">Cash</span></button>
                                 <button onClick={() => setPaymentMethod('qr')} className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${paymentMethod === 'qr' ? 'border-purple-500 bg-purple-50 text-purple-600' : 'border-gray-100 hover:border-gray-200 text-gray-600'}`}><QrCode size={24} /> <span className="font-bold">Static QR Scan</span></button>
                                 <button onClick={() => setPaymentMethod('card')} className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${paymentMethod === 'card' ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-100 hover:border-gray-200 text-gray-600'}`}><CreditCard size={24} /> <span className="font-bold">Card Reader</span></button>
                             </div>
@@ -553,7 +553,7 @@ const AdminPOS = () => {
                                 {paymentMethod === 'cash' && (
                                     <div className="mb-4 space-y-2">
                                         <label className="text-sm font-bold text-gray-600">Amount Received (Ks)</label>
-                                        <input type="number" value={receivedAmount} onChange={(e) => setReceivedAmount(e.target.value)} className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-[#8DB600] outline-none text-lg font-bold text-gray-800" placeholder="Enter amount..." autoFocus />
+                                        <input type="number" value={receivedAmount} onChange={(e) => setReceivedAmount(e.target.value)} className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-primary-green outline-none text-lg font-bold text-gray-800" placeholder="Enter amount..." autoFocus />
                                         {receivedAmount && parseFloat(receivedAmount) >= grandTotal && (
                                             <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-100 text-center">
                                                 <p className="text-xs font-bold text-green-600 uppercase tracking-widest mb-1">Change Return</p>
@@ -562,7 +562,7 @@ const AdminPOS = () => {
                                         )}
                                     </div>
                                 )}
-                                <button onClick={handleCheckout} disabled={isProcessing || (paymentMethod === 'cash' && (!receivedAmount || parseFloat(receivedAmount) < grandTotal))} className="mt-auto w-full py-4 bg-[#8DB600] text-white rounded-xl font-bold text-lg hover:bg-[#7a9e00] transition-all disabled:opacity-50">
+                                <button onClick={handleCheckout} disabled={isProcessing || (paymentMethod === 'cash' && (!receivedAmount || parseFloat(receivedAmount) < grandTotal))} className="mt-auto w-full py-4 bg-primary-green text-white rounded-xl font-bold text-lg hover:bg-primary-dark transition-all disabled:opacity-50">
                                     {isProcessing ? 'Processing...' : `Confirm & Print Receipt`}
                                 </button>
                             </div>

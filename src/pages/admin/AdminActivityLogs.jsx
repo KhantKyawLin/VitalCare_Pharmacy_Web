@@ -122,14 +122,14 @@ const AdminActivityLogs = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                        <Terminal className="text-[#8DB600]" /> System Activity Logs
+                        <Terminal className="text-primary-green" /> System Activity Logs
                     </h2>
                     <p className="text-gray-500 text-sm italic mt-1">Audit trail of all administrative and staff actions.</p>
                 </div>
                 <div className="flex gap-2">
                     <button 
                         onClick={fetchLogs}
-                        className="p-2 bg-white border border-gray-200 rounded text-gray-600 hover:text-[#8DB600] transition-colors shadow-sm"
+                        className="p-2 bg-white border border-gray-200 rounded text-gray-600 hover:text-primary-green transition-colors shadow-sm"
                         title="Refresh Logs"
                     >
                         <RefreshCcw size={18} />
@@ -154,7 +154,7 @@ const AdminActivityLogs = () => {
                             placeholder="Search description, IP, or type..."
                             value={filters.search}
                             onChange={handleFilterChange}
-                            className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded text-xs focus:ring-1 focus:ring-[#8DB600] outline-none transition-all"
+                            className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded text-xs focus:ring-1 focus:ring-primary-green outline-none transition-all"
                         />
                     </form>
                     
@@ -257,7 +257,7 @@ const AdminActivityLogs = () => {
                                     <td className="px-6 py-4 text-center">
                                         <button 
                                             onClick={() => viewLogDetails(log)}
-                                            className="p-1.5 text-gray-400 hover:text-[#8DB600] hover:bg-[#8DB600]/5 rounded transition-all"
+                                            className="p-1.5 text-gray-400 hover:text-primary-green hover:bg-primary-light rounded transition-all"
                                         >
                                             <Eye size={16} />
                                         </button>
@@ -310,7 +310,7 @@ const AdminActivityLogs = () => {
                     <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col border border-gray-200 scale-in">
                         <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                             <div className="flex items-center gap-2">
-                                <Info size={20} className="text-[#8DB600]" />
+                                <Info size={20} className="text-primary-green" />
                                 <h3 className="font-bold text-gray-800 text-lg">Log Activity Details</h3>
                             </div>
                             <button onClick={() => setSelectedLog(null)} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors">

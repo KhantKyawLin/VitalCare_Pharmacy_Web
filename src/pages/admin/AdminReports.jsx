@@ -90,7 +90,7 @@ const AdminReports = () => {
 
     const resetForm = () => { setForm({ type: 'expense', category: '', title: '', amount: '', transaction_date: new Date().toISOString().split('T')[0], notes: '', reference_number: '' }); setEditId(null); setShowForm(false); };
 
-    if (loading && !summary) return <div className="flex items-center justify-center min-h-[400px]"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8DB600]"></div></div>;
+    if (loading && !summary) return <div className="flex items-center justify-center min-h-[400px]"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-green"></div></div>;
 
     const currentCats = form.type === 'expense' ? categories.expense : categories.income;
 
@@ -107,10 +107,10 @@ const AdminReports = () => {
                 <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1 bg-white p-1 rounded border border-gray-100 shadow-sm h-[38px]">
                         {[{ id: 'today', label: 'Today' }, { id: 'last_7_days', label: '7 Days' }, { id: 'this_month', label: 'Month' }, { id: 'year_to_date', label: 'YTD' }].map(btn => (
-                            <button key={btn.id} onClick={() => setRange(btn.id)} className={`px-4 py-1.5 rounded text-xs font-bold transition-all ${range === btn.id ? 'bg-[#8DB600] text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'}`}>{btn.label}</button>
+                            <button key={btn.id} onClick={() => setRange(btn.id)} className={`px-4 py-1.5 rounded text-xs font-bold transition-all ${range === btn.id ? 'bg-primary-green text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'}`}>{btn.label}</button>
                         ))}
                     </div>
-                    <Link to="/admin/profit-loss" className="px-4 h-[38px] bg-[#8DB600] text-white rounded text-xs font-bold hover:bg-[#7a9e00] transition-all shadow-sm flex items-center gap-2 uppercase tracking-wider">
+                    <Link to="/admin/profit-loss" className="px-4 h-[38px] bg-primary-green text-white rounded text-xs font-bold hover:bg-primary-dark transition-all shadow-sm flex items-center gap-2 uppercase tracking-wider">
                         VIEW DETAILED LEDGER <ArrowRight size={14} />
                     </Link>
                 </div>
@@ -123,19 +123,19 @@ const AdminReports = () => {
                 <StatCard title="Gross Profit" value={summary?.gross_profit} icon={<TrendingUp className="text-green-600" />} subtitle={`Margin: ${summary?.margin}%`} color="green" />
                 <StatCard title="Inventory Losses" value={summary?.total_losses} icon={<AlertTriangle className="text-red-600" />} subtitle="Expired & Damaged" color="red" />
                 <StatCard title="Operating Expenses" value={summary?.external_expenses} icon={<Wallet className="text-orange-600" />} subtitle="Utility & Bills" color="orange" />
-                <StatCard title="Net Profit" value={summary?.net_profit} icon={<BarChart3 className="text-[#8DB600]" />} subtitle="Final Earnings" color="lime" />
+                <StatCard title="Net Profit" value={summary?.net_profit} icon={<BarChart3 className="text-primary-green" />} subtitle="Final Earnings" color="lime" />
             </div>
 
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 bg-white rounded border border-gray-100 shadow-sm p-6">
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-bold text-gray-800 text-sm flex items-center gap-2 underline decoration-[#8DB600] decoration-2 underline-offset-4">
+                        <h3 className="font-bold text-gray-800 text-sm flex items-center gap-2 underline decoration-primary-green decoration-2 underline-offset-4">
                             REVENUE VS PROFIT TREND
                         </h3>
                         <div className="flex gap-4 text-[10px] font-black uppercase tracking-widest">
                             <div className="flex items-center gap-1.5 text-blue-500"><div className="w-2 h-2 bg-blue-500 rounded-full"></div> Revenue</div>
-                            <div className="flex items-center gap-1.5 text-[#8DB600]"><div className="w-2 h-2 bg-[#8DB600] rounded-full"></div> Profit</div>
+                            <div className="flex items-center gap-1.5 text-primary-green"><div className="w-2 h-2 bg-primary-green rounded-full"></div> Profit</div>
                         </div>
                     </div>
                     <div className="h-[250px] relative">
@@ -148,7 +148,7 @@ const AdminReports = () => {
                                     return (
                                         <div key={idx} className="flex-1 flex flex-col justify-end group relative">
                                             <div className="w-full bg-blue-100/50 group-hover:bg-blue-100 transition-colors rounded-t-sm" style={{ height: `${revH}%` }}>
-                                                <div className="w-full bg-[#8DB600]/40 rounded-t-sm" style={{ height: `${(profH / revH) * 100}%` }}></div>
+                                                <div className="w-full bg-primary-green/40 rounded-t-sm" style={{ height: `${(profH / revH) * 100}%` }}></div>
                                             </div>
                                             <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-10">
                                                 {new Date(data.date).toLocaleDateString()}: {parseFloat(data.revenue).toLocaleString()} Ks
@@ -192,7 +192,7 @@ const AdminReports = () => {
                             <span className="text-red-600 bg-red-50 px-2 py-1 rounded border border-red-100">OUT: {parseFloat(txStats.total_expenses).toLocaleString()} Ks</span>
                             <span className="text-green-600 bg-green-50 px-2 py-1 rounded border border-green-100">IN: {parseFloat(txStats.total_income).toLocaleString()} Ks</span>
                         </div>
-                        <button onClick={() => { resetForm(); setShowForm(true); }} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#8DB600] text-white rounded text-xs font-bold hover:bg-[#7a9e00] transition-colors shadow-sm">
+                        <button onClick={() => { resetForm(); setShowForm(true); }} className="flex items-center gap-1.5 px-3 py-1.5 bg-primary-green text-white rounded text-xs font-bold hover:bg-primary-dark transition-colors shadow-sm">
                             <Plus size={14} /> ADD RECORD
                         </button>
                     </div>
@@ -203,27 +203,27 @@ const AdminReports = () => {
                         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-3">
                             <div className="space-y-1">
                                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Type</label>
-                                <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value, category: '' })} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs outline-none focus:border-[#8DB600]">
+                                <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value, category: '' })} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs outline-none focus:border-primary-green">
                                     <option value="expense">Expense</option>
                                     <option value="income">Income</option>
                                 </select>
                             </div>
                             <div className="space-y-1">
                                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Category</label>
-                                <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs outline-none focus:border-[#8DB600]" required>
+                                <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs outline-none focus:border-primary-green" required>
                                     <option value="">Select Category</option>
                                     {currentCats.map(c => <option key={c} value={c}>{c}</option>)}
                                 </select>
                             </div>
                             <div className="space-y-1">
                                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Description</label>
-                                <input type="text" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="e.g. Meter Bill" className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs outline-none focus:border-[#8DB600]" required />
+                                <input type="text" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="e.g. Meter Bill" className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs outline-none focus:border-primary-green" required />
                             </div>
                             <div className="space-y-1">
                                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount (Ks)</label>
                                 <div className="flex gap-1">
-                                    <input type="number" step="0.01" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs outline-none focus:border-[#8DB600]" required />
-                                    <button type="submit" className="px-4 bg-[#8DB600] text-white rounded text-[10px] font-black hover:bg-[#7a9e00]">{editId ? 'UPDATE' : 'SAVE'}</button>
+                                    <input type="number" step="0.01" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} className="w-full border border-gray-200 rounded px-2 py-1.5 text-xs outline-none focus:border-primary-green" required />
+                                    <button type="submit" className="px-4 bg-primary-green text-white rounded text-[10px] font-black hover:bg-primary-dark">{editId ? 'UPDATE' : 'SAVE'}</button>
                                     <button type="button" onClick={resetForm} className="px-2 bg-gray-100 text-gray-500 rounded hover:bg-gray-200"><X size={14} /></button>
                                 </div>
                             </div>
@@ -294,7 +294,7 @@ const AdminReports = () => {
                                         <td className="px-6 py-3 font-bold text-gray-700">{tp.product?.name}</td>
                                         <td className="px-6 py-3 text-center text-gray-500">{tp.units_sold}</td>
                                         <td className="px-6 py-3 text-right font-medium">{rev.toLocaleString()} Ks</td>
-                                        <td className="px-6 py-3 text-right font-black text-[#8DB600]">{profit.toLocaleString()} Ks</td>
+                                        <td className="px-6 py-3 text-right font-black text-primary-green">{profit.toLocaleString()} Ks</td>
                                         <td className="px-6 py-3 text-center"><span className="px-2 py-0.5 bg-green-50 text-green-600 rounded text-[10px] font-bold border border-green-100">{margin.toFixed(1)}%</span></td>
                                     </tr>
                                 );
@@ -315,10 +315,10 @@ const StatCard = ({ title, value, icon, trend, subtitle, color }) => {
         red: "bg-red-50 border-red-100 text-red-600",
         orange: "bg-orange-50 border-orange-100 text-orange-600",
         purple: "bg-purple-50 border-purple-100 text-purple-600",
-        lime: "bg-[#8DB600]/5 border-[#8DB600]/10 text-[#8DB600]"
+        lime: "bg-primary-light border-primary-green/10 text-primary-green"
     };
     return (
-        <div className="bg-white p-4 rounded border border-gray-100 shadow-sm hover:border-[#8DB600] transition-all group">
+        <div className="bg-white p-4 rounded border border-gray-100 shadow-sm hover:border-primary-green transition-all group">
             <div className="flex justify-between items-start mb-3">
                 <div className={`p-1.5 rounded border ${colors[color]}`}>{React.cloneElement(icon, { size: 18 })}</div>
                 {trend !== undefined && (

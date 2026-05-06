@@ -219,7 +219,7 @@ const AdminPromotionForm = () => {
 
     if (fetchingData) return (
         <div className="flex justify-center items-center h-[60vh]">
-            <div className="animate-spin text-[#8DB600]"><RefreshCw size={32} /></div>
+            <div className="animate-spin text-primary-green"><RefreshCw size={32} /></div>
         </div>
     );
 
@@ -227,7 +227,7 @@ const AdminPromotionForm = () => {
         <div className="space-y-6 pt-2 pb-12 max-w-[1200px] mx-auto px-4 sm:px-6">
             <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <div className="flex items-center gap-2">
-                    <Tag size={24} className="text-[#8DB600]" />
+                    <Tag size={24} className="text-primary-green" />
                     <h2 className="text-xl font-bold text-gray-800">
                         {isViewOnly ? 'Promotion Details' : (isEditing ? 'Edit Promotion' : 'Create New Promotion')}
                     </h2>
@@ -242,7 +242,7 @@ const AdminPromotionForm = () => {
                 {/* Configuration Card */}
                 <div className="bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100 p-6">
                     <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2 mb-6 pb-3 border-b border-gray-100">
-                        <Info size={18} className="text-[#8DB600]" /> Promotion Details
+                        <Info size={18} className="text-primary-green" /> Promotion Details
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
@@ -256,7 +256,7 @@ const AdminPromotionForm = () => {
                                 onChange={handleChange}
                                 placeholder="e.g. Summer Skincare Sale"
                                 disabled={isViewOnly}
-                                className={`w-full px-4 py-2.5 rounded border border-gray-200 focus:border-[#8DB600] focus:ring-1 focus:ring-[#8DB600] outline-none text-sm transition-all ${isViewOnly ? 'bg-gray-50' : ''}`}
+                                className={`w-full px-4 py-2.5 rounded border border-gray-200 focus:border-primary-green focus:ring-1 focus:ring-primary-green outline-none text-sm transition-all ${isViewOnly ? 'bg-gray-50' : ''}`}
                             />
                         </div>
 
@@ -267,7 +267,7 @@ const AdminPromotionForm = () => {
                                 value={formData.promotion_scope}
                                 onChange={handleChange}
                                 disabled={isViewOnly}
-                                className={`w-full px-4 py-2.5 rounded border border-gray-200 focus:border-[#8DB600] focus:ring-1 focus:ring-[#8DB600] outline-none text-sm transition-all bg-white ${isViewOnly ? 'bg-gray-50' : ''}`}
+                                className={`w-full px-4 py-2.5 rounded border border-gray-200 focus:border-primary-green focus:ring-1 focus:ring-primary-green outline-none text-sm transition-all bg-white ${isViewOnly ? 'bg-gray-50' : ''}`}
                             >
                                 <option value="item">Specific Products (Item Level)</option>
                                 <option value="order">Whole Bill (Order Level Cashback)</option>
@@ -287,7 +287,7 @@ const AdminPromotionForm = () => {
                                         value={formData.min_qty_requirement}
                                         onChange={handleChange}
                                         disabled={isViewOnly}
-                                        className={`w-full px-4 py-2.5 rounded border border-gray-200 focus:border-[#8DB600] focus:ring-1 focus:ring-[#8DB600] outline-none text-sm transition-all ${isViewOnly ? 'bg-gray-50' : ''}`}
+                                        className={`w-full px-4 py-2.5 rounded border border-gray-200 focus:border-primary-green focus:ring-1 focus:ring-primary-green outline-none text-sm transition-all ${isViewOnly ? 'bg-gray-50' : ''}`}
                                     />
                                 </div>
                             ) : (
@@ -320,7 +320,7 @@ const AdminPromotionForm = () => {
                                 value={formData.discount_type}
                                 onChange={handleChange}
                                 disabled={isViewOnly}
-                                className={`w-full px-4 py-2.5 rounded border border-gray-200 focus:border-[#8DB600] focus:ring-1 focus:ring-[#8DB600] outline-none text-sm transition-all bg-white ${isViewOnly ? 'bg-gray-50' : ''}`}
+                                className={`w-full px-4 py-2.5 rounded border border-gray-200 focus:border-primary-green focus:ring-1 focus:ring-primary-green outline-none text-sm transition-all bg-white ${isViewOnly ? 'bg-gray-50' : ''}`}
                             >
                                 <option value="percentage">Percentage (%)</option>
                                 <option value="fixed_amount">Fixed Amount</option>
@@ -379,7 +379,7 @@ const AdminPromotionForm = () => {
                         <div className="col-span-1">
                             <label className="text-sm font-bold text-gray-700 block mb-1">Discount Value *</label>
                             <div className="relative">
-                                <span className={`absolute left-0 top-0 bottom-0 flex items-center justify-center w-10 border-r border-gray-200 bg-gray-50 rounded-l ${formData.discount_type === 'percentage' ? 'text-blue-500' : 'text-[#8DB600]'}`}>
+                                <span className={`absolute left-0 top-0 bottom-0 flex items-center justify-center w-10 border-r border-gray-200 bg-gray-50 rounded-l ${formData.discount_type === 'percentage' ? 'text-blue-500' : 'text-primary-green'}`}>
                                     {formData.discount_type === 'percentage' ? <Percent size={14} /> : 'Ks'}
                                 </span>
                                 <input
@@ -392,7 +392,7 @@ const AdminPromotionForm = () => {
                                     onChange={handleChange}
                                     placeholder={formData.discount_type === 'percentage' ? 'e.g. 10 for 10% off' : 'e.g. 500 for 500 MMK off'}
                                     disabled={isViewOnly || formData.discount_type === 'buy_one_get_one' || formData.discount_type === 'buy_one_get_gift'}
-                                    className={`w-full pl-12 pr-4 py-2.5 rounded border border-gray-200 focus:border-[#8DB600] focus:ring-1 focus:ring-[#8DB600] outline-none text-sm transition-all ${isViewOnly ? 'bg-gray-50' : ''}`}
+                                    className={`w-full pl-12 pr-4 py-2.5 rounded border border-gray-200 focus:border-primary-green focus:ring-1 focus:ring-primary-green outline-none text-sm transition-all ${isViewOnly ? 'bg-gray-50' : ''}`}
                                 />
                             </div>
                         </div>
@@ -412,7 +412,7 @@ const AdminPromotionForm = () => {
                                         value={formData.max_discount_amount}
                                         onChange={handleChange}
                                         disabled={isViewOnly}
-                                        className={`w-full pl-9 pr-4 py-2.5 rounded border border-gray-200 focus:border-[#8DB600] focus:ring-1 focus:ring-[#8DB600] outline-none text-sm transition-all ${isViewOnly ? 'bg-gray-50' : ''}`}
+                                        className={`w-full pl-9 pr-4 py-2.5 rounded border border-gray-200 focus:border-primary-green focus:ring-1 focus:ring-primary-green outline-none text-sm transition-all ${isViewOnly ? 'bg-gray-50' : ''}`}
                                         placeholder="e.g. 2000"
                                     />
                                 </div>
@@ -430,7 +430,7 @@ const AdminPromotionForm = () => {
                                     value={formData.start_date}
                                     onChange={handleChange}
                                     disabled={isViewOnly}
-                                    className={`w-full pl-10 pr-4 py-2.5 rounded border border-gray-200 focus:border-[#8DB600] focus:ring-1 focus:ring-[#8DB600] outline-none text-sm transition-all text-gray-700 ${isViewOnly ? 'bg-gray-50' : ''}`}
+                                    className={`w-full pl-10 pr-4 py-2.5 rounded border border-gray-200 focus:border-primary-green focus:ring-1 focus:ring-primary-green outline-none text-sm transition-all text-gray-700 ${isViewOnly ? 'bg-gray-50' : ''}`}
                                 />
                             </div>
                         </div>
@@ -447,7 +447,7 @@ const AdminPromotionForm = () => {
                                     value={formData.end_date}
                                     onChange={handleChange}
                                     disabled={isViewOnly}
-                                    className={`w-full pl-10 pr-4 py-2.5 rounded border border-gray-200 focus:border-[#8DB600] focus:ring-1 focus:ring-[#8DB600] outline-none text-sm transition-all text-gray-700 ${isViewOnly ? 'bg-gray-50' : ''}`}
+                                    className={`w-full pl-10 pr-4 py-2.5 rounded border border-gray-200 focus:border-primary-green focus:ring-1 focus:ring-primary-green outline-none text-sm transition-all text-gray-700 ${isViewOnly ? 'bg-gray-50' : ''}`}
                                 />
                             </div>
                         </div>
@@ -460,7 +460,7 @@ const AdminPromotionForm = () => {
                                 onChange={handleChange}
                                 rows="3"
                                 disabled={isViewOnly}
-                                className={`w-full px-4 py-2.5 rounded border border-gray-200 focus:border-[#8DB600] focus:ring-1 focus:ring-[#8DB600] outline-none text-sm transition-all ${isViewOnly ? 'bg-gray-50' : ''}`}
+                                className={`w-full px-4 py-2.5 rounded border border-gray-200 focus:border-primary-green focus:ring-1 focus:ring-primary-green outline-none text-sm transition-all ${isViewOnly ? 'bg-gray-50' : ''}`}
                                 placeholder="Internal notes about this promotion..."
                             />
                         </div>
@@ -475,7 +475,7 @@ const AdminPromotionForm = () => {
                                     onChange={handleChange}
                                     className="sr-only peer"
                                 />
-                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#8DB600]"></div>
+                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-green"></div>
                                 <span className="ml-3 text-sm font-bold text-gray-700">Promotion is Active</span>
                             </label>
                         </div>
@@ -487,9 +487,9 @@ const AdminPromotionForm = () => {
                     <div className="bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100 p-6 animate-in fade-in duration-300">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-3 border-b border-gray-100 gap-4">
                             <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                <List size={18} className="text-[#8DB600]" />
+                                <List size={18} className="text-primary-green" />
                                 Applicable Products
-                                <span className="ml-2 px-2.5 py-0.5 bg-[#8DB600]/10 text-[#8DB600] rounded text-[11px]">
+                                <span className="ml-2 px-2.5 py-0.5 bg-primary-light text-primary-green rounded text-[11px]">
                                     {selectedProducts.size} Selected
                                 </span>
                             </h3>
@@ -518,7 +518,7 @@ const AdminPromotionForm = () => {
 
                         {/* Filters for Table */}
                         <div className="flex flex-col md:flex-row gap-4 mb-4">
-                            <div className="relative flex-1 rounded border border-gray-200 focus-within:border-[#8DB600] transition-all flex items-center bg-white overflow-hidden">
+                            <div className="relative flex-1 rounded border border-gray-200 focus-within:border-primary-green transition-all flex items-center bg-white overflow-hidden">
                                 <Search size={16} className="absolute left-3 text-gray-400" />
                                 <input
                                     type="text"
@@ -574,7 +574,7 @@ const AdminPromotionForm = () => {
                                         return (
                                             <tr 
                                                 key={p.id} 
-                                                className={`border-b border-gray-50 transition-colors ${isLocked ? 'opacity-60 bg-gray-50 cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'} ${isSelected && !isLocked ? 'bg-[#8DB600]/5' : ''}`} 
+                                                className={`border-b border-gray-50 transition-colors ${isLocked ? 'opacity-60 bg-gray-50 cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'} ${isSelected && !isLocked ? 'bg-primary-light' : ''}`} 
                                                 onClick={() => !isViewOnly && !isLocked && handleProductSelect(p.id)}
                                                 title={isLocked ? `This product already has active promotions: ${otherPromos.map(op => op.title).join(', ')}` : ''}
                                             >
@@ -584,7 +584,7 @@ const AdminPromotionForm = () => {
                                                         checked={isSelected}
                                                         disabled={isViewOnly || isLocked}
                                                         onChange={() => { }} // Handle via row click
-                                                        className={`w-4 h-4 text-[#8DB600] rounded focus:ring-[#8DB600] accent-[#8DB600] ${(!isViewOnly && !isLocked) ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                                                        className={`w-4 h-4 text-primary-green rounded focus:ring-primary-green accent-primary-green ${(!isViewOnly && !isLocked) ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                                                     />
                                                 </td>
                                                 <td className="py-2.5 px-4 font-bold text-gray-800 flex items-center gap-2">
@@ -628,7 +628,7 @@ const AdminPromotionForm = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="px-6 py-2.5 bg-[#8DB600] text-white rounded font-bold hover:bg-[#7a9e00] shadow-md transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="px-6 py-2.5 bg-primary-green text-white rounded font-bold hover:bg-primary-dark shadow-md transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                         >
                             <Save size={18} />
                             {loading ? 'Saving...' : (isEditing ? 'Save Changes' : 'Create Promotion')}

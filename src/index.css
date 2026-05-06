@@ -1,23 +1,25 @@
 @import "tailwindcss";
 
+:root {
+  /* Branding System Variables */
+  --primary-color: #8DB600;
+  --accent-color: #7fa400;
+  --primary-color-dark: #769800;
+  --primary-color-light: rgba(141, 182, 0, 0.1);
+  
+  --font-sans: "Inter", system-ui, sans-serif;
+  font-family: var(--font-sans);
+  ...
+}
+
 @theme {
-  --color-primary-green: #A3C93A;
-  --color-accent-green: #6CA52C;
+  --color-primary-green: var(--primary-color);
+  --color-accent-green: var(--accent-color);
+  --color-primary-dark: var(--primary-color-dark);
+  --color-primary-light: var(--primary-color-light);
   --color-light-grey: #D7D3CA;
   --color-text-dark: #333333;
   --color-text-muted: #666666;
-  --font-sans: "Inter", system-ui, sans-serif;
-}
-
-:root {
-  font-family: var(--font-sans);
-  line-height: 1.5;
-  font-weight: 400;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 body {

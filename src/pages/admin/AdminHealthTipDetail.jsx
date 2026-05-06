@@ -80,7 +80,7 @@ const AdminHealthTipDetail = () => {
     if (loading || !data) {
         return (
             <div className="flex items-center justify-center h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#A3C93A]"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-green"></div>
             </div>
         );
     }
@@ -92,8 +92,8 @@ const AdminHealthTipDetail = () => {
             {/* Header Area */}
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-[#A3C93A]/10 rounded-lg">
-                        <BookOpen size={28} className="text-[#A3C93A]" strokeWidth={2.5}/>
+                    <div className="p-2 bg-primary-light rounded-lg">
+                        <BookOpen size={28} className="text-primary-green" strokeWidth={2.5}/>
                     </div>
                     <h2 className="text-2xl text-gray-800 font-black tracking-tight">Health Tip Details</h2>
                 </div>
@@ -124,7 +124,7 @@ const AdminHealthTipDetail = () => {
                                 </div>
                             )}
                             <div className="absolute top-6 left-6">
-                                <span className="bg-[#A3C93A] text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-[#A3C93A]/30 flex items-center gap-2">
+                                <span className="bg-primary-green text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-primary-green/30 flex items-center gap-2">
                                     <ShieldCheck size={14}/> Verified Expert Content
                                 </span>
                             </div>
@@ -132,13 +132,13 @@ const AdminHealthTipDetail = () => {
 
                         {/* Article Content */}
                         <div className="p-10">
-                            <h1 className="text-4xl font-black text-[#A3C93A] leading-tight mb-6">
+                            <h1 className="text-4xl font-black text-primary-green leading-tight mb-6">
                                 {tip.title}
                             </h1>
 
                             <div className="flex flex-wrap items-center gap-6 pb-8 border-b border-gray-100 mb-8">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#A3C93A] border-2 border-white ring-2 ring-gray-50">
+                                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-primary-green border-2 border-white ring-2 ring-gray-50">
                                         <User size={20} />
                                     </div>
                                     <div>
@@ -190,7 +190,7 @@ const AdminHealthTipDetail = () => {
                                             )}
                                         </div>
                                         <div className="flex flex-col justify-between py-1">
-                                            <h4 className="font-bold text-gray-800 text-sm line-clamp-2 leading-tight group-hover:text-[#A3C93A] transition-colors">{rel.title}</h4>
+                                            <h4 className="font-bold text-gray-800 text-sm line-clamp-2 leading-tight group-hover:text-primary-green transition-colors">{rel.title}</h4>
                                             <button className="text-[11px] font-black text-blue-500 flex items-center gap-1 group-hover:gap-2 transition-all">
                                                 Read More <ArrowRight size={12} />
                                             </button>
@@ -211,7 +211,7 @@ const AdminHealthTipDetail = () => {
                             <h3 className="font-black text-gray-800 uppercase tracking-widest text-xs">About the Author</h3>
                         </div>
                         <div className="flex flex-col items-center text-center">
-                            <div className="w-20 h-20 rounded-3xl bg-[#A3C93A] flex items-center justify-center text-white mb-4 shadow-lg shadow-[#A3C93A]/20">
+                            <div className="w-20 h-20 rounded-3xl bg-primary-green flex items-center justify-center text-white mb-4 shadow-lg shadow-primary-green/20">
                                 <User size={40} />
                             </div>
                             <h4 className="text-lg font-black text-gray-800">{tip.author?.name || 'Staff Member'}</h4>

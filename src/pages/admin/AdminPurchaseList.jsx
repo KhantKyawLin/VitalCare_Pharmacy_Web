@@ -89,7 +89,7 @@ const AdminPurchaseList = () => {
                 </div>
                 <Link 
                     to="/admin/purchases/create" 
-                    className="bg-[#8DB600] hover:bg-[#7a9d00] text-white px-5 py-2.5 rounded font-bold flex items-center gap-2 shadow-lg shadow-[#8DB600]/20 transition-all active:scale-95"
+                    className="bg-primary-green hover:bg-primary-dark text-white px-5 py-2.5 rounded font-bold flex items-center gap-2 shadow-lg shadow-primary-green/20 transition-all active:scale-95"
                 >
                     <Package size={20} className="stroke-2"/>
                     Make New Purchase
@@ -155,10 +155,10 @@ const AdminPurchaseList = () => {
             <div className="bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100 mt-6 pt-5 overflow-hidden">
                 <div className="flex flex-col md:flex-row justify-between items-center px-6 pb-4 gap-4 border-b border-gray-50 mb-4">
                     <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                        <History size={20} className="text-[#8DB600]"/>
+                        <History size={20} className="text-primary-green"/>
                         Recent Procurement Records
                     </h3>
-                    <div className="relative flex w-full md:w-72 rounded overflow-hidden border border-gray-200 focus-within:border-[#8DB600] focus-within:ring-2 focus-within:ring-[#8DB600]/30 transition-all bg-gray-50 focus-within:bg-white text-gray-600">
+                    <div className="relative flex w-full md:w-72 rounded overflow-hidden border border-gray-200 focus-within:border-primary-green focus-within:ring-2 focus-within:ring-primary-green/30 transition-all bg-gray-50 focus-within:bg-white text-gray-600">
                         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input 
                             type="text" 
@@ -262,7 +262,7 @@ const AdminPurchaseList = () => {
                                 <button 
                                     key={i}
                                     onClick={() => setCurrentPage(i + 1)}
-                                    className={`w-9 h-9 rounded text-sm font-bold transition-all ${currentPage === i + 1 ? 'bg-[#8DB600] text-white shadow-md' : 'border border-gray-200 text-gray-600 hover:bg-white'}`}
+                                    className={`w-9 h-9 rounded text-sm font-bold transition-all ${currentPage === i + 1 ? 'bg-primary-green text-white shadow-md' : 'border border-gray-200 text-gray-600 hover:bg-white'}`}
                                 >
                                     {i + 1}
                                 </button>
@@ -304,8 +304,8 @@ const AdminPurchaseList = () => {
                                     <p className="text-[11px] text-gray-500 uppercase font-bold tracking-tight">Supplier</p>
                                     <p className="text-sm font-bold text-gray-800">{selectedPurchase.supplier?.name}</p>
                                 </div>
-                                <div className="p-3 bg-[#8DB600]/10 rounded-xl border border-[#8DB600]/20">
-                                    <p className="text-[11px] text-[#8DB600] uppercase font-bold tracking-tight">Total Investment</p>
+                                <div className="p-3 bg-primary-light rounded-xl border border-primary-green/20">
+                                    <p className="text-[11px] text-primary-green uppercase font-bold tracking-tight">Total Investment</p>
                                     <p className="text-sm font-black text-gray-800">Tk. {parseFloat(selectedPurchase.total_purchase_amount).toLocaleString()}</p>
                                 </div>
                             </div>
@@ -339,7 +339,7 @@ const AdminPurchaseList = () => {
                                                     <td className="py-3 px-4 text-center">
                                                         <div className="flex items-center justify-center gap-1">
                                                             <span className="text-gray-400 font-medium">Tk. {parseFloat(pp.product_movement?.sale_price).toLocaleString()}</span>
-                                                            <div className="px-1.5 py-0.5 bg-green-50 text-[#8DB600] rounded text-[9px] font-bold">
+                                                            <div className="px-1.5 py-0.5 bg-primary-light text-primary-green rounded text-[9px] font-bold">
                                                                 {Math.round(((pp.product_movement?.sale_price - pp.product_movement?.purchase_price) / pp.product_movement?.purchase_price) * 100)}%
                                                             </div>
                                                         </div>

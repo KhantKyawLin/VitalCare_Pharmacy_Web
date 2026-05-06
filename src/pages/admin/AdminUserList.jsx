@@ -85,7 +85,7 @@ const AdminUserList = () => {
                             </div>
                         </div>
                     `,
-                    confirmButtonColor: '#8DB600',
+                    confirmButtonColor: 'var(--primary-color)',
                     confirmButtonText: 'I have copied the password'
                 });
                 setIsCreateModalOpen(false);
@@ -138,7 +138,7 @@ const AdminUserList = () => {
             text: `Generate a new temporary password for ${name}?`,
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#8DB600',
+            confirmButtonColor: 'var(--primary-color)',
             confirmButtonText: 'Yes, reset it'
         });
 
@@ -158,7 +158,7 @@ const AdminUserList = () => {
                             <p class="text-xs text-yellow-600 mt-2 text-center">Please share this securely with ${name}.</p>
                         </div>
                     `,
-                    confirmButtonColor: '#8DB600'
+                    confirmButtonColor: 'var(--primary-color)'
                 });
             } catch (error) {
                 Swal.fire('Error', 'Failed to reset password.', 'error');
@@ -177,9 +177,9 @@ const AdminUserList = () => {
             case 'admin':
                 return <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider"><Shield size={12} /> Admin</span>;
             case 'pharmacist':
-                return <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider"><Stethoscope size={12} /> Pharmacist</span>;
+                return <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-light text-primary-green text-xs font-bold uppercase tracking-wider"><Stethoscope size={12} /> Pharmacist</span>;
             case 'staff':
-                return <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold uppercase tracking-wider"><ActivitySquare size={12} /> Staff</span>;
+                return <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-green/10 text-accent-green text-xs font-bold uppercase tracking-wider"><ActivitySquare size={12} /> Staff</span>;
             default:
                 return <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-wider"><User size={12} /> Customer</span>;
         }
@@ -196,7 +196,7 @@ const AdminUserList = () => {
                 {['admin', 'superadmin'].includes(currentUser?.role) && (
                     <button 
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="flex items-center gap-2 bg-[#8DB600] text-white px-5 py-2.5 rounded font-bold shadow-lg shadow-[#8DB600]/20 hover:bg-[#769900] hover:scale-105 transition-all"
+                        className="flex items-center gap-2 bg-primary-green text-white px-5 py-2.5 rounded font-bold shadow-lg shadow-primary-green/20 hover:bg-primary-dark hover:scale-105 transition-all"
                     >
                         <Plus size={18} strokeWidth={3} />
                         Add New Staff
@@ -216,7 +216,7 @@ const AdminUserList = () => {
                             setSearch(e.target.value);
                             setPagination(prev => ({...prev, current_page: 1}));
                         }}
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-[#8DB600]/20 focus:border-[#8DB600] transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all"
                     />
                 </div>
                 <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
@@ -229,7 +229,7 @@ const AdminUserList = () => {
                             }}
                             className={`px-4 py-2.5 rounded text-sm font-bold whitespace-nowrap transition-all ${
                                 roleFilter === role 
-                                ? 'bg-[#8DB600] text-white shadow-md' 
+                                ? 'bg-primary-green text-white shadow-md' 
                                 : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200'
                             }`}
                         >
@@ -257,7 +257,7 @@ const AdminUserList = () => {
                                 <tr>
                                     <td colSpan="5" className="p-8 text-center">
                                         <div className="flex flex-col items-center justify-center text-slate-400">
-                                            <div className="w-8 h-8 border-4 border-[#8DB600]/30 border-t-[#8DB600] rounded-full animate-spin mb-4"></div>
+                                            <div className="w-8 h-8 border-4 border-primary-green/30 border-t-primary-green rounded-full animate-spin mb-4"></div>
                                             <p className="font-medium">Loading users...</p>
                                         </div>
                                     </td>
@@ -318,13 +318,13 @@ const AdminUserList = () => {
                                         </td>
                                         <td className="p-4">
                                             <div className="flex items-center justify-end gap-1">
-                                                 <button 
-                                                     onClick={() => handleViewUser(u)}
-                                                     className="p-1.5 border border-[#00b0e4]/30 text-[#00b0e4] hover:bg-[#00b0e4] hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
-                                                     title="View Details"
-                                                 >
-                                                     <Eye size={14} strokeWidth={2.5} />
-                                                 </button>
+                                                <button 
+                                                    onClick={() => handleViewUser(u)}
+                                                    className="p-1.5 border border-primary-green/30 text-primary-green hover:bg-primary-green hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
+                                                    title="View Details"
+                                                >
+                                                    <Eye size={14} strokeWidth={2.5} />
+                                                </button>
                                                 {['admin', 'superadmin'].includes(currentUser?.role) && u.id !== currentUser.id && (
                                                     <>
                                                          <button 
@@ -390,7 +390,7 @@ const AdminUserList = () => {
                     <div className="bg-white rounded-3xl shadow-2xl w-full max-w-xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
                         <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded bg-[#8DB600]/10 flex items-center justify-center text-[#8DB600]">
+                                <div className="w-10 h-10 rounded bg-primary-green/10 flex items-center justify-center text-primary-green">
                                     <Shield size={20} />
                                 </div>
                                 <div>
@@ -417,7 +417,7 @@ const AdminUserList = () => {
                                             value={formData.name}
                                             onChange={(e) => setFormData({...formData, name: e.target.value})}
                                             required
-                                            className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border ${formErrors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-slate-200 focus:border-[#8DB600] focus:ring-[#8DB600]/20'} rounded focus:outline-none focus:ring-2 transition-all`}
+                                            className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border ${formErrors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-slate-200 focus:border-primary-green focus:ring-primary-green/20'} rounded focus:outline-none focus:ring-2 transition-all`}
                                             placeholder="Enter full name"
                                         />
                                     </div>
@@ -433,7 +433,7 @@ const AdminUserList = () => {
                                             value={formData.email}
                                             onChange={(e) => setFormData({...formData, email: e.target.value})}
                                             required
-                                            className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border ${formErrors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-slate-200 focus:border-[#8DB600] focus:ring-[#8DB600]/20'} rounded focus:outline-none focus:ring-2 transition-all`}
+                                            className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border ${formErrors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-slate-200 focus:border-primary-green focus:ring-primary-green/20'} rounded focus:outline-none focus:ring-2 transition-all`}
                                             placeholder="staff@vitalcare.com"
                                         />
                                     </div>
@@ -445,7 +445,7 @@ const AdminUserList = () => {
                                     <select
                                         value={formData.role}
                                         onChange={(e) => setFormData({...formData, role: e.target.value})}
-                                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-[#8DB600]/20 focus:border-[#8DB600] transition-all font-medium"
+                                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all font-medium"
                                     >
                                         <option value="staff">Staff</option>
                                         <option value="pharmacist">Pharmacist</option>
@@ -457,7 +457,7 @@ const AdminUserList = () => {
                                     <select
                                         value={formData.gender}
                                         onChange={(e) => setFormData({...formData, gender: e.target.value})}
-                                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-[#8DB600]/20 focus:border-[#8DB600] transition-all font-medium"
+                                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all font-medium"
                                     >
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
@@ -477,7 +477,7 @@ const AdminUserList = () => {
                                 <button
                                     type="submit"
                                     disabled={creating}
-                                    className="flex items-center gap-2 px-6 py-2.5 rounded font-bold text-white bg-[#8DB600] hover:bg-[#769900] shadow-lg shadow-[#8DB600]/20 disabled:opacity-50 transition-all"
+                                    className="flex items-center gap-2 px-6 py-2.5 rounded font-bold text-white bg-primary-green hover:bg-primary-dark shadow-lg shadow-primary-green/20 disabled:opacity-50 transition-all"
                                 >
                                     {creating ? (
                                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -498,7 +498,7 @@ const AdminUserList = () => {
                     <div className="bg-white rounded-md shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in zoom-in-95 duration-200 border border-slate-200">
                         <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded bg-[#8DB600]/10 flex items-center justify-center text-[#8DB600]">
+                                <div className="w-10 h-10 rounded bg-primary-green/10 flex items-center justify-center text-primary-green">
                                     <User size={20} />
                                 </div>
                                 <div>
@@ -532,12 +532,12 @@ const AdminUserList = () => {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1">
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Email Address</p>
-                                    <p className="text-sm font-bold text-slate-700 flex items-center gap-2"><Mail size={14} className="text-[#8DB600]" /> {selectedUser.email}</p>
+                                    <p className="text-sm font-bold text-slate-700 flex items-center gap-2"><Mail size={14} className="text-primary-green" /> {selectedUser.email}</p>
                                 </div>
                                 <div className="space-y-1">
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Phone Number</p>
                                     <p className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                                        <Phone size={14} className="text-[#8DB600]" /> 
+                                        <Phone size={14} className="text-primary-green" /> 
                                         {selectedUser.phone || <span className="text-slate-400 italic font-normal">Not Provided</span>}
                                     </p>
                                 </div>
@@ -563,7 +563,7 @@ const AdminUserList = () => {
                         <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
                             <button
                                 onClick={() => setIsViewModalOpen(false)}
-                                className="px-6 py-2 bg-[#8DB600] text-white rounded font-bold hover:bg-[#769900] shadow-md transition-all active:scale-95"
+                                className="px-6 py-2 bg-primary-green text-white rounded font-bold hover:bg-primary-dark shadow-md transition-all active:scale-95"
                             >
                                 Close Profile
                             </button>

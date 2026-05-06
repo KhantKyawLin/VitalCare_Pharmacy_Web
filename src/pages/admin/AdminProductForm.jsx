@@ -271,7 +271,7 @@ const AdminProductForm = () => {
                 icon: 'success',
                 title: 'Success!',
                 text: 'Product saved successfully.',
-                confirmButtonColor: '#6CA52C'
+                confirmButtonColor: 'var(--primary-color-dark)'
             }).then(() => {
                 navigate('/admin/products');
             });
@@ -282,14 +282,14 @@ const AdminProductForm = () => {
                     icon: 'warning',
                     title: 'Validation Error',
                     text: 'Please check the form fields and try again.',
-                    confirmButtonColor: '#3085d6'
+                    confirmButtonColor: 'var(--primary-color)'
                 });
             } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: error.response?.data?.message || error.response?.data?.error || 'An error occurred while saving.',
-                    confirmButtonColor: '#d33'
+                    confirmButtonColor: '#ef4444'
                 });
             }
         } finally {
@@ -297,15 +297,15 @@ const AdminProductForm = () => {
         }
     };
 
-    if (loading) return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6CA52C]"></div></div>;
+    if (loading) return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-green"></div></div>;
 
     return (
         <div className="max-w-7xl mx-auto py-6 px-4">
             
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4 border-b border-gray-200 pb-4">
-                <div className="flex items-center text-[#6CA52C] font-bold text-xl rounded-md">
-                    <div className="w-8 h-8 rounded-full bg-[#6CA52C] text-white flex items-center justify-center mr-3 shadow-sm">
+                <div className="flex items-center text-primary-green font-bold text-xl rounded-md">
+                    <div className="w-8 h-8 rounded-full bg-primary-green text-white flex items-center justify-center mr-3 shadow-sm">
                         <Plus size={20} />
                     </div>
                     {isEdit ? 'Edit Product' : 'Create New Product'}
@@ -321,7 +321,7 @@ const AdminProductForm = () => {
                     {/* Basic Information */}
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                         <div className="px-6 py-4 border-b border-gray-200 flex items-center gap-3 bg-gray-50/50">
-                            <div className="bg-[#6CA52C] text-white w-6 h-6 rounded-full flex items-center justify-center font-bold text-sm italic">i</div>
+                            <div className="bg-primary-green text-white w-6 h-6 rounded-full flex items-center justify-center font-bold text-sm italic">i</div>
                             <h3 className="text-gray-800 font-bold text-lg">Basic Information</h3>
                         </div>
                         
@@ -333,7 +333,7 @@ const AdminProductForm = () => {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className={`w-full border ${errors.name ? 'border-red-400 focus:ring-red-500' : 'border-[#A3C93A]/50 focus:border-[#6CA52C] focus:ring-[#6CA52C]/20'} border-opacity-60 rounded px-4 py-2.5 outline-none focus:ring-2 transition-all shadow-sm`}
+                                    className={`w-full border ${errors.name ? 'border-red-400 focus:ring-red-500' : 'border-primary-green/50 focus:border-primary-green focus:ring-primary-green/20'} border-opacity-60 rounded px-4 py-2.5 outline-none focus:ring-2 transition-all shadow-sm`}
                                 />
                                 {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name[0]}</p>}
                             </div>
@@ -345,7 +345,7 @@ const AdminProductForm = () => {
                                         <button 
                                             type="button" 
                                             onClick={() => setShowCategoryModal(true)}
-                                            className="text-[11px] text-[#6CA52C] font-bold hover:text-[#5a8b24] flex items-center gap-1 bg-green-50 px-2 py-0.5 rounded-full transition-colors shadow-sm"
+                                            className="text-[11px] text-primary-green font-bold hover:text-primary-dark flex items-center gap-1 bg-primary-light px-2 py-0.5 rounded-full transition-colors shadow-sm"
                                         >
                                             <Plus size={10} strokeWidth={3} /> Quick Add
                                         </button>
@@ -354,7 +354,7 @@ const AdminProductForm = () => {
                                         name="category_id"
                                         value={formData.category_id}
                                         onChange={handleChange}
-                                        className="w-full border border-[#A3C93A]/50 rounded px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#6CA52C]/20 focus:border-[#6CA52C] transition-all shadow-sm text-gray-700 bg-white"
+                                        className="w-full border border-primary-green/50 rounded px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all shadow-sm text-gray-700 bg-white"
                                     >
                                         <option value="">Select Category</option>
                                         {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
@@ -366,7 +366,7 @@ const AdminProductForm = () => {
                                         <button 
                                             type="button" 
                                             onClick={() => setShowUnitModal(true)}
-                                            className="text-[11px] text-[#6CA52C] font-bold hover:text-[#5a8b24] flex items-center gap-1 bg-green-50 px-2 py-0.5 rounded-full transition-colors shadow-sm"
+                                            className="text-[11px] text-primary-green font-bold hover:text-primary-dark flex items-center gap-1 bg-primary-light px-2 py-0.5 rounded-full transition-colors shadow-sm"
                                         >
                                             <Plus size={10} strokeWidth={3} /> Quick Add
                                         </button>
@@ -375,7 +375,7 @@ const AdminProductForm = () => {
                                         name="unit_id"
                                         value={formData.unit_id}
                                         onChange={handleChange}
-                                        className="w-full border border-[#A3C93A]/50 rounded px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#6CA52C]/20 focus:border-[#6CA52C] transition-all shadow-sm text-gray-700 bg-white"
+                                        className="w-full border border-primary-green/50 rounded px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all shadow-sm text-gray-700 bg-white"
                                     >
                                         <option value="">Select Unit</option>
                                         {units.map(unit => <option key={unit.id} value={unit.id}>{unit.name}</option>)}
@@ -391,7 +391,7 @@ const AdminProductForm = () => {
                                         name="minimum_quantity"
                                         value={formData.minimum_quantity}
                                         onChange={handleChange}
-                                        className="w-full border border-[#A3C93A]/50 rounded px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#6CA52C]/20 focus:border-[#6CA52C] transition-all shadow-sm"
+                                        className="w-full border border-primary-green/50 rounded px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all shadow-sm"
                                     />
                                     <p className="text-xs text-gray-500 mt-1.5">Alert when stock reaches this level</p>
                                 </div>
@@ -402,7 +402,7 @@ const AdminProductForm = () => {
                                         name="price"
                                         value={formData.price}
                                         onChange={handleChange}
-                                        className="w-full border border-[#A3C93A]/50 rounded px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#6CA52C]/20 focus:border-[#6CA52C] transition-all shadow-sm"
+                                        className="w-full border border-primary-green/50 rounded px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all shadow-sm"
                                     />
                                     <p className="text-xs text-gray-500 mt-1.5">Optional. Can be set during purchase.</p>
                                 </div>
@@ -418,11 +418,11 @@ const AdminProductForm = () => {
                                             onChange={handleChange}
                                             className="sr-only"
                                         />
-                                        <div className={`w-full h-full rounded-full transition-colors ${formData.is_published ? 'bg-[#6CA52C]' : 'bg-gray-200'}`}></div>
+                                        <div className={`w-full h-full rounded-full transition-colors ${formData.is_published ? 'bg-primary-green' : 'bg-gray-200'}`}></div>
                                         <div className={`absolute left-1 bg-white w-4 h-4 rounded-full transition-transform ${formData.is_published ? 'translate-x-5' : ''}`}></div>
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-sm font-bold text-gray-700 group-hover:text-[#6CA52C] transition-colors">Publish to Storefront</span>
+                                        <span className="text-sm font-bold text-gray-700 group-hover:text-primary-green transition-colors">Publish to Storefront</span>
                                         <span className="text-[11px] text-gray-400 font-medium">When enabled, customers can see and buy this product online</span>
                                     </div>
                                 </label>
@@ -435,7 +435,7 @@ const AdminProductForm = () => {
                                     value={formData.description}
                                     onChange={handleChange}
                                     rows="4" 
-                                    className="w-full border border-[#A3C93A]/50 rounded px-4 py-3 outline-none focus:ring-2 focus:ring-[#6CA52C]/20 focus:border-[#6CA52C] transition-all shadow-sm resize-none"
+                                    className="w-full border border-primary-green/50 rounded px-4 py-3 outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all shadow-sm resize-none"
                                 ></textarea>
                                 <p className="text-xs text-gray-500 mt-1">Maximum 500 characters</p>
                             </div>
@@ -445,7 +445,7 @@ const AdminProductForm = () => {
                     {/* Medical Information */}
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                         <div className="px-6 py-4 border-b border-gray-200 flex items-center gap-3 bg-gray-50/50">
-                            <ActivitySquare size={22} className="text-[#6CA52C]" />
+                            <ActivitySquare size={22} className="text-primary-green" />
                             <h3 className="text-gray-800 font-bold text-lg">Medical Information</h3>
                         </div>
                         
@@ -458,7 +458,7 @@ const AdminProductForm = () => {
                                     value={formData.dosage}
                                     onChange={handleChange}
                                     placeholder="Example: 500mg per tablet"
-                                    className="w-full sm:w-1/2 border border-[#A3C93A]/50 rounded px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#6CA52C]/20 focus:border-[#6CA52C] transition-all shadow-sm"
+                                    className="w-full sm:w-1/2 border border-primary-green/50 rounded px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all shadow-sm"
                                 />
                             </div>
                             
@@ -469,7 +469,7 @@ const AdminProductForm = () => {
                                     value={formData.usage}
                                     onChange={handleChange}
                                     rows="3" 
-                                    className="w-full border border-[#A3C93A]/50 rounded px-4 py-3 outline-none focus:ring-2 focus:ring-[#6CA52C]/20 focus:border-[#6CA52C] transition-all shadow-sm resize-none"
+                                    className="w-full border border-primary-green/50 rounded px-4 py-3 outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all shadow-sm resize-none"
                                 ></textarea>
                                 <p className="text-xs text-gray-500 mt-1">Maximum 500 characters</p>
                             </div>
@@ -481,7 +481,7 @@ const AdminProductForm = () => {
                                     value={formData.side_effects}
                                     onChange={handleChange}
                                     rows="3" 
-                                    className="w-full border border-[#A3C93A]/50 rounded px-4 py-3 outline-none focus:ring-2 focus:ring-[#6CA52C]/20 focus:border-[#6CA52C] transition-all shadow-sm resize-none"
+                                    className="w-full border border-primary-green/50 rounded px-4 py-3 outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all shadow-sm resize-none"
                                 ></textarea>
                                 <p className="text-xs text-gray-500 mt-1">Maximum 500 characters</p>
                             </div>
@@ -493,7 +493,7 @@ const AdminProductForm = () => {
                 <div className="space-y-6">
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                         <div className="px-6 py-4 border-b border-gray-200 flex items-center gap-3 bg-gray-50/50">
-                            <ImageIcon size={20} className="text-[#6CA52C]" /> 
+                            <ImageIcon size={20} className="text-primary-green" /> 
                             <h3 className="text-gray-800 font-bold">Product Images</h3>
                         </div>
                         <div className="p-5">
@@ -596,7 +596,7 @@ const AdminProductForm = () => {
                         <button 
                             onClick={handleSubmit} 
                             disabled={submitting}
-                            className="flex items-center gap-1.5 px-6 py-2.5 bg-[#6CA52C] border-2 border-[#6CA52C] text-white rounded-lg font-bold hover:bg-[#5a8a25] transition-colors shadow-sm disabled:opacity-50"
+                            className="flex items-center gap-1.5 px-6 py-2.5 bg-primary-green border-2 border-primary-green text-white rounded-lg font-bold hover:bg-primary-dark transition-colors shadow-sm disabled:opacity-50"
                         >
                             {submitting ? <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div> : <Save size={18} />}
                             Save Product
@@ -650,7 +650,7 @@ const AdminProductForm = () => {
                             </button>
                             <button 
                                 onClick={handleCropSave} 
-                                className="px-6 py-2.5 bg-white border-2 border-[#6CA52C] text-[#6CA52C] rounded-lg font-bold hover:bg-[#f3f9eb] shadow-sm transition-colors"
+                                className="px-6 py-2.5 bg-white border-2 border-primary-green text-primary-green rounded-lg font-bold hover:bg-primary-light shadow-sm transition-colors"
                             >
                                 Crop & Save
                             </button>
@@ -665,7 +665,7 @@ const AdminProductForm = () => {
                     <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 flex flex-col animate-in zoom-in duration-200">
                         <div className="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
                             <h3 className="font-bold text-gray-800 text-lg flex items-center gap-2">
-                                <Tag size={18} className="text-[#6CA52C]" /> Add New Category
+                                <Tag size={18} className="text-primary-green" /> Add New Category
                             </h3>
                             <button onClick={() => setShowCategoryModal(false)} className="text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 p-1.5 rounded-full transition-colors"><X size={16}/></button>
                         </div>
@@ -678,12 +678,12 @@ const AdminProductForm = () => {
                                     onChange={(e) => setNewCategoryName(e.target.value)}
                                     placeholder="e.g. Vitamins, Care..." 
                                     autoFocus
-                                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#6CA52C]/20 focus:border-[#6CA52C] outline-none transition-all shadow-sm"
+                                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green outline-none transition-all shadow-sm"
                                 />
                             </div>
                             <button 
                                 onClick={handleQuickAddCategory}
-                                className="w-full bg-[#6CA52C] hover:bg-[#5a8b24] text-white py-2.5 rounded-lg font-bold shadow-sm transition-colors"
+                                className="w-full bg-primary-green hover:bg-primary-dark text-white py-2.5 rounded-lg font-bold shadow-sm transition-colors"
                             >
                                 Save Category
                             </button>
@@ -698,7 +698,7 @@ const AdminProductForm = () => {
                     <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 flex flex-col animate-in zoom-in duration-200">
                         <div className="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
                             <h3 className="font-bold text-gray-800 text-lg flex items-center gap-2">
-                                <ActivitySquare size={18} className="text-[#6CA52C]" /> Add New Unit
+                                <ActivitySquare size={18} className="text-primary-green" /> Add New Unit
                             </h3>
                             <button onClick={() => setShowUnitModal(false)} className="text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 p-1.5 rounded-full transition-colors"><X size={16}/></button>
                         </div>
@@ -711,12 +711,12 @@ const AdminProductForm = () => {
                                     onChange={(e) => setNewUnitName(e.target.value)}
                                     placeholder="e.g. tablet, capsule, ml..." 
                                     autoFocus
-                                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#6CA52C]/20 focus:border-[#6CA52C] outline-none transition-all shadow-sm"
+                                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green outline-none transition-all shadow-sm"
                                 />
                             </div>
                             <button 
                                 onClick={handleQuickAddUnit}
-                                className="w-full bg-[#6CA52C] hover:bg-[#5a8b24] text-white py-2.5 rounded-lg font-bold shadow-sm transition-colors"
+                                className="w-full bg-primary-green hover:bg-primary-dark text-white py-2.5 rounded-lg font-bold shadow-sm transition-colors"
                             >
                                 Save Unit
                             </button>

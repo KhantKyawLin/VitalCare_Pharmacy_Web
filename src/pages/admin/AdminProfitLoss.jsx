@@ -103,13 +103,13 @@ const AdminProfitLoss = () => {
 
             {/* Summary Highlights */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="md:col-span-2 bg-white p-5 rounded border border-gray-100 shadow-sm border-l-4 border-l-[#8DB600]">
+                <div className="md:col-span-2 bg-white p-5 rounded border border-gray-100 shadow-sm border-l-4 border-l-primary-green">
                     <div className="flex justify-between items-center mb-1">
                         <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">NET PROFIT IMPACT</span>
                         <Info size={14} className="text-gray-300" />
                     </div>
                     <div className="flex items-baseline gap-2">
-                        <span className={`text-3xl font-black ${summary.total_profit_impact >= 0 ? 'text-[#8DB600]' : 'text-red-500'}`}>
+                        <span className={`text-3xl font-black ${summary.total_profit_impact >= 0 ? 'text-primary-green' : 'text-red-500'}`}>
                             {summary.total_profit_impact.toLocaleString()}
                         </span>
                         <span className="text-xs font-bold text-gray-400">KS</span>
@@ -145,7 +145,7 @@ const AdminProfitLoss = () => {
                             placeholder="Search by description, reference, or category..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded text-xs focus:ring-1 focus:ring-[#8DB600] outline-none transition-all"
+                            className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded text-xs focus:ring-1 focus:ring-primary-green outline-none transition-all"
                         />
                     </div>
                     
@@ -193,10 +193,10 @@ const AdminProfitLoss = () => {
                             <div className="flex justify-between items-center bg-gray-50/50 px-6 py-4 border-b border-gray-100">
                                 <div className="flex items-center gap-3">
                                     <div className={`p-2.5 rounded-full ${
-                                        record.type === 'Sale Order' ? 'bg-blue-50 text-blue-500' :
+                                        record.type === 'Sale Order' ? 'bg-primary-light text-primary-green' :
                                         record.type === 'Refunded Order' ? 'bg-purple-50 text-purple-500' :
                                         record.type === 'Inventory Loss' ? 'bg-orange-50 text-orange-500' :
-                                        record.profit_impact > 0 ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'
+                                        record.profit_impact > 0 ? 'bg-primary-light text-primary-green' : 'bg-red-50 text-red-500'
                                     }`}>
                                         {getTypeIcon(record.type)}
                                     </div>
@@ -214,7 +214,7 @@ const AdminProfitLoss = () => {
                                 </div>
                                 <div className="text-right">
                                     <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-0.5">Net Profit Impact</span>
-                                    <span className={`text-xl font-black ${record.profit_impact >= 0 ? 'text-[#8DB600]' : 'text-red-500'}`}>
+                                    <span className={`text-xl font-black ${record.profit_impact >= 0 ? 'text-primary-green' : 'text-red-500'}`}>
                                         {record.profit_impact > 0 ? '+' : ''}{(record.profit_impact || 0).toLocaleString()} Ks
                                     </span>
                                 </div>
@@ -284,7 +284,7 @@ const AdminProfitLoss = () => {
                                     </div>
                                     <div className="flex justify-between w-64 text-gray-800 font-bold border-t border-gray-200 pt-2 mt-1">
                                         <span>Total Amount</span>
-                                        <span className="text-[#8DB600]">{(record.revenue || 0).toLocaleString()} Ks</span>
+                                        <span className="text-primary-green">{(record.revenue || 0).toLocaleString()} Ks</span>
                                     </div>
                                     <div className="flex justify-between w-64 text-red-400 pt-1">
                                         <span>Total Cost</span>
@@ -292,7 +292,7 @@ const AdminProfitLoss = () => {
                                     </div>
                                     <div className="flex justify-between w-64 font-black border-t border-gray-200 pt-2 mt-1">
                                         <span className="text-gray-800">Gross Profit</span>
-                                        <span className={`${record.profit_impact >= 0 ? 'text-[#8DB600]' : 'text-red-500'}`}>
+                                        <span className={`${record.profit_impact >= 0 ? 'text-primary-green' : 'text-red-500'}`}>
                                             {record.profit_impact > 0 ? '+' : ''}{(record.profit_impact || 0).toLocaleString()} Ks
                                         </span>
                                     </div>

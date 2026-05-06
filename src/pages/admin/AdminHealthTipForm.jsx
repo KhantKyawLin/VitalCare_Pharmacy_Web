@@ -192,7 +192,7 @@ const AdminHealthTipForm = () => {
     if (fetching) {
         return (
             <div className="flex items-center justify-center h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#A3C93A]"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-green"></div>
             </div>
         );
     }
@@ -202,8 +202,8 @@ const AdminHealthTipForm = () => {
             {/* Header Area */}
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-[#A3C93A]/10 rounded-lg">
-                        <BookOpen size={28} className="text-[#A3C93A]" strokeWidth={2.5}/>
+                    <div className="p-2 bg-primary-light rounded-lg">
+                        <BookOpen size={28} className="text-primary-green" strokeWidth={2.5}/>
                     </div>
                     <div>
                         <h2 className="text-2xl text-gray-800 font-black tracking-tight">
@@ -225,7 +225,7 @@ const AdminHealthTipForm = () => {
                 <div className="lg:col-span-2 space-y-6">
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-6">
                         <div className="flex items-center gap-2 pb-2 border-b border-gray-50 mb-6">
-                            <Info size={18} className="text-[#A3C93A]" />
+                            <Info size={18} className="text-primary-green" />
                             <h3 className="font-black text-gray-800 uppercase tracking-widest text-xs">Tip Details</h3>
                         </div>
 
@@ -235,7 +235,7 @@ const AdminHealthTipForm = () => {
                                 type="text" 
                                 required
                                 placeholder="Enter a compelling title for your health tip"
-                                className="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-[#A3C93A]/10 focus:border-[#A3C93A] outline-none text-gray-700 font-bold transition-all placeholder:text-gray-400"
+                                className="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green outline-none text-gray-700 font-bold transition-all placeholder:text-gray-400"
                                 value={formData.title}
                                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                             />
@@ -247,7 +247,7 @@ const AdminHealthTipForm = () => {
                                 required
                                 placeholder="Write your health tip content here..."
                                 rows="12"
-                                className="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-[#A3C93A]/10 focus:border-[#A3C93A] outline-none text-gray-700 leading-relaxed transition-all placeholder:text-gray-400 resize-none"
+                                className="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green outline-none text-gray-700 leading-relaxed transition-all placeholder:text-gray-400 resize-none"
                                 value={formData.content}
                                 onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
                             ></textarea>
@@ -263,7 +263,7 @@ const AdminHealthTipForm = () => {
                     {/* Featured Image Card */}
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <div className="flex items-center gap-2 pb-4 border-b border-gray-50 mb-6">
-                            <ImageIcon size={18} className="text-[#A3C93A]" />
+                            <ImageIcon size={18} className="text-primary-green" />
                             <h3 className="font-black text-gray-800 uppercase tracking-widest text-xs">Featured Image</h3>
                         </div>
 
@@ -283,9 +283,9 @@ const AdminHealthTipForm = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <label className="flex flex-col items-center justify-center aspect-[2/1] bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer hover:bg-gray-100 hover:border-[#A3C93A] transition-all group">
+                                    <label className="flex flex-col items-center justify-center aspect-[2/1] bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer hover:bg-gray-100 hover:border-primary-green transition-all group">
                                         <div className="p-4 bg-white rounded-2xl shadow-sm group-hover:scale-110 transition-transform">
-                                            <Upload className="text-gray-400 group-hover:text-[#A3C93A]" size={32} />
+                                            <Upload className="text-gray-400 group-hover:text-primary-green" size={32} />
                                         </div>
                                         <span className="mt-4 text-sm font-bold text-gray-500">Click to upload image</span>
                                         <input type="file" className="hidden" accept="image/*" onChange={handleImageSelect} />
@@ -317,7 +317,7 @@ const AdminHealthTipForm = () => {
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <div className="flex items-center justify-between pb-4 border-b border-gray-50 mb-6">
                             <div className="flex items-center gap-2">
-                                <AlertCircle size={18} className="text-[#A3C93A]" />
+                                <AlertCircle size={18} className="text-primary-green" />
                                 <h3 className="font-black text-gray-800 uppercase tracking-widest text-xs">Publish Settings</h3>
                             </div>
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${formData.is_published ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
@@ -333,7 +333,7 @@ const AdminHealthTipForm = () => {
                             <button 
                                 type="button"
                                 onClick={() => setFormData(prev => ({ ...prev, is_published: !prev.is_published }))}
-                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${formData.is_published ? 'bg-[#A3C93A]' : 'bg-gray-300'}`}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${formData.is_published ? 'bg-primary-green' : 'bg-gray-300'}`}
                             >
                                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.is_published ? 'translate-x-6' : 'translate-x-1'}`} />
                             </button>
@@ -345,7 +345,7 @@ const AdminHealthTipForm = () => {
                         <button 
                             type="submit"
                             disabled={loading}
-                            className="w-full py-4 bg-[#A3C93A] text-white rounded-2xl font-bold text-lg shadow-lg shadow-[#A3C93A]/20 hover:bg-[#8eb132] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                            className="w-full py-4 bg-primary-green text-white rounded-2xl font-bold text-lg shadow-lg shadow-primary-green/20 hover:bg-primary-dark transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                             {loading ? (
                                 <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
@@ -409,7 +409,7 @@ const AdminHealthTipForm = () => {
                             </button>
                             <button 
                                 onClick={handleCropSave} 
-                                className="px-6 py-2.5 bg-white border-2 border-[#A3C93A] text-[#A3C93A] rounded-lg font-bold hover:bg-[#f3f9eb] shadow-sm transition-colors"
+                                className="px-6 py-2.5 bg-white border-2 border-primary-green text-primary-green rounded-lg font-bold hover:bg-primary-light shadow-sm transition-colors"
                             >
                                 Crop & Save
                             </button>

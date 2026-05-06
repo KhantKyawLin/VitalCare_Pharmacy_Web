@@ -119,7 +119,7 @@ const AdminHealthTipList = () => {
                     <BookOpen size={26} className="text-gray-800" strokeWidth={2.5}/>
                     <h2 className="text-[22px] text-gray-800 font-bold">Health Tips Management</h2>
                 </div>
-                <Link to="/admin/health-tips/create" className="bg-[#A3C93A] text-white px-5 py-2.5 rounded shadow flex items-center gap-2 hover:bg-[#8eb132] transition-colors text-[14px] font-bold">
+                <Link to="/admin/health-tips/create" className="bg-primary-green text-white px-5 py-2.5 rounded shadow flex items-center gap-2 hover:bg-primary-dark transition-colors text-[14px] font-bold">
                     <Plus size={18} strokeWidth={3}/> Add New Health Tip
                 </Link>
             </div>
@@ -132,7 +132,7 @@ const AdminHealthTipList = () => {
                         <h3 className="text-3xl font-bold text-gray-800">{metrics.total_tips}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">Published articles</p>
                     </div>
-                    <div className="bg-green-50 p-2.5 rounded-lg text-[#A3C93A]">
+                    <div className="bg-green-50 p-2.5 rounded-lg text-primary-green">
                         <BookOpen size={24} />
                     </div>
                 </div>
@@ -143,7 +143,7 @@ const AdminHealthTipList = () => {
                         <h3 className="text-3xl font-bold text-gray-800">{metrics.total_feedbacks}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">User interactions</p>
                     </div>
-                    <div className="bg-blue-50 p-2.5 rounded-lg text-blue-500">
+                    <div className="bg-primary-light p-2.5 rounded-lg text-primary-green opacity-80">
                         <MessageSquare size={24} />
                     </div>
                 </div>
@@ -154,7 +154,7 @@ const AdminHealthTipList = () => {
                         <h3 className="text-3xl font-bold text-gray-800">{Number(metrics.avg_rating).toFixed(1)}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">Overall score</p>
                     </div>
-                    <div className="bg-yellow-50 p-2.5 rounded-lg text-yellow-500">
+                    <div className="bg-accent-green/10 p-2.5 rounded-lg text-accent-green">
                         <Star size={24} />
                     </div>
                 </div>
@@ -180,8 +180,8 @@ const AdminHealthTipList = () => {
                         <h3 className="text-lg font-bold text-gray-800">Health Tips Archive</h3>
                     </div>
                     <div className="flex items-center gap-3 w-full md:w-auto">
-                        <div className="relative flex w-full md:w-72 rounded-lg overflow-hidden border border-gray-200 focus-within:border-[#A3C93A] focus-within:ring-2 focus-within:ring-[#A3C93A]/30 transition-all bg-gray-50 focus-within:bg-white text-gray-600">
-                            <button onClick={fetchTips} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#A3C93A] transition-colors">
+                        <div className="relative flex w-full md:w-72 rounded-lg overflow-hidden border border-gray-200 focus-within:border-primary-green focus-within:ring-2 focus-within:ring-primary-green/30 transition-all bg-gray-50 focus-within:bg-white text-gray-600">
+                            <button onClick={fetchTips} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-green transition-colors">
                                 <Search size={16} />
                             </button>
                             <input 
@@ -249,7 +249,7 @@ const AdminHealthTipList = () => {
                                         </td>
                                         <td className="py-3.5">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-6 h-6 rounded-full bg-green-50 flex items-center justify-center text-[#A3C93A]">
+                                                <div className="w-6 h-6 rounded-full bg-green-50 flex items-center justify-center text-primary-green">
                                                     <User size={12} />
                                                 </div>
                                                 <span className="text-gray-600">{tip.author?.name || 'Staff'}</span>
@@ -259,7 +259,7 @@ const AdminHealthTipList = () => {
                                             <button 
                                                 onClick={() => handleToggleStatus(tip.id, tip.is_published)}
                                                 className={`px-3 py-1 rounded text-[11px] font-bold text-white shadow-sm transition-all min-w-[85px] ${
-                                                    tip.is_published ? 'bg-[#1E8449] hover:bg-[#155d33]' : 'bg-gray-400 hover:bg-gray-500'
+                                                    tip.is_published ? 'bg-primary-dark hover:bg-primary-dark/90' : 'bg-gray-400 hover:bg-gray-500'
                                                 }`}
                                             >
                                                 {tip.is_published ? 'PUBLISHED' : 'DRAFT'}
@@ -273,10 +273,10 @@ const AdminHealthTipList = () => {
                                         </td>
                                         <td className="py-3.5 align-middle">
                                             <div className="flex items-center justify-center gap-2">
-                                                <Link to={`/admin/health-tips/${tip.id}`} className="p-1.5 border border-blue-100 text-blue-500 hover:bg-blue-500 hover:text-white rounded transition-colors shadow-sm bg-white">
+                                                <Link to={`/admin/health-tips/${tip.id}`} className="p-1.5 border border-primary-green/30 text-primary-green hover:bg-primary-green hover:text-white rounded transition-colors shadow-sm bg-white">
                                                     <Eye size={14} strokeWidth={2.5}/>
                                                 </Link>
-                                                <Link to={`/admin/health-tips/edit/${tip.id}`} className="p-1.5 border border-[#A3C93A]/30 text-[#A3C93A] hover:bg-[#A3C93A] hover:text-white rounded transition-colors shadow-sm bg-white">
+                                                <Link to={`/admin/health-tips/edit/${tip.id}`} className="p-1.5 border border-primary-green/30 text-primary-green hover:bg-primary-green hover:text-white rounded transition-colors shadow-sm bg-white">
                                                     <Edit size={14} strokeWidth={2.5}/>
                                                 </Link>
                                                 <button 

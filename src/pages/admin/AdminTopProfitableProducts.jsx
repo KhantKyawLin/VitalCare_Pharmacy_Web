@@ -67,7 +67,7 @@ const AdminTopProfitableProducts = () => {
                             onClick={() => setRange(btn.id)}
                             className={`px-4 py-1.5 rounded text-xs font-bold transition-all ${
                                 range === btn.id 
-                                ? 'bg-[#8DB600] text-white shadow-sm' 
+                                ? 'bg-primary-green text-white shadow-sm' 
                                 : 'text-gray-500 hover:bg-gray-50'
                             }`}
                         >
@@ -86,7 +86,7 @@ const AdminTopProfitableProducts = () => {
                         placeholder="Search product by name..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-[#8DB600] focus:border-[#8DB600] outline-none transition-all"
+                        className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-primary-green focus:border-primary-green outline-none transition-all"
                     />
                 </div>
             </div>
@@ -142,7 +142,7 @@ const AdminTopProfitableProducts = () => {
                                                 {cost.toLocaleString()} Ks
                                             </td>
                                             <td className="px-6 py-4 text-right">
-                                                <span className="font-black text-[#8DB600]">
+                                                <span className="font-black text-primary-green">
                                                     {profit.toLocaleString()} Ks
                                                 </span>
                                             </td>

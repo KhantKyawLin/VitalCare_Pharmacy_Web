@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { 
     LayoutDashboard,
@@ -9,11 +9,16 @@ import {
     History,
     Star,
     Eye,
-    TrendingUp
+    TrendingUp,
+    BookOpen,
+    Pill,
+    Package
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 
 const AdminDashboard = () => {
+    const { user } = useContext(AuthContext);
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
     const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
@@ -49,30 +54,24 @@ const AdminDashboard = () => {
         );
     }
 
-    const statCards = [
+    // Role-based stat cards logic
+    let statCards = [];
+
+    const commonCards = [
         { 
-            title: "Today's Sales", 
-            value: `Ks. ${stats?.today_sales?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || '0.00'}`, 
-            subtitle: `${stats?.sales_change || 0}% from yesterday`,
-            subtitleColor: (stats?.sales_change >= 0) ? 'text-[#8DB600]' : 'text-red-500',
-            icon: <ShoppingCart className="text-[#8DB600]" size={28} />,
-            trendUp: stats?.sales_change >= 0,
-            link: `/admin/orders?date=${new Date().toISOString().split('T')[0]}`
-        },
-        { 
-            title: "New Orders", 
-            value: stats?.new_orders || 0, 
-            subtitle: "0 today", 
+            title: "Total Products", 
+            value: stats?.total_products || 0, 
+            subtitle: "In catalog", 
             subtitleColor: "text-gray-500",
-            icon: <ClipboardList className="text-[#8DB600]" size={28} />,
-            link: "/admin/orders?order_type=online"
+            icon: <Pill className="text-primary-green" size={28} />,
+            link: "/admin/products"
         },
         { 
             title: "Low Stock", 
             value: stats?.low_stock || 0, 
             subtitle: "Needs attention", 
             subtitleColor: "text-red-500",
-            icon: <AlertTriangle className="text-[#8DB600]" size={28} />,
+            icon: <AlertTriangle className="text-primary-green" size={28} />,
             link: "/admin/reorder-alerts"
         },
         { 
@@ -87,13 +86,68 @@ const AdminDashboard = () => {
         }
     ];
 
+    if (['admin', 'superadmin'].includes(user?.role)) {
+        statCards = [
+            { 
+                title: "Today's Sales", 
+                value: `Ks. ${stats?.today_sales?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || '0.00'}`, 
+                subtitle: `${stats?.sales_change || 0}% from yesterday`,
+                subtitleColor: (stats?.sales_change >= 0) ? 'text-primary-green' : 'text-red-500',
+                icon: <ShoppingCart className="text-primary-green" size={28} />,
+                trendUp: stats?.sales_change >= 0,
+                link: `/admin/orders`
+            },
+            { 
+                title: "New Orders", 
+                value: stats?.new_orders || 0, 
+                subtitle: "Placed today", 
+                subtitleColor: "text-gray-500",
+                icon: <ClipboardList className="text-primary-green" size={28} />,
+                link: "/admin/orders"
+            },
+            commonCards[1], // Low Stock
+            commonCards[2]  // Expiring Soon
+        ];
+    } else if (user?.role === 'pharmacist') {
+        statCards = [
+            { 
+                title: "Health Tips", 
+                value: stats?.health_tips_count || 0, 
+                subtitle: `${stats?.published_tips || 0} published`, 
+                subtitleColor: "text-primary-green",
+                icon: <BookOpen className="text-primary-green" size={28} />,
+                link: "/admin/health-tips"
+            },
+            commonCards[0], // Total Products
+            commonCards[1], // Low Stock
+            commonCards[2]  // Expiring Soon
+        ];
+    } else if (user?.role === 'staff') {
+        statCards = [
+            { 
+                title: "Orders to Process", 
+                value: stats?.new_orders || 0, 
+                subtitle: "Recent activity", 
+                subtitleColor: "text-gray-500",
+                icon: <Package className="text-primary-green" size={28} />,
+                link: "/admin/orders"
+            },
+            commonCards[0], // Total Products
+            commonCards[1], // Low Stock
+            commonCards[2]  // Expiring Soon
+        ];
+    }
+
     return (
         <div className="space-y-6 pt-2 pb-8">
             <div className="flex items-center gap-3 mb-2">
                 <div className="bg-slate-900 p-1.5 rounded-full text-white">
                     <LayoutDashboard size={20} className="stroke-2" />
                 </div>
-                <h2 className="text-[22px] text-gray-800">Dashboard Overview</h2>
+                <div>
+                    <h2 className="text-[22px] text-gray-800">Dashboard Overview</h2>
+                    <p className="text-xs text-gray-500 capitalize">Logged in as {user?.role}</p>
+                </div>
             </div>
 
             {/* Stat Cards */}
@@ -102,11 +156,11 @@ const AdminDashboard = () => {
                     <Link 
                         key={idx} 
                         to={card.link}
-                        className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm flex flex-col justify-between h-36 hover:shadow-md hover:border-[#8DB600]/30 transition-all group"
+                        className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm flex flex-col justify-between h-36 hover:shadow-md hover:border-primary-green/30 transition-all group"
                     >
                         <div className="flex justify-between items-start">
                             <div className="space-y-1">
-                                <h3 className="text-gray-600 font-medium text-sm group-hover:text-[#8DB600] transition-colors">{card.title}</h3>
+                                <h3 className="text-gray-600 font-medium text-sm group-hover:text-primary-green transition-colors">{card.title}</h3>
                                 <div className={`text-3xl ${card.valueColor || 'text-gray-800'}`}>
                                     {card.value}
                                 </div>
@@ -124,79 +178,95 @@ const AdminDashboard = () => {
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                {/* Recent Orders */}
-                <div className="xl:col-span-2 bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden flex flex-col">
-                    <div className="p-5 border-b border-gray-100">
-                        <h3 className="text-[17px] text-gray-800 flex items-center gap-2">
-                            <History size={20} className="stroke-2" /> Recent Orders
-                        </h3>
+                {/* Role-based table view (Pharmacists focus on content, others on orders) */}
+                {user?.role === 'pharmacist' ? (
+                    <div className="xl:col-span-3 bg-white rounded-lg border border-gray-100 shadow-sm p-8 text-center text-gray-500">
+                        <div className="flex flex-col items-center gap-2">
+                            <BookOpen size={48} className="text-gray-200" />
+                            <h3 className="text-lg font-medium text-gray-700">Content Management Mode</h3>
+                            <p className="max-w-md mx-auto">Your dashboard is optimized for Health Tips and Inventory monitoring. Use the sidebar to manage promotions and educational content.</p>
+                        </div>
                     </div>
-                    <div className="overflow-x-auto p-5">
-                        <table className="w-full text-left text-sm whitespace-nowrap">
-                            <thead className="text-gray-500 border-b border-gray-200">
-                                <tr>
-                                    <th className="pb-3 font-medium">Order ID</th>
-                                    <th className="pb-3 font-medium">Customer</th>
-                                    <th className="pb-3 font-medium">Date</th>
-                                    <th className="pb-3 font-medium">Amount</th>
-                                    <th className="pb-3 font-medium">Status</th>
-                                    <th className="pb-3 font-medium">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {stats?.recent_orders?.length > 0 ? stats.recent_orders.map((order, index) => (
-                                    <tr key={order.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50">
-                                        <td className="py-4 text-gray-600 font-medium">
-                                            #{order.receipt_number ? order.receipt_number.split('-')[1] : `VC-${String(order.id).padStart(4, '0')}`}
-                                        </td>
-                                        <td className="py-4 text-gray-800">
-                                            {order.order_type === 'walk-in' ? (
-                                                <span className="text-blue-600 font-bold">Walk-in</span>
-                                            ) : (
-                                                order.user?.name || `Customer ${order.user_id || 'Guest'}`
-                                            )}
-                                        </td>
-                                        <td className="py-4 text-gray-800">
-                                            {new Date(order.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
-                                        </td>
-                                        <td className="py-4 text-gray-800 font-bold">
-                                            Ks. {parseFloat(order.total_amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}
-                                        </td>
-                                        <td className="py-4">
-                                            <span className={`px-2.5 py-1 rounded-md text-[11px] font-bold text-white ${
-                                                order.status?.toLowerCase() === 'completed' ? 'bg-[#218F56]' : 
-                                                order.status?.toLowerCase() === 'pending' ? 'bg-[#FFB822]' : 'bg-red-500'
-                                            }`}>
-                                                {order.status?.toUpperCase() || 'N/A'}
-                                            </span>
-                                        </td>
-                                        <td className="py-4">
-                                            <Link to={`/admin/orders/${order.id}`} className="px-3 py-1 flex items-center justify-center gap-1.5 w-max border border-blue-500 text-blue-500 rounded text-xs font-medium hover:bg-blue-50 transition-colors">
-                                                <Eye size={14} /> View
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                )) : (
-                                    <tr>
-                                        <td colSpan="6" className="py-8 text-center text-gray-500">No recent orders found.</td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                ) : (
+                    <>
+                        {/* Recent Orders */}
+                        <div className="xl:col-span-2 bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden flex flex-col">
+                            <div className="p-5 border-b border-gray-100">
+                                <h3 className="text-[17px] text-gray-800 flex items-center gap-2">
+                                    <History size={20} className="stroke-2" /> Recent Orders
+                                </h3>
+                            </div>
+                            <div className="overflow-x-auto p-5">
+                                <table className="w-full text-left text-sm whitespace-nowrap">
+                                    <thead className="text-gray-500 border-b border-gray-200">
+                                        <tr>
+                                            <th className="pb-3 font-medium">Order ID</th>
+                                            <th className="pb-3 font-medium">Customer</th>
+                                            <th className="pb-3 font-medium">Date</th>
+                                            <th className="pb-3 font-medium">Amount</th>
+                                            <th className="pb-3 font-medium">Status</th>
+                                            <th className="pb-3 font-medium">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {stats?.recent_orders?.length > 0 ? stats.recent_orders.map((order, index) => (
+                                            <tr key={order.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50">
+                                                <td className="py-4 text-gray-600 font-medium">
+                                                    #{order.receipt_number ? order.receipt_number.split('-')[1] : `VC-${String(order.id).padStart(4, '0')}`}
+                                                </td>
+                                                <td className="py-4 text-gray-800">
+                                                    {order.order_type === 'walk-in' ? (
+                                                        <span className="text-blue-600 font-bold">Walk-in</span>
+                                                    ) : (
+                                                        order.user?.name || `Customer ${order.user_id || 'Guest'}`
+                                                    )}
+                                                </td>
+                                                <td className="py-4 text-gray-800">
+                                                    {new Date(order.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+                                                </td>
+                                                <td className="py-4 text-gray-800 font-bold">
+                                                    Ks. {parseFloat(order.total_amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}
+                                                </td>
+                                                <td className="py-4">
+                                                    <span className={`px-2.5 py-1 rounded-md text-[11px] font-bold text-white ${
+                                                        order.status?.toLowerCase() === 'completed' ? 'bg-primary-dark' : 
+                                                        order.status?.toLowerCase() === 'pending' ? 'bg-[#FFB822]' : 'bg-red-500'
+                                                    }`}>
+                                                        {order.status?.toUpperCase() || 'N/A'}
+                                                    </span>
+                                                </td>
+                                                <td className="py-4">
+                                                    <Link 
+                                                        to={`/admin/orders/${order.id}`}
+                                                        className="px-3 py-1 flex items-center justify-center gap-1.5 w-max border border-blue-500 text-blue-500 rounded text-xs font-medium hover:bg-blue-600 hover:text-white hover:scale-105 transition-all duration-300 shadow-sm"
+                                                    >
+                                                        <Eye size={14} /> View
+                                                    </Link>
+                                                </td>
+                                            </tr>
+                                        )) : (
+                                            <tr>
+                                                <td colSpan="6" className="py-8 text-center text-gray-500">No recent orders found.</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
-                {/* Top Products */}
-                <div className="bg-white rounded-lg border border-gray-100 shadow-sm flex flex-col">
-                    <div className="p-5">
-                        <h3 className="text-[17px] text-gray-800 flex items-center gap-2">
-                            <Star size={20} className="fill-current stroke-2" /> Top Products
-                        </h3>
-                    </div>
-                    <div className="flex-grow flex items-center justify-center p-8 text-gray-500 text-sm h-64">
-                        No product data available
-                    </div>
-                </div>
+                        {/* Top Products */}
+                        <div className="bg-white rounded-lg border border-gray-100 shadow-sm flex flex-col">
+                            <div className="p-5">
+                                <h3 className="text-[17px] text-gray-800 flex items-center gap-2">
+                                    <Star size={20} className="fill-current stroke-2" /> Top Products
+                                </h3>
+                            </div>
+                            <div className="flex-grow flex items-center justify-center p-8 text-gray-500 text-sm h-64">
+                                No product data available
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );

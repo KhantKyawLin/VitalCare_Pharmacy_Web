@@ -47,6 +47,7 @@ import AdminTopProfitableProducts from './pages/admin/AdminTopProfitableProducts
 import AdminProfileSettings from './pages/admin/AdminProfileSettings';
 import AdminUserList from './pages/admin/AdminUserList';
 import AdminActivityLogs from './pages/admin/AdminActivityLogs';
+import AdminBrandingSettings from './pages/admin/AdminBrandingSettings';
 
 const PublicLayout = () => {
   const location = useLocation();
@@ -95,7 +96,7 @@ function App() {
               <Route path="top-profitable" element={<AdminTopProfitableProducts />} />
               <Route path="users" element={<AdminUserList />} />
               <Route path="logs" element={<AdminActivityLogs />} />
-              <Route path="settings" element={<div className="p-8"><h2 className="text-2xl font-bold">Branding & Settings</h2><p className="text-slate-500">Coming soon...</p></div>} />
+              <Route path="branding" element={<AdminBrandingSettings />} />
             </Route>
 
             {/* Admin & Pharmacist - Marketing & Content */}

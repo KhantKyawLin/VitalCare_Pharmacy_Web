@@ -67,7 +67,7 @@ const AdminProductDetail = () => {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[400px]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8DB600]"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-green"></div>
             </div>
         );
     }
@@ -83,7 +83,7 @@ const AdminProductDetail = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="flex items-center gap-3">
-                    <div className="bg-[#8DB600] p-2 rounded-lg text-white shadow-md shadow-[#8DB600]/20">
+                    <div className="bg-primary-green p-2 rounded-lg text-white shadow-md shadow-primary-green/20">
                         <Info size={22} className="stroke-[2.5]" />
                     </div>
                     <div>
@@ -101,7 +101,7 @@ const AdminProductDetail = () => {
                 <div className="lg:col-span-5 space-y-6">
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden sticky top-6">
                         <div className="p-4 border-b border-gray-50 flex items-center gap-2">
-                            <div className="p-1.5 bg-green-50 rounded text-[#8DB600]">
+                            <div className="p-1.5 bg-primary-light rounded text-primary-green">
                                 <ImageIcon size={18} />
                             </div>
                             <h3 className="font-bold text-gray-800">Product Images</h3>
@@ -123,13 +123,13 @@ const AdminProductDetail = () => {
                                             <>
                                                 <button 
                                                     onClick={() => setActiveImage(prev => (prev === 0 ? product.pictures.length - 1 : prev - 1))}
-                                                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center text-gray-700 opacity-0 group-hover:opacity-100 transition-all hover:bg-[#8DB600] hover:text-white"
+                                                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center text-gray-700 opacity-0 group-hover:opacity-100 transition-all hover:bg-primary-green hover:text-white"
                                                 >
                                                     <ChevronLeft size={20} />
                                                 </button>
                                                 <button 
                                                     onClick={() => setActiveImage(prev => (prev === product.pictures.length - 1 ? 0 : prev + 1))}
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center text-gray-700 opacity-0 group-hover:opacity-100 transition-all hover:bg-[#8DB600] hover:text-white"
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center text-gray-700 opacity-0 group-hover:opacity-100 transition-all hover:bg-primary-green hover:text-white"
                                                 >
                                                     <ChevronRight size={20} />
                                                 </button>
@@ -150,7 +150,7 @@ const AdminProductDetail = () => {
                                         key={pic.id}
                                         onClick={() => setActiveImage(idx)}
                                         className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition-all p-1 bg-white shadow-sm ${
-                                            activeImage === idx ? 'border-[#8DB600] scale-105 shadow-md shadow-[#8DB600]/10' : 'border-gray-100 hover:border-gray-200'
+                                            activeImage === idx ? 'border-primary-green scale-105 shadow-md shadow-primary-green/10' : 'border-gray-100 hover:border-gray-200'
                                         }`}
                                     >
                                         <img 
@@ -221,7 +221,7 @@ const AdminProductDetail = () => {
                                             <span className="text-[10px] text-gray-400 font-bold uppercase">Current Stock</span>
                                         </div>
                                         <span className={`px-3 py-1.5 rounded-lg font-bold text-[11px] shadow-sm flex items-center gap-1.5 ${
-                                            isLowStock ? 'bg-red-500 text-white' : 'bg-[#8DB600] text-white'
+                                            isLowStock ? 'bg-red-500 text-white' : 'bg-primary-green text-white'
                                         }`}>
                                             {isLowStock ? <AlertTriangle size={14} /> : <ShieldCheck size={14} />}
                                             {isLowStock ? 'Needs Reorder' : 'Healthy Stock'}
@@ -232,11 +232,11 @@ const AdminProductDetail = () => {
                                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Price Info</p>
                                     <div className="flex items-center justify-between p-3 bg-white rounded-xl shadow-sm border border-gray-100">
                                         <div className="flex flex-col">
-                                            <span className="text-xl font-black text-[#8DB600]">{product.price?.toLocaleString() || '0'} Ks</span>
+                                            <span className="text-xl font-black text-primary-green">{product.price?.toLocaleString() || '0'} Ks</span>
                                             <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wide">Selling Price</span>
                                         </div>
                                         <div className="p-2 bg-green-50 rounded-lg">
-                                            <Package size={20} className="text-[#8DB600]" />
+                                            <Package size={20} className="text-primary-green" />
                                         </div>
                                     </div>
                                 </div>
@@ -244,8 +244,8 @@ const AdminProductDetail = () => {
 
                             {/* Active Promotions */}
                             {activePromotions.length > 0 && (
-                                <div className="p-4 rounded-2xl border border-[#8DB600]/20 bg-[#8DB600]/5 md:col-span-2 mt-4">
-                                    <p className="text-xs font-bold text-[#8DB600] uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                                <div className="p-4 rounded-2xl border border-primary-green/20 bg-primary-light md:col-span-2 mt-4">
+                                    <p className="text-xs font-bold text-primary-green uppercase tracking-widest mb-3 flex items-center gap-1.5">
                                         <Tag size={14} /> Active Promotions
                                     </p>
                                     <div className="flex flex-wrap gap-3">
@@ -253,11 +253,11 @@ const AdminProductDetail = () => {
                                             <Link 
                                                 key={promo.id} 
                                                 to={`/admin/promotions/view/${promo.id}`} 
-                                                className="px-3 py-2 bg-white border border-[#8DB600]/30 rounded-xl text-[13px] font-bold text-gray-700 shadow-sm flex items-center gap-2 hover:border-[#8DB600] hover:shadow-md transition-all group"
+                                                className="px-3 py-2 bg-white border border-primary-green/30 rounded-xl text-[13px] font-bold text-gray-700 shadow-sm flex items-center gap-2 hover:border-primary-green hover:shadow-md transition-all group"
                                             >
-                                                <span className="w-2 h-2 rounded-full bg-[#8DB600] group-hover:animate-pulse"></span>
+                                                <span className="w-2 h-2 rounded-full bg-primary-green group-hover:animate-pulse"></span>
                                                 {promo.title}
-                                                <span className="ml-1 text-[11px] px-2 py-0.5 bg-[#8DB600]/10 text-[#8DB600] rounded-md border border-[#8DB600]/20">
+                                                <span className="ml-1 text-[11px] px-2 py-0.5 bg-primary-light text-primary-green rounded-md border border-primary-green/20">
                                                     {promo.type === 'percentage' ? `${promo.discount_value}% OFF` : `-${parseFloat(promo.discount_value).toLocaleString()} Ks`}
                                                 </span>
                                             </Link>
@@ -269,10 +269,10 @@ const AdminProductDetail = () => {
                             <div className="space-y-6 mt-6">
                                 <div>
                                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 bg-[#8DB600] rounded-full"></div>
+                                        <div className="w-1.5 h-1.5 bg-primary-green rounded-full"></div>
                                         Usage Instructions
                                     </p>
-                                    <p className="text-gray-700 text-[13.5px] leading-relaxed pl-3.5 border-l-2 border-[#8DB600]/20 py-1">
+                                    <p className="text-gray-700 text-[13.5px] leading-relaxed pl-3.5 border-l-2 border-primary-green/20 py-1">
                                         {product.usage || 'No usage instructions specified.'}
                                     </p>
                                 </div>
@@ -299,7 +299,7 @@ const AdminProductDetail = () => {
                         </button>
                         <Link 
                             to={`/admin/products/edit/${product.id}`}
-                            className="flex items-center gap-2 px-8 py-2.5 bg-[#8DB600] text-white rounded-xl hover:bg-[#7a9e00] transition-all font-bold text-sm shadow-md shadow-[#8DB600]/20"
+                            className="flex items-center gap-2 px-8 py-2.5 bg-primary-green text-white rounded-xl hover:bg-primary-dark transition-all font-bold text-sm shadow-md shadow-primary-green/20"
                         >
                             <Edit size={18} /> Edit Product
                         </Link>

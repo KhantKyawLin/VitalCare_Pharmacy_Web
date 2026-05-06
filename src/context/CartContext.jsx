@@ -5,7 +5,7 @@ import { AuthContext } from './AuthContext';
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-    const { token } = useContext(AuthContext);
+    const { token, isLoading: isAuthLoading } = useContext(AuthContext);
     const [cart, setCart] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -29,8 +29,10 @@ export const CartProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        fetchCart();
-    }, [token]);
+        if (!isAuthLoading) {
+            fetchCart();
+        }
+    }, [token, isAuthLoading]);
 
     const addToCart = async (productId, quantity = 1) => {
         if (!token) return { success: false, error: 'Please login to add items to cart' };

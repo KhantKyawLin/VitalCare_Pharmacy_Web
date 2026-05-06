@@ -5,7 +5,7 @@ import { AuthContext } from './AuthContext';
 export const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
-    const { token } = useContext(AuthContext);
+    const { token, isLoading: isAuthLoading } = useContext(AuthContext);
     const [wishlist, setWishlist] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -17,7 +17,9 @@ export const WishlistProvider = ({ children }) => {
         }
 
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/auth/wishlist');
+            const response = await axios.get('http://127.0.0.1:8000/api/auth/wishlist', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setWishlist(response.data);
         } catch (error) {
             console.error("Error fetching wishlist:", error);
@@ -27,8 +29,10 @@ export const WishlistProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        fetchWishlist();
-    }, [token]);
+        if (!isAuthLoading) {
+            fetchWishlist();
+        }
+    }, [token, isAuthLoading]);
 
     const addToWishlist = async (productId) => {
         if (!token) return { success: false, error: 'Please login to add items to wishlist' };

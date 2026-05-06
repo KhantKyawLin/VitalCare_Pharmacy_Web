@@ -58,7 +58,7 @@ const AdminOrderList = () => {
         <div className="space-y-6 pb-12">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
                 <div className="flex items-center gap-3">
-                    <div className="bg-[#8DB600] p-2 rounded-lg text-white">
+                    <div className="bg-primary-green p-2 rounded-lg text-white">
                         <ShoppingCart size={22} className="stroke-2" />
                     </div>
                     <div>
@@ -78,7 +78,7 @@ const AdminOrderList = () => {
                         name="order_type"
                         value={filters.order_type}
                         onChange={handleFilterChange}
-                        className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#8DB600] outline-none min-w-[150px]"
+                        className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-green outline-none min-w-[150px]"
                     >
                         <option value="">All Orders</option>
                         <option value="walk-in">Walk-in POS</option>
@@ -94,7 +94,7 @@ const AdminOrderList = () => {
                         name="status"
                         value={filters.status}
                         onChange={handleFilterChange}
-                        className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#8DB600] outline-none min-w-[150px]"
+                        className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-green outline-none min-w-[150px]"
                     >
                         <option value="">All Status</option>
                         <option value="pending">Pending</option>
@@ -112,13 +112,13 @@ const AdminOrderList = () => {
                         name="date"
                         value={filters.date}
                         onChange={handleFilterChange}
-                        className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#8DB600] outline-none"
+                        className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-green outline-none"
                     />
                 </div>
 
                 <button 
                     onClick={() => {setFilters({status:'', order_type:'', date:''}); setPage(1);}}
-                    className="text-sm text-[#8DB600] font-bold hover:underline py-2"
+                    className="text-sm text-primary-green font-bold hover:underline py-2"
                 >
                     Reset Filters
                 </button>
@@ -193,7 +193,7 @@ const AdminOrderList = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`px-2.5 py-1 rounded-md text-[11px] font-black text-white ${
-                                            order.status === 'completed' ? 'bg-[#218F56]' : 
+                                            order.status === 'completed' ? 'bg-primary-dark' : 
                                             order.status === 'pending' ? 'bg-[#FFB822]' : 'bg-red-500'
                                         }`}>
                                             {order.status?.toUpperCase()}
@@ -203,10 +203,9 @@ const AdminOrderList = () => {
                                         <div className="flex justify-center">
                                             <Link 
                                                 to={`/admin/orders/${order.id}`}
-                                                className="p-2 text-[#8DB600] hover:bg-green-50 rounded-lg transition-colors border border-green-100 shadow-sm"
-                                                title="View Details"
+                                                className="px-3 py-1 flex items-center justify-center gap-1.5 w-max border border-primary-green text-primary-green rounded text-xs font-medium hover:bg-primary-green hover:text-white hover:scale-105 transition-all duration-300 shadow-sm"
                                             >
-                                                <Eye size={16} />
+                                                <Eye size={14} /> View
                                             </Link>
                                         </div>
                                     </td>

@@ -76,7 +76,7 @@ const AdminPromotionList = () => {
                     <Tag size={26} className="text-gray-800" strokeWidth={2.5}/>
                     <h2 className="text-[22px] text-gray-800 font-bold">Promotions Management</h2>
                 </div>
-                <Link to="/admin/promotions/create" className="bg-[#8DB600] text-white px-5 py-2.5 rounded shadow flex items-center gap-2 hover:bg-[#7a9e00] transition-colors text-[14px] font-bold">
+                <Link to="/admin/promotions/create" className="bg-primary-green text-white px-5 py-2.5 rounded shadow flex items-center gap-2 hover:bg-primary-dark transition-colors text-[14px] font-bold">
                     <Plus size={18} strokeWidth={3}/> Add New Promotion
                 </Link>
             </div>
@@ -89,7 +89,7 @@ const AdminPromotionList = () => {
                         <h3 className="text-3xl font-bold text-gray-800">{promotions.length}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">All time records</p>
                     </div>
-                    <div className="bg-blue-50 p-2.5 rounded-lg text-blue-500">
+                    <div className="bg-primary-light p-2.5 rounded-lg text-primary-green">
                         <Tag size={24} />
                     </div>
                 </div>
@@ -100,7 +100,7 @@ const AdminPromotionList = () => {
                         <h3 className="text-3xl font-bold text-gray-800">{activeCount}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">Running currently</p>
                     </div>
-                    <div className="bg-green-50 p-2.5 rounded-lg text-[#8DB600]">
+                    <div className="bg-green-50 p-2.5 rounded-lg text-primary-green">
                         <Clock size={24} />
                     </div>
                 </div>
@@ -111,7 +111,7 @@ const AdminPromotionList = () => {
                         <h3 className="text-3xl font-bold text-gray-800">{orderCount}</h3>
                         <p className="text-[13px] text-gray-400 mt-2">Order-level discounts</p>
                     </div>
-                    <div className="bg-purple-50 p-2.5 rounded-lg text-purple-500">
+                    <div className="bg-primary-light p-2.5 rounded-lg text-primary-green opacity-80">
                         <Banknote size={24} />
                     </div>
                 </div>
@@ -121,7 +121,7 @@ const AdminPromotionList = () => {
             <div className="bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100 mt-6 pt-5">
                 <div className="flex flex-col md:flex-row justify-between items-center px-6 pb-4 gap-4">
                     <h3 className="text-lg font-bold text-gray-800">Available Promotions</h3>
-                    <div className="relative flex w-full md:w-72 rounded overflow-hidden border border-gray-200 focus-within:border-[#8DB600] transition-all bg-gray-50 focus-within:bg-white text-gray-600">
+                    <div className="relative flex w-full md:w-72 rounded overflow-hidden border border-gray-200 focus-within:border-primary-green transition-all bg-gray-50 focus-within:bg-white text-gray-600">
                         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input 
                             type="text" 
@@ -157,7 +157,7 @@ const AdminPromotionList = () => {
                             ) : filteredPromotions.length > 0 ? filteredPromotions.map((promo) => {
                                 const isExpired = new Date(promo.end_date) < new Date();
                                 const status = !promo.is_active ? 'Inactive' : (isExpired ? 'Expired' : 'Active');
-                                const statusClass = status === 'Active' ? 'bg-[#1E8449]' : (status === 'Expired' ? 'bg-red-500' : 'bg-gray-400');
+                                const statusClass = status === 'Active' ? 'bg-primary-dark' : (status === 'Expired' ? 'bg-red-500' : 'bg-gray-400');
                                 
                                 return (
                                     <tr key={promo.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/40 transition-colors">
@@ -165,7 +165,7 @@ const AdminPromotionList = () => {
                                             <span className="font-bold text-gray-800">{promo.title}</span>
                                         </td>
                                         <td className="py-3.5">
-                                            <span className={`px-2 py-1 rounded text-xs font-bold ${promo.promotion_scope === 'item' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}`}>
+                                            <span className={`px-2 py-1 rounded text-xs font-bold ${promo.promotion_scope === 'item' ? 'bg-primary-light text-primary-green' : 'bg-slate-100 text-slate-600'}`}>
                                                 {promo.promotion_scope === 'item' ? 'Item Specific' : 'Whole Order'}
                                             </span>
                                         </td>
@@ -191,10 +191,10 @@ const AdminPromotionList = () => {
                                         </td>
                                         <td className="py-3.5 align-middle">
                                             <div className="flex items-center justify-center gap-2">
-                                                <Link to={`/admin/promotions/view/${promo.id}`} className="p-1.5 border border-[#00b0e4]/30 text-[#00b0e4] hover:bg-[#00b0e4] hover:text-white rounded transition-colors shadow-sm bg-white" title="View Details">
+                                                <Link to={`/admin/promotions/view/${promo.id}`} className="p-1.5 border border-primary-green/30 text-primary-green hover:bg-primary-green hover:text-white rounded transition-colors shadow-sm bg-white" title="View Details">
                                                     <Eye size={14} strokeWidth={2.5}/>
                                                 </Link>
-                                                <Link to={`/admin/promotions/edit/${promo.id}`} className="p-1.5 border border-[#3b82f6]/30 text-[#3b82f6] hover:bg-[#3b82f6] hover:text-white rounded transition-colors shadow-sm bg-white" title="Edit">
+                                                <Link to={`/admin/promotions/edit/${promo.id}`} className="p-1.5 border border-accent-green/30 text-accent-green hover:bg-accent-green hover:text-white rounded transition-colors shadow-sm bg-white" title="Edit">
                                                     <Edit size={14} strokeWidth={2.5}/>
                                                 </Link>
                                                 <button 
