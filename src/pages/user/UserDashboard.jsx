@@ -55,8 +55,8 @@ const UserDashboard = () => {
 
     const getStatusConfig = (status) => {
         switch(status?.toLowerCase()) {
-            case 'completed': return 'bg-[#218F56] text-white';
-            case 'pending': return 'bg-[#FFB822] text-white';
+            case 'completed': return 'bg-primary-green text-white';
+            case 'pending': return 'bg-amber-500 text-white';
             case 'processing': return 'bg-blue-500 text-white';
             case 'cancelled': return 'bg-red-500 text-white';
             default: return 'bg-gray-500 text-white';
@@ -88,25 +88,25 @@ const UserDashboard = () => {
 
             {/* Current Promotions Banner */}
             {promotions.length > 0 ? (
-                <div className="bg-[#ccf1f5] rounded-lg p-5 border border-[#a5e1e8] flex flex-col justify-center h-auto min-h-[100px]">
+                <div className="bg-primary-light rounded-lg p-5 border border-primary-green/20 flex flex-col justify-center h-auto min-h-[100px]">
                     <div className="flex items-center gap-3 mb-2">
-                        <Percent className="text-[#007b99] stroke-2" size={24} />
-                        <h2 className="text-xl text-[#007b99]">Current Promotions</h2>
+                        <Percent className="text-primary-green stroke-2" size={24} />
+                        <h2 className="text-xl text-primary-green">Current Promotions</h2>
                     </div>
                     <div>
-                        <span className="inline-block bg-[#A3C93A] text-white text-[11px] font-bold px-2 py-0.5 rounded shadow-sm">
+                        <span className="inline-block bg-primary-green text-white text-[11px] font-bold px-2 py-0.5 rounded shadow-sm">
                             Special Promotion: {promotions[0].discount_value}{promotions[0].discount_type === 'percentage' ? '% off' : ' Flat Off'}
                         </span>
                     </div>
                 </div>
             ) : (
-                <div className="bg-[#ccf1f5] rounded-lg p-5 border border-[#a5e1e8] flex flex-col justify-center h-auto min-h-[100px]">
+                <div className="bg-primary-light rounded-lg p-5 border border-primary-green/20 flex flex-col justify-center h-auto min-h-[100px]">
                     <div className="flex items-center gap-3 mb-2">
-                        <Percent className="text-[#007b99] stroke-2" size={24} />
-                        <h2 className="text-xl text-[#007b99]">Current Promotions</h2>
+                        <Percent className="text-primary-green stroke-2" size={24} />
+                        <h2 className="text-xl text-primary-green">Current Promotions</h2>
                     </div>
                     <div>
-                        <span className="inline-block bg-[#A3C93A] text-white text-[11px] font-bold px-2 py-0.5 rounded shadow-sm">
+                        <span className="inline-block bg-primary-green text-white text-[11px] font-bold px-2 py-0.5 rounded shadow-sm">
                             Enjoy Free Consultations Today
                         </span>
                     </div>
@@ -153,7 +153,7 @@ const UserDashboard = () => {
                                                 </span>
                                             </td>
                                             <td className="py-4">
-                                                <Link to={`/profile/orders/${order.id}`} className="px-3 py-1 flex items-center justify-center gap-1.5 w-max border border-blue-500 text-blue-500 rounded text-xs font-medium hover:bg-blue-50 transition-colors">
+                                                <Link to={`/profile/orders/${order.id}`} className="px-3 py-1 flex items-center justify-center gap-1.5 w-max border border-primary-green text-primary-green rounded text-xs font-medium hover:bg-primary-light transition-colors">
                                                     <Eye size={14} /> View
                                                 </Link>
                                             </td>
@@ -163,7 +163,7 @@ const UserDashboard = () => {
                             </tbody>
                         </table>
                         <div className="mt-4 text-right">
-                            <Link to="/profile/orders" className="text-sm font-medium text-gray-800 hover:text-[#8DB600] flex items-center justify-end gap-1">
+                            <Link to="/profile/orders" className="text-sm font-medium text-gray-800 hover:text-primary-green flex items-center justify-end gap-1">
                                 <History size={16} /> View All Orders
                             </Link>
                         </div>

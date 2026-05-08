@@ -83,7 +83,7 @@ const Checkout = () => {
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-6xl">
-            <h1 className="text-3xl font-bold text-[#8DB600] mb-8">Checkout</h1>
+            <h1 className="text-3xl font-bold text-primary-green mb-8">Checkout</h1>
 
             <div className="flex flex-col lg:flex-row gap-6">
                 {/* Left Column: Order Summary */}
@@ -109,7 +109,7 @@ const Checkout = () => {
                                         const subtotal = price * item.quantity;
                                         const imageUrl = product.pictures?.length > 0 
                                             ? `http://127.0.0.1:8000/storage/${product.pictures[0].image_path}` 
-                                            : "https://placehold.co/40x40/f8fafc/a3c93a?text=P";
+                                            : "https://placehold.co/40x40/f8fafc/8DB600?text=P";
 
                                         return (
                                             <tr key={index} className="border-b border-gray-50">
@@ -130,7 +130,7 @@ const Checkout = () => {
 
                             <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
                                 <span className="font-bold text-gray-800 text-base ml-auto mr-12">Total Amount:</span>
-                                <span className="font-bold text-[#8DB600] text-lg">Ks. {cartTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                <span className="font-bold text-primary-green text-lg">Ks. {cartTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                             </div>
                         </div>
                     </div>
@@ -150,7 +150,7 @@ const Checkout = () => {
                                     value={deliveryAddress}
                                     onChange={(e) => setDeliveryAddress(e.target.value)}
                                     rows="3"
-                                    className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-[#8DB600]"
+                                    className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-primary-green"
                                 ></textarea>
                             </div>
 
@@ -161,7 +161,7 @@ const Checkout = () => {
                                     type="text"
                                     value={contactPhone}
                                     onChange={(e) => setContactPhone(e.target.value)}
-                                    className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-[#8DB600]"
+                                    className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-primary-green"
                                 />
                                 <p className="text-xs text-gray-500 mt-1">Your registered phone number. Update in profile if needed.</p>
                             </div>
@@ -171,8 +171,8 @@ const Checkout = () => {
                                 <label className="block text-sm text-gray-700 mb-2">Payment Method</label>
                                 <div className="space-y-2">
                                     <label className="flex items-center gap-2 cursor-pointer">
-                                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${paymentMethod === 'cash' ? 'border-[#8DB600]' : 'border-gray-300'}`}>
-                                            {paymentMethod === 'cash' && <div className="w-2 h-2 bg-[#8DB600] rounded-full"></div>}
+                                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${paymentMethod === 'cash' ? 'border-primary-green' : 'border-gray-300'}`}>
+                                            {paymentMethod === 'cash' && <div className="w-2 h-2 bg-primary-green rounded-full"></div>}
                                         </div>
                                         <input 
                                             type="radio" 
@@ -182,11 +182,11 @@ const Checkout = () => {
                                             onChange={() => setPaymentMethod('cash')} 
                                             className="hidden" 
                                         />
-                                        <span className={`text-sm ${paymentMethod === 'cash' ? 'text-[#8DB600]' : 'text-gray-600'}`}>Cash on Delivery</span>
+                                        <span className={`text-sm ${paymentMethod === 'cash' ? 'text-primary-green' : 'text-gray-600'}`}>Cash on Delivery</span>
                                     </label>
                                     <label className="flex items-center gap-2 cursor-pointer">
-                                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${paymentMethod === 'online' ? 'border-[#8DB600]' : 'border-gray-300'}`}>
-                                            {paymentMethod === 'online' && <div className="w-2 h-2 bg-[#8DB600] rounded-full"></div>}
+                                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${paymentMethod === 'online' ? 'border-primary-green' : 'border-gray-300'}`}>
+                                            {paymentMethod === 'online' && <div className="w-2 h-2 bg-primary-green rounded-full"></div>}
                                         </div>
                                         <input 
                                             type="radio" 
@@ -196,7 +196,7 @@ const Checkout = () => {
                                             onChange={() => setPaymentMethod('online')} 
                                             className="hidden" 
                                         />
-                                        <span className={`text-sm ${paymentMethod === 'online' ? 'text-[#8DB600]' : 'text-gray-600'}`}>Online Payment (Bank Transfer / Mobile Pay)</span>
+                                        <span className={`text-sm ${paymentMethod === 'online' ? 'text-primary-green' : 'text-gray-600'}`}>Online Payment (Bank Transfer / Mobile Pay)</span>
                                     </label>
                                 </div>
                             </div>
@@ -228,7 +228,7 @@ const Checkout = () => {
                             <button
                                 onClick={handlePlaceOrder}
                                 disabled={isPlacingOrder}
-                                className="w-full bg-[#8DB600] hover:bg-[#769800] text-white font-bold py-2.5 rounded shadow flex items-center justify-center gap-2 mt-4 transition-colors disabled:opacity-70"
+                                className="w-full bg-primary-green hover:bg-primary-dark text-white font-bold py-2.5 rounded shadow flex items-center justify-center gap-2 mt-4 transition-colors disabled:opacity-70"
                             >
                                 {isPlacingOrder ? (
                                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

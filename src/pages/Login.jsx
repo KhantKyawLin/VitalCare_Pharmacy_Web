@@ -21,7 +21,7 @@ const Login = () => {
             inputLabel: 'Enter your registered email address',
             inputPlaceholder: 'email@example.com',
             showCancelButton: true,
-            confirmButtonColor: '#A3C93A',
+            confirmButtonColor: 'var(--primary-color)',
             cancelButtonColor: '#64748b',
             confirmButtonText: 'Submit Request',
             inputValidator: (value) => {
@@ -54,14 +54,14 @@ const Login = () => {
                         icon: 'success',
                         title: 'Request Submitted',
                         text: data.message || 'The admin will process your request and send you a new password via email.',
-                        confirmButtonColor: '#A3C93A'
+                        confirmButtonColor: 'var(--primary-color)'
                     });
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Request Failed',
                         text: data.message || 'Something went wrong. Please check your email.',
-                        confirmButtonColor: '#A3C93A'
+                        confirmButtonColor: 'var(--primary-color)'
                     });
                 }
             } catch (error) {
@@ -69,7 +69,7 @@ const Login = () => {
                     icon: 'error',
                     title: 'Error',
                     text: 'Failed to connect to server.',
-                    confirmButtonColor: '#A3C93A'
+                    confirmButtonColor: 'var(--primary-color)'
                 });
             }
         }

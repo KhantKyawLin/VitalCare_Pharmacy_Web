@@ -230,7 +230,7 @@ const AdminDashboard = () => {
                                                 <td className="py-4">
                                                     <span className={`px-2.5 py-1 rounded-md text-[11px] font-bold text-white ${
                                                         order.status?.toLowerCase() === 'completed' ? 'bg-primary-dark' : 
-                                                        order.status?.toLowerCase() === 'pending' ? 'bg-[#FFB822]' : 'bg-red-500'
+                                                        order.status?.toLowerCase() === 'pending' ? 'bg-amber-500' : 'bg-red-500'
                                                     }`}>
                                                         {order.status?.toUpperCase() || 'N/A'}
                                                     </span>
@@ -238,7 +238,7 @@ const AdminDashboard = () => {
                                                 <td className="py-4">
                                                     <Link 
                                                         to={`/admin/orders/${order.id}`}
-                                                        className="px-3 py-1 flex items-center justify-center gap-1.5 w-max border border-blue-500 text-blue-500 rounded text-xs font-medium hover:bg-blue-600 hover:text-white hover:scale-105 transition-all duration-300 shadow-sm"
+                                                        className="px-3 py-1 flex items-center justify-center gap-1.5 w-max border border-primary-green text-primary-green rounded text-xs font-medium hover:bg-primary-dark hover:text-white hover:scale-105 transition-all duration-300 shadow-sm"
                                                     >
                                                         <Eye size={14} /> View
                                                     </Link>
@@ -256,13 +256,44 @@ const AdminDashboard = () => {
 
                         {/* Top Products */}
                         <div className="bg-white rounded-lg border border-gray-100 shadow-sm flex flex-col">
-                            <div className="p-5">
-                                <h3 className="text-[17px] text-gray-800 flex items-center gap-2">
-                                    <Star size={20} className="fill-current stroke-2" /> Top Products
+                            <div className="p-5 border-b border-gray-50 flex justify-between items-center">
+                                <h3 className="text-[17px] font-bold text-gray-800 flex items-center gap-2">
+                                    <Activity size={20} className="text-primary-green" /> System Audit List
                                 </h3>
+                                <Link to="/admin/logs" className="text-xs font-bold text-primary-green hover:underline">View All</Link>
                             </div>
-                            <div className="flex-grow flex items-center justify-center p-8 text-gray-500 text-sm h-64">
-                                No product data available
+                            <div className="flex-grow overflow-y-auto">
+                                {stats.recent_activity?.length > 0 ? (
+                                    <div className="divide-y divide-gray-50">
+                                        {stats.recent_activity.map((log) => (
+                                            <div key={log.id} className="p-4 hover:bg-gray-50/50 transition-colors">
+                                                <div className="flex items-center justify-between mb-1">
+                                                    <span className="text-xs font-black text-gray-800 uppercase tracking-tighter">
+                                                        {log.user?.name || 'System'}
+                                                    </span>
+                                                    <span className="text-[10px] font-bold text-gray-400">
+                                                        {new Date(log.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    </span>
+                                                </div>
+                                                <p className="text-xs text-gray-600 line-clamp-1">{log.description}</p>
+                                                <div className="mt-1 flex items-center gap-2">
+                                                    <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded border ${
+                                                        log.action.includes('create') ? 'bg-green-50 text-green-600 border-green-100' :
+                                                        log.action.includes('update') ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                                                        'bg-gray-50 text-gray-600 border-gray-100'
+                                                    }`}>
+                                                        {log.action}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="h-64 flex flex-col items-center justify-center p-8 text-gray-400 text-sm">
+                                        <Activity size={32} className="opacity-20 mb-2" />
+                                        No recent activity logs
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </>

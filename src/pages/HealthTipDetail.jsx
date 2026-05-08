@@ -88,7 +88,7 @@ const HealthTipDetail = () => {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#A3C93A]"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-green"></div>
             </div>
         );
     }
@@ -97,7 +97,7 @@ const HealthTipDetail = () => {
         return (
             <div className="container mx-auto px-4 py-24 text-center">
                 <p className="text-red-500 mb-4 font-bold">{error || "Article not found"}</p>
-                <Link to="/health-tips" className="text-[#A3C93A] font-bold underline">Return to Health Tips</Link>
+                <Link to="/health-tips" className="text-primary-green font-bold underline">Return to Health Tips</Link>
             </div>
         );
     }
@@ -112,9 +112,9 @@ const HealthTipDetail = () => {
             <div className="bg-gray-50 border-b border-gray-100">
                 <div className="container mx-auto px-4 py-3">
                     <nav className="flex text-[10px] font-black uppercase tracking-widest text-gray-400">
-                        <Link to="/" className="hover:text-[#A3C93A]">Home</Link>
+                        <Link to="/" className="hover:text-primary-green">Home</Link>
                         <span className="mx-2">/</span>
-                        <Link to="/health-tips" className="hover:text-[#A3C93A]">Health Tips</Link>
+                        <Link to="/health-tips" className="hover:text-primary-green">Health Tips</Link>
                         <span className="mx-2">/</span>
                         <span className="text-gray-900 truncate max-w-[200px] md:max-w-none">{tip.title}</span>
                     </nav>
@@ -134,7 +134,7 @@ const HealthTipDetail = () => {
                                 className="w-full h-full object-cover"
                             />
                             <div className="absolute top-6 left-6 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-[4px] text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-lg">
-                                <Clock size={14} className="text-[#A3C93A]" /> 5 min read
+                                <Clock size={14} className="text-primary-green" /> 5 min read
                             </div>
                         </div>
 
@@ -158,11 +158,11 @@ const HealthTipDetail = () => {
                                     <span className="text-xs font-medium italic">({tip.feedbacks?.length || 0} feedbacks)</span>
                                 </div>
                                 <div className="flex items-center gap-2 border-l border-gray-200 pl-6">
-                                    <Calendar size={16} className="text-[#A3C93A]" />
+                                    <Calendar size={16} className="text-primary-green" />
                                     <span>{new Date(tip.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                                 </div>
                                 <div className="flex items-center gap-2 border-l border-gray-200 pl-6">
-                                    <User size={16} className="text-[#A3C93A]" />
+                                    <User size={16} className="text-primary-green" />
                                     <span className="text-gray-900">{tip.author?.name || 'Medical Team'}</span>
                                 </div>
                             </div>
@@ -178,7 +178,7 @@ const HealthTipDetail = () => {
                         {/* Feedback & Comments Section */}
                         <div className="mt-20 pt-16 border-t border-gray-100">
                             <div className="flex items-center gap-3 mb-10">
-                                <MessageSquare size={28} className="text-[#A3C93A]" />
+                                <MessageSquare size={28} className="text-primary-green" />
                                 <h2 className="text-2xl font-black text-gray-900 uppercase tracking-widest">Feedback & Comments</h2>
                             </div>
 
@@ -215,7 +215,7 @@ const HealthTipDetail = () => {
                                             value={comment}
                                             onChange={(e) => setComment(e.target.value)}
                                             placeholder="Share your thoughts about this health tip..."
-                                            className="w-full px-5 py-4 bg-white border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#A3C93A]/20 focus:border-[#A3C93A] outline-none transition-all font-medium text-gray-700 resize-none"
+                                            className="w-full px-5 py-4 bg-white border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-primary-light focus:border-primary-green outline-none transition-all font-medium text-gray-700 resize-none"
                                         />
                                         <p className="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-tighter">Max 500 characters</p>
                                     </div>
@@ -223,7 +223,7 @@ const HealthTipDetail = () => {
                                     <button 
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="w-full sm:w-auto px-8 py-4 bg-white border-2 border-[#A3C93A] text-[#A3C93A] rounded-[4px] font-black uppercase tracking-widest hover:bg-[#A3C93A] hover:text-white transition-all flex items-center justify-center gap-3"
+                                        className="w-full sm:w-auto px-8 py-4 bg-white border-2 border-primary-green text-primary-green rounded-[4px] font-black uppercase tracking-widest hover:bg-primary-green hover:text-white transition-all flex items-center justify-center gap-3"
                                     >
                                         {token ? (
                                             <>
@@ -244,7 +244,7 @@ const HealthTipDetail = () => {
                                 {tip.feedbacks?.length > 0 ? (
                                     tip.feedbacks.map((f, i) => (
                                         <div key={i} className="flex gap-4 items-start group">
-                                            <div className="w-12 h-12 rounded-full bg-gray-100 flex-shrink-0 flex items-center justify-center text-[#A3C93A] border border-gray-200 group-hover:bg-[#A3C93A] group-hover:text-white transition-colors">
+                                            <div className="w-12 h-12 rounded-full bg-gray-100 flex-shrink-0 flex items-center justify-center text-primary-green border border-gray-200 group-hover:bg-primary-green group-hover:text-white transition-colors">
                                                 <User size={24} />
                                             </div>
                                             <div className="flex-grow bg-white p-6 rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-all">
@@ -285,7 +285,7 @@ const HealthTipDetail = () => {
                         {/* Related Tips */}
                         <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
                             <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-8 flex items-center gap-2">
-                                <Bookmark size={18} className="text-[#A3C93A] fill-[#A3C93A]" /> Related Tips
+                                <Bookmark size={18} className="text-primary-green fill-primary-green" /> Related Tips
                             </h4>
                             <div className="space-y-6">
                                 {relatedTips.map(rel => (
@@ -297,7 +297,7 @@ const HealthTipDetail = () => {
                                                 className="w-full h-full object-cover transition-transform group-hover:scale-110"
                                             />
                                         </div>
-                                        <h5 className="text-sm font-bold text-gray-800 line-clamp-2 leading-snug group-hover:text-[#A3C93A] transition-colors mt-1">
+                                        <h5 className="text-sm font-bold text-gray-800 line-clamp-2 leading-snug group-hover:text-primary-green transition-colors mt-1">
                                             {rel.title}
                                         </h5>
                                     </Link>
@@ -308,7 +308,7 @@ const HealthTipDetail = () => {
                         {/* Popular Tips */}
                         <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
                             <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-8 flex items-center gap-2">
-                                <TrendingUp size={18} className="text-[#A3C93A]" /> Popular Tips
+                                <TrendingUp size={18} className="text-primary-green" /> Popular Tips
                             </h4>
                             <div className="space-y-6">
                                 {popularTips.map(pop => (
@@ -322,7 +322,7 @@ const HealthTipDetail = () => {
                                             <div className="absolute inset-0 bg-black/10"></div>
                                         </div>
                                         <div className="flex-grow">
-                                            <h5 className="text-sm font-bold text-gray-800 line-clamp-2 leading-snug group-hover:text-[#A3C93A] transition-colors mb-2">
+                                            <h5 className="text-sm font-bold text-gray-800 line-clamp-2 leading-snug group-hover:text-primary-green transition-colors mb-2">
                                                 {pop.title}
                                             </h5>
                                             <div className="flex text-yellow-400">

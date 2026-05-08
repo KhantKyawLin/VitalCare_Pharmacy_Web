@@ -97,12 +97,12 @@ const Products = () => {
 
                         <button 
                             onClick={() => setShowFilters(!showFilters)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-[4px] border-2 transition-all font-black uppercase tracking-widest text-xs ${showFilters ? 'bg-[#A3C93A] border-[#A3C93A] text-white' : 'bg-white border-[#A3C93A] text-[#A3C93A] hover:bg-[#A3C93A]/5'}`}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-[4px] border-2 transition-all font-black uppercase tracking-widest text-xs ${showFilters ? 'bg-primary-green border-primary-green text-white' : 'bg-white border-primary-green text-primary-green hover:bg-primary-green/5'}`}
                         >
                             <SlidersHorizontal size={14} strokeWidth={3} />
                             Filters
                             {getActiveFiltersCount() > 0 && (
-                                <span className="flex items-center justify-center w-5 h-5 bg-white text-[#A3C93A] rounded-full text-[10px]">
+                                <span className="flex items-center justify-center w-5 h-5 bg-white text-primary-green rounded-full text-[10px]">
                                     {getActiveFiltersCount()}
                                 </span>
                             )}
@@ -123,7 +123,7 @@ const Products = () => {
                                             placeholder="Keyword..."
                                             value={search}
                                             onChange={(e) => setSearch(e.target.value)}
-                                            className="w-full pl-9 pr-3 py-2.5 bg-white border border-gray-200 rounded-[4px] outline-none focus:ring-2 focus:ring-[#A3C93A]/20 focus:border-[#A3C93A] font-bold text-xs text-gray-700"
+                                            className="w-full pl-9 pr-3 py-2.5 bg-white border border-gray-200 rounded-[4px] outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green font-bold text-xs text-gray-700"
                                         />
                                     </div>
                                 </div>
@@ -134,7 +134,7 @@ const Products = () => {
                                     <select 
                                         value={selectedCategory}
                                         onChange={(e) => { setSelectedCategory(e.target.value); setCurrentPage(1); }}
-                                        className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-[4px] outline-none focus:ring-2 focus:ring-[#A3C93A]/20 focus:border-[#A3C93A] font-bold text-xs text-gray-700 appearance-none cursor-pointer"
+                                        className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-[4px] outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green font-bold text-xs text-gray-700 appearance-none cursor-pointer"
                                     >
                                         <option value="">All Categories</option>
                                         {categories.map(cat => (
@@ -149,7 +149,7 @@ const Products = () => {
                                     <select 
                                         value={selectedType}
                                         onChange={(e) => { setSelectedType(e.target.value); setCurrentPage(1); }}
-                                        className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-[4px] outline-none focus:ring-2 focus:ring-[#A3C93A]/20 focus:border-[#A3C93A] font-bold text-xs text-gray-700 appearance-none cursor-pointer"
+                                        className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-[4px] outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green font-bold text-xs text-gray-700 appearance-none cursor-pointer"
                                     >
                                         <option value="all">All Products</option>
                                         <option value="top_sellers">Top Selling Products</option>
@@ -161,7 +161,7 @@ const Products = () => {
                                 <div className="flex items-end gap-2 md:col-span-3 lg:col-span-1">
                                     <button 
                                         type="submit"
-                                        className="flex-grow bg-[#A3C93A] text-white py-2.5 rounded-[4px] font-black uppercase tracking-widest text-[10px] hover:bg-[#8eb132] transition-all shadow-lg shadow-[#A3C93A]/20"
+                                        className="flex-grow bg-primary-green text-white py-2.5 rounded-[4px] font-black uppercase tracking-widest text-[10px] hover:bg-primary-dark transition-all shadow-lg shadow-primary-green/20"
                                     >
                                         Apply Filters
                                     </button>
@@ -206,7 +206,7 @@ const Products = () => {
                         <p className="text-gray-400 font-medium mt-2">Try relaxing your filters or searching for something else.</p>
                         <button 
                             onClick={handleClearAll}
-                            className="mt-8 px-6 py-3 bg-[#A3C93A] text-white rounded-[4px] font-black uppercase tracking-widest text-xs shadow-xl shadow-[#A3C93A]/20 transition-all"
+                            className="mt-8 px-6 py-3 bg-primary-green text-white rounded-[4px] font-black uppercase tracking-widest text-xs shadow-xl shadow-primary-green/20 transition-all"
                         >
                             Reset All Filters
                         </button>
@@ -219,7 +219,7 @@ const Products = () => {
                         <button 
                             disabled={currentPage === 1}
                             onClick={() => setCurrentPage(prev => prev - 1)}
-                            className="p-4 bg-white border-2 border-gray-100 rounded-[4px] text-gray-400 hover:text-[#A3C93A] hover:border-[#A3C93A] disabled:opacity-20 transition-all shadow-sm group"
+                            className="p-4 bg-white border-2 border-gray-100 rounded-[4px] text-gray-400 hover:text-primary-green hover:border-primary-green disabled:opacity-20 transition-all shadow-sm group"
                         >
                             <ChevronLeft size={24} strokeWidth={3} />
                         </button>
@@ -231,7 +231,7 @@ const Products = () => {
                                     onClick={() => setCurrentPage(i + 1)}
                                     className={`w-14 h-14 rounded-[4px] text-sm font-black transition-all ${
                                         currentPage === i + 1 
-                                        ? 'bg-[#A3C93A] text-white shadow-2xl shadow-[#A3C93A]/40 scale-110' 
+                                        ? 'bg-primary-green text-white shadow-2xl shadow-primary-green/40 scale-110' 
                                         : 'bg-white border-2 border-gray-100 text-gray-400 hover:border-gray-300'
                                     }`}
                                 >
@@ -243,7 +243,7 @@ const Products = () => {
                         <button 
                             disabled={currentPage === totalPages}
                             onClick={() => setCurrentPage(prev => prev + 1)}
-                            className="p-4 bg-white border-2 border-gray-100 rounded-[4px] text-gray-400 hover:text-[#A3C93A] hover:border-[#A3C93A] disabled:opacity-20 transition-all shadow-sm"
+                            className="p-4 bg-white border-2 border-gray-100 rounded-[4px] text-gray-400 hover:text-primary-green hover:border-primary-green disabled:opacity-20 transition-all shadow-sm"
                         >
                             <ChevronRight size={24} strokeWidth={3} />
                         </button>

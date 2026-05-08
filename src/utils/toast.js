@@ -18,7 +18,7 @@ export const showSuccessToast = (message) => {
     Toast.fire({
         icon: 'success',
         title: message,
-        iconColor: '#8DB600',
+        iconColor: 'var(--primary-color)',
     });
 };
 
@@ -40,7 +40,7 @@ export const showInfoToast = (message) => {
     Toast.fire({
         icon: 'info',
         title: message,
-        iconColor: '#007b99',
+        iconColor: 'var(--accent-color)',
     });
 };
 

@@ -7,7 +7,47 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <title>Vital Care Pharmacy</title>
+    <title>Pharmacy Management System</title>
+    <script>
+      (function() {
+        try {
+          const settings = JSON.parse(localStorage.getItem('site_settings'));
+          if (settings) {
+            const root = document.documentElement;
+            if (settings.primary_color) {
+              root.style.setProperty('--primary-color', settings.primary_color);
+              
+              // Darken color helper for immediate hover states
+              const amount = 0.15;
+              let color = settings.primary_color.replace('#', '');
+              if (color.length === 3) color = color.split('').map(c => c + c).join('');
+              const r = parseInt(color.substring(0, 2), 16);
+              const g = parseInt(color.substring(2, 4), 16);
+              const b = parseInt(color.substring(4, 6), 16);
+              const dr = Math.max(0, Math.min(255, Math.floor(r * (1 - amount))));
+              const dg = Math.max(0, Math.min(255, Math.floor(g * (1 - amount))));
+              const db = Math.max(0, Math.min(255, Math.floor(b * (1 - amount))));
+              const dark = '#' + ((1 << 24) + (dr << 16) + (dg << 8) + db).toString(16).slice(1);
+              
+              root.style.setProperty('--primary-color-dark', dark);
+              root.style.setProperty('--primary-color-light', settings.primary_color + '15');
+            }
+            if (settings.accent_color) {
+              root.style.setProperty('--accent-color', settings.accent_color);
+            }
+            if (settings.site_name) {
+              document.title = settings.site_name;
+            }
+            if (settings.site_logo) {
+              const favicon = document.querySelector('link[rel="icon"]');
+              if (favicon) {
+                favicon.href = 'http://127.0.0.1:8000/storage/' + settings.site_logo;
+              }
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

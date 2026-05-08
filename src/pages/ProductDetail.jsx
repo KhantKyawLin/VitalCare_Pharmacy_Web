@@ -73,7 +73,7 @@ const ProductDetail = () => {
                     title: 'Customer Action Only',
                     text: 'Only registered customers can perform this action. Staff members should use the POS system for sales.',
                     icon: 'warning',
-                    confirmButtonColor: '#A3C93A',
+                    confirmButtonColor: 'var(--primary-color)',
                     confirmButtonText: 'I Understand'
                 });
             });
@@ -103,7 +103,7 @@ const ProductDetail = () => {
                     title: 'Customer Action Only',
                     text: 'Only registered customers can perform this action.',
                     icon: 'warning',
-                    confirmButtonColor: '#A3C93A',
+                    confirmButtonColor: 'var(--primary-color)',
                     confirmButtonText: 'I Understand'
                 });
             });
@@ -128,7 +128,7 @@ const ProductDetail = () => {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#A3C93A]"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-green"></div>
             </div>
         );
     }
@@ -137,14 +137,14 @@ const ProductDetail = () => {
         return (
             <div className="container mx-auto px-4 py-24 text-center">
                 <p className="text-red-500 mb-4 font-bold">{error || "Product not found"}</p>
-                <Link to="/products" className="text-[#A3C93A] font-bold underline">Return to Products Catalog</Link>
+                <Link to="/products" className="text-primary-green font-bold underline">Return to Products Catalog</Link>
             </div>
         );
     }
 
     const images = product.pictures?.length > 0 
         ? product.pictures.map(p => `http://127.0.0.1:8000/storage/${p.image_path}`)
-        : ["https://placehold.co/600x600/f8fafc/a3c93a?text=Product"];
+        : ["https://placehold.co/600x600/f8fafc/8DB600?text=Product"];
 
     const showActionButtons = true; // Show for everyone, handlers will manage restrictions
     const isWishlisted = isInWishlist(product.id);
@@ -155,9 +155,9 @@ const ProductDetail = () => {
             <div className="bg-gray-50 border-b border-gray-100">
                 <div className="container mx-auto px-4 py-3">
                     <nav className="flex text-xs font-bold uppercase tracking-wider text-gray-400">
-                        <Link to="/" className="hover:text-[#A3C93A]">Home</Link>
+                        <Link to="/" className="hover:text-primary-green">Home</Link>
                         <span className="mx-2">/</span>
-                        <Link to="/products" className="hover:text-[#A3C93A]">Products</Link>
+                        <Link to="/products" className="hover:text-primary-green">Products</Link>
                         <span className="mx-2">/</span>
                         <span className="text-gray-900">{product.name}</span>
                     </nav>
@@ -180,13 +180,13 @@ const ProductDetail = () => {
                                 <>
                                     <button 
                                         onClick={() => setActiveImageIndex(prev => (prev === 0 ? images.length - 1 : prev - 1))}
-                                        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center text-gray-400 hover:text-[#A3C93A] opacity-0 group-hover:opacity-100 transition-all"
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center text-gray-400 hover:text-primary-green opacity-0 group-hover:opacity-100 transition-all"
                                     >
                                         <ChevronLeft size={24} />
                                     </button>
                                     <button 
                                         onClick={() => setActiveImageIndex(prev => (prev === images.length - 1 ? 0 : prev + 1))}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center text-gray-400 hover:text-[#A3C93A] opacity-0 group-hover:opacity-100 transition-all"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center text-gray-400 hover:text-primary-green opacity-0 group-hover:opacity-100 transition-all"
                                     >
                                         <ChevronRight size={24} />
                                     </button>
@@ -201,7 +201,7 @@ const ProductDetail = () => {
                                     <button 
                                         key={idx}
                                         onClick={() => setActiveImageIndex(idx)}
-                                        className={`w-20 h-20 rounded-[4px] border-2 transition-all p-2 flex-shrink-0 bg-gray-50 ${activeImageIndex === idx ? 'border-[#A3C93A]' : 'border-transparent hover:border-gray-200'}`}
+                                        className={`w-20 h-20 rounded-[4px] border-2 transition-all p-2 flex-shrink-0 bg-gray-50 ${activeImageIndex === idx ? 'border-primary-green' : 'border-transparent hover:border-gray-200'}`}
                                     >
                                         <img src={img} alt="" className="w-full h-full object-contain mix-blend-multiply" />
                                     </button>
@@ -216,7 +216,7 @@ const ProductDetail = () => {
                             <span className="px-3 py-1 bg-gray-100 text-gray-500 text-[10px] font-black uppercase tracking-widest rounded-[2px] border border-gray-200">
                                 {product.category?.name || 'Healthcare'}
                             </span>
-                            <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-[2px] ${product.is_expired ? 'bg-red-50 text-red-500' : 'bg-orange-50 text-orange-500'}`}>
+                            <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-[2px] ${product.is_expired ? 'bg-red-50 text-red-500' : 'bg-primary-light text-primary-green'}`}>
                                 {product.is_expired ? 'Out of Stock' : 'Limited Stock'}
                             </span>
                         </div>
@@ -226,7 +226,7 @@ const ProductDetail = () => {
                         </h1>
 
                         <div className="mb-8">
-                            <span className="text-3xl font-black text-[#A3C93A]">
+                            <span className="text-3xl font-black text-primary-green">
                                 Ks. {parseFloat(product.price).toLocaleString(undefined, {minimumFractionDigits: 2})}
                             </span>
                         </div>
@@ -265,14 +265,14 @@ const ProductDetail = () => {
                                     <button 
                                         onClick={handleAddToCart}
                                         disabled={product.is_expired || isAdding}
-                                        className="flex-grow bg-[#A3C93A] hover:bg-[#8eb132] text-white py-4 rounded-[4px] font-black uppercase tracking-widest shadow-xl shadow-[#A3C93A]/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:shadow-none"
+                                        className="flex-grow bg-primary-green hover:bg-primary-dark text-white py-4 rounded-[4px] font-black uppercase tracking-widest shadow-xl shadow-primary-green/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:shadow-none"
                                     >
                                         <ShoppingCart size={20} strokeWidth={3} /> {isAdding ? 'Adding...' : 'Add to Cart'}
                                     </button>
                                     <button 
                                         onClick={handleWishlistToggle}
                                         disabled={isAddingWishlist}
-                                        className={`w-16 h-14 border-2 rounded-[4px] flex items-center justify-center transition-all shadow-sm ${isWishlisted ? 'border-[#A3C93A] bg-[#A3C93A] text-white hover:bg-[#8eb132] hover:border-[#8eb132]' : 'border-gray-100 text-gray-300 hover:text-red-500 hover:border-red-500'} disabled:opacity-50`}
+                                        className={`w-16 h-14 border-2 rounded-[4px] flex items-center justify-center transition-all shadow-sm ${isWishlisted ? 'border-primary-green bg-primary-green text-white hover:bg-primary-dark hover:border-primary-dark' : 'border-gray-100 text-gray-300 hover:text-red-500 hover:border-red-500'} disabled:opacity-50`}
                                     >
                                         <Heart size={24} fill={isWishlisted ? "white" : "none"} />
                                     </button>
@@ -283,21 +283,21 @@ const ProductDetail = () => {
                         {/* Product Highlights */}
                         <div className="bg-gray-50 rounded-xl p-8 border border-gray-100">
                             <h4 className="flex items-center gap-2 text-sm font-black text-gray-900 uppercase tracking-widest mb-6">
-                                <Zap size={18} className="text-[#A3C93A] fill-[#A3C93A]" /> Product Highlights
+                                <Zap size={18} className="text-primary-green fill-primary-green" /> Product Highlights
                             </h4>
                             <ul className="flex flex-col gap-4">
                                 <li className="flex items-start gap-3">
-                                    <CheckCircle size={18} className="text-[#A3C93A] mt-0.5" />
+                                    <CheckCircle size={18} className="text-primary-green mt-0.5" />
                                     <p className="text-sm text-gray-600 font-medium">
                                         <span className="font-bold text-gray-900">Dosage:</span> {product.dosage || 'Consult your physician for correct dosage.'}
                                     </p>
                                 </li>
                                 <li className="flex items-start gap-3">
-                                    <ShieldCheck size={18} className="text-[#A3C93A] mt-0.5" />
+                                    <ShieldCheck size={18} className="text-primary-green mt-0.5" />
                                     <p className="text-sm text-gray-600 font-medium">Genuine pharmaceutical product verified by health experts.</p>
                                 </li>
                                 <li className="flex items-start gap-3">
-                                    <Truck size={18} className="text-[#A3C93A] mt-0.5" />
+                                    <Truck size={18} className="text-primary-green mt-0.5" />
                                     <p className="text-sm text-gray-600 font-medium">Fast and secure delivery available nationwide.</p>
                                 </li>
                             </ul>
@@ -312,11 +312,11 @@ const ProductDetail = () => {
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={`pb-4 text-sm font-black uppercase tracking-widest whitespace-nowrap transition-all relative ${activeTab === tab ? 'text-[#A3C93A]' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`pb-4 text-sm font-black uppercase tracking-widest whitespace-nowrap transition-all relative ${activeTab === tab ? 'text-primary-green' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 {tab.replace('_', ' ')}
                                 {activeTab === tab && (
-                                    <div className="absolute bottom-0 left-0 w-full h-1 bg-[#A3C93A] rounded-t-full shadow-[0_-2px_8px_#A3C93A66]"></div>
+                                    <div className="absolute bottom-0 left-0 w-full h-1 bg-primary-green rounded-t-full shadow-[0_-2px_8px_#8DB60066]"></div>
                                 )}
                             </button>
                         ))}
@@ -343,7 +343,7 @@ const ProductDetail = () => {
                         <div className="flex justify-between items-end mb-12">
                             <div>
                                 <h2 className="text-4xl font-black text-gray-900 mb-2">You May Also Like</h2>
-                                <p className="text-gray-400 font-medium italic underline decoration-[#A3C93A]/30">Handpicked alternatives for you</p>
+                                <p className="text-gray-400 font-medium italic underline decoration-primary-green/30">Handpicked alternatives for you</p>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">

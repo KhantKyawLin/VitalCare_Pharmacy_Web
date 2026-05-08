@@ -101,7 +101,7 @@ const ProductCard = ({ product }) => {
                     title: 'Customer Action Only',
                     text: 'Only registered customers can perform this action.',
                     icon: 'warning',
-                    confirmButtonColor: '#A3C93A',
+                    confirmButtonColor: 'var(--primary-color)',
                     confirmButtonText: 'I Understand'
                 });
             });
@@ -150,7 +150,7 @@ const ProductCard = ({ product }) => {
 
                 <Link to={`/products/${product.id}`} className="block w-full h-full">
                     <img
-                        src={product.image || (product.pictures?.length > 0 ? `http://127.0.0.1:8000/storage/${product.pictures[0].image_path}` : "https://placehold.co/400x400/f8fafc/a3c93a?text=Product")}
+                        src={product.image || (product.pictures?.length > 0 ? `http://127.0.0.1:8000/storage/${product.pictures[0].image_path}` : "https://placehold.co/400x400/f8fafc/8DB600?text=Product")}
                         alt={product.name}
                         className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                     />

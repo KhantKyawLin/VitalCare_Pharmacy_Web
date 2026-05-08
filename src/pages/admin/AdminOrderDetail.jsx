@@ -401,7 +401,14 @@ const AdminOrderDetail = () => {
             {/* --- Printable Receipt Area (Only visible when printing) --- */}
             <div className="hidden print:block fixed top-0 left-0 w-[80mm] text-black bg-white p-4 z-[9999] text-sm h-auto overflow-visible">
                 <div className="text-center">
-                    <h2 className="font-bold text-xl mb-1">Vital Care Pharmacy</h2>
+                    {settings.site_logo && (
+                        <img 
+                            src={`http://127.0.0.1:8000/storage/${settings.site_logo}`} 
+                            alt="Logo" 
+                            className="h-12 mx-auto mb-2 grayscale brightness-0" 
+                        />
+                    )}
+                    <h2 className="font-bold text-xl mb-1">{settings.site_name}</h2>
                     <p className="text-xs text-gray-600 mb-4">Receipt #{order.receipt_number || order.id}<br />{new Date(order.created_at).toLocaleString()}</p>
 
                     <div className="border-t border-b border-dashed border-gray-400 py-2 mb-2 text-left">

@@ -30,7 +30,7 @@ const Wishlist = () => {
     if (isLoading) {
         return (
             <div className="container mx-auto px-4 py-24 text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8DB600] mx-auto"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-green mx-auto"></div>
                 <p className="mt-4 text-gray-500">Loading wishlist...</p>
             </div>
         );
@@ -44,7 +44,7 @@ const Wishlist = () => {
                 </div>
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">Your wishlist is empty</h2>
                 <p className="text-gray-500 mb-8 max-w-md">Start adding products you love and come back later to purchase them.</p>
-                <Link to="/products" className="bg-[#8DB600] hover:bg-[#769800] text-white px-8 py-3 rounded-[4px] font-bold transition-colors flex items-center gap-2">
+                <Link to="/products" className="bg-primary-green hover:bg-primary-dark text-white px-8 py-3 rounded-[4px] font-bold transition-colors flex items-center gap-2">
                     <ArrowLeft size={16} /> Browse Products
                 </Link>
             </div>
@@ -53,7 +53,7 @@ const Wishlist = () => {
 
     return (
         <div className="container mx-auto px-4 py-12">
-            <h1 className="text-3xl font-bold text-[#8DB600] mb-8">Your Wishlist</h1>
+            <h1 className="text-3xl font-bold text-primary-green mb-8">Your Wishlist</h1>
 
             {/* Wishlist Table */}
             <div className="bg-white rounded-[4px] border border-gray-100 shadow-sm overflow-hidden">
@@ -84,7 +84,7 @@ const Wishlist = () => {
                                                 <div className="w-16 h-16 bg-white rounded-[4px] border border-gray-100 p-1 flex items-center justify-center shrink-0 overflow-hidden">
                                                     <img src={imageUrl} alt={product.name} className="w-full h-full object-contain" />
                                                 </div>
-                                                <Link to={`/products/${product.id}`} className="font-bold text-gray-800 hover:text-[#8DB600] transition-colors text-sm">
+                                                <Link to={`/products/${product.id}`} className="font-bold text-gray-800 hover:text-primary-green transition-colors text-sm">
                                                     {product.name}
                                                 </Link>
                                             </div>
@@ -92,7 +92,7 @@ const Wishlist = () => {
 
                                         {/* Price */}
                                         <td className="px-6 py-5">
-                                            <span className="text-[#8DB600] font-bold">
+                                            <span className="text-primary-green font-bold">
                                                 Ks. {price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                             </span>
                                         </td>
@@ -102,7 +102,7 @@ const Wishlist = () => {
                                             <div className="flex items-center gap-2">
                                                 <button
                                                     onClick={() => handleAddToCart(product.id, product.name)}
-                                                    className="bg-[#8DB600] hover:bg-[#769800] text-white text-xs font-bold px-3 py-1.5 rounded-[4px] transition-colors flex items-center gap-1.5"
+                                                    className="bg-primary-green hover:bg-primary-dark text-white text-xs font-bold px-3 py-1.5 rounded-[4px] transition-colors flex items-center gap-1.5"
                                                 >
                                                     <ShoppingCart size={13} /> Add to Cart
                                                 </button>

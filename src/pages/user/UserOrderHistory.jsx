@@ -19,7 +19,7 @@ const UserOrderHistory = () => {
                 text: `Thank you! Your order #${location.state.order?.id} has been successfully placed.`,
                 icon: 'success',
                 confirmButtonText: 'OK',
-                confirmButtonColor: '#A3C93A',
+                confirmButtonColor: 'var(--primary-color)',
                 customClass: {
                     title: 'text-2xl text-gray-800',
                     htmlContainer: 'text-gray-600'
@@ -62,9 +62,9 @@ const UserOrderHistory = () => {
             mainStatus = { text: 'Processing', bg: 'bg-blue-500 text-white' };
             delivery = { text: 'Shipping', bg: 'bg-blue-500 text-white' };
         } else if (s === 'completed') {
-            mainStatus = { text: 'Completed', bg: 'bg-[#218F56] text-white' };
-            delivery = { text: 'Delivered', bg: 'bg-[#218F56] text-white' };
-            payment = { text: 'Paid', bg: 'bg-[#218F56] text-white' };
+            mainStatus = { text: 'Completed', bg: 'bg-primary-green text-white' };
+            delivery = { text: 'Delivered', bg: 'bg-primary-green text-white' };
+            payment = { text: 'Paid', bg: 'bg-primary-green text-white' };
         } else if (s === 'cancelled') {
             mainStatus = { text: 'Cancelled', bg: 'bg-red-500 text-white' };
             delivery = { text: 'Cancelled', bg: 'bg-red-500 text-white' };
@@ -78,7 +78,7 @@ const UserOrderHistory = () => {
 
     return (
         <div className="space-y-6 pt-2 pb-8 max-w-7xl">
-            <h2 className="text-[22px] text-[#A3C93A] font-normal mb-6">Your Orders</h2>
+            <h2 className="text-[22px] text-primary-green font-normal mb-6">Your Orders</h2>
 
             <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden flex flex-col">
                 <div className="overflow-x-auto p-5">
@@ -132,7 +132,7 @@ const UserOrderHistory = () => {
                                                 <div className="flex justify-center">
                                                     <Link 
                                                         to={`/profile/orders/${order.id}`}
-                                                        className="px-3 py-1 flex items-center justify-center gap-1.5 border border-blue-500 text-blue-500 rounded text-xs font-medium hover:bg-blue-50 transition-colors"
+                                                        className="px-3 py-1 flex items-center justify-center gap-1.5 border border-primary-green text-primary-green rounded text-xs font-medium hover:bg-primary-light transition-colors"
                                                     >
                                                         <Eye size={14} /> View
                                                     </Link>

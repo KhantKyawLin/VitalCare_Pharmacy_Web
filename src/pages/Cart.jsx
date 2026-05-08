@@ -31,7 +31,7 @@ const Cart = () => {
                 icon: 'warning',
                 title: 'Limit Exceeded',
                 text: `Maximum quantity per product is ${MAX_QTY}.`,
-                confirmButtonColor: '#8DB600',
+                confirmButtonColor: 'var(--primary-color)',
             });
             return;
         }
@@ -46,7 +46,7 @@ const Cart = () => {
     if (isLoading) {
         return (
             <div className="container mx-auto px-4 py-24 text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8DB600] mx-auto"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-green mx-auto"></div>
                 <p className="mt-4 text-gray-500">Loading cart...</p>
             </div>
         );
@@ -60,7 +60,7 @@ const Cart = () => {
                 </div>
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">Your cart is empty</h2>
                 <p className="text-gray-500 mb-8 max-w-md">Looks like you haven't added any health products to your cart yet.</p>
-                <Link to="/products" className="bg-[#8DB600] hover:bg-[#769800] text-white px-8 py-3 rounded-[4px] font-bold transition-colors flex items-center gap-2">
+                <Link to="/products" className="bg-primary-green hover:bg-primary-dark text-white px-8 py-3 rounded-[4px] font-bold transition-colors flex items-center gap-2">
                     <ArrowLeft size={16} /> Start Shopping
                 </Link>
             </div>
@@ -69,7 +69,7 @@ const Cart = () => {
 
     return (
         <div className="container mx-auto px-4 py-12">
-            <h1 className="text-3xl font-bold text-[#8DB600] mb-8">Your Shopping Cart</h1>
+            <h1 className="text-3xl font-bold text-primary-green mb-8">Your Shopping Cart</h1>
 
             {/* Cart Table */}
             <div className="bg-white rounded-[4px] border border-gray-100 shadow-sm overflow-hidden">
@@ -103,7 +103,7 @@ const Cart = () => {
                                                 <div className="w-16 h-16 bg-white rounded-[4px] border border-gray-100 p-1 flex items-center justify-center shrink-0 overflow-hidden">
                                                     <img src={imageUrl} alt={product.name} className="w-full h-full object-contain" />
                                                 </div>
-                                                <Link to={`/products/${product.id}`} className="font-bold text-gray-800 hover:text-[#8DB600] transition-colors text-sm">
+                                                <Link to={`/products/${product.id}`} className="font-bold text-gray-800 hover:text-primary-green transition-colors text-sm">
                                                     {product.name}
                                                 </Link>
                                             </div>
@@ -111,7 +111,7 @@ const Cart = () => {
 
                                         {/* Price */}
                                         <td className="px-6 py-5">
-                                            <span className="text-[#8DB600] font-bold">
+                                            <span className="text-primary-green font-bold">
                                                 Ks. {price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                             </span>
                                         </td>
@@ -122,7 +122,7 @@ const Cart = () => {
                                                 <div className="flex items-center border border-gray-200 rounded-[4px] overflow-hidden w-fit bg-white">
                                                     <button
                                                         onClick={() => handleQuantityChange(product.id, item.quantity - 1)}
-                                                        className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-[#8DB600] hover:bg-gray-50 transition-colors font-bold text-lg disabled:opacity-30"
+                                                        className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-primary-green hover:bg-gray-50 transition-colors font-bold text-lg disabled:opacity-30"
                                                         disabled={item.quantity <= MIN_QTY}
                                                     >−</button>
                                                     <input
@@ -133,7 +133,7 @@ const Cart = () => {
                                                     />
                                                     <button
                                                         onClick={() => handleQuantityChange(product.id, item.quantity + 1)}
-                                                        className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-[#8DB600] hover:bg-gray-50 transition-colors font-bold text-lg disabled:opacity-30"
+                                                        className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-primary-green hover:bg-gray-50 transition-colors font-bold text-lg disabled:opacity-30"
                                                         disabled={item.quantity >= MAX_QTY}
                                                     >+</button>
                                                 </div>
@@ -171,7 +171,7 @@ const Cart = () => {
                                     Total:
                                 </td>
                                 <td className="px-6 py-5">
-                                    <span className="font-bold text-[#8DB600] text-lg">
+                                    <span className="font-bold text-primary-green text-lg">
                                         Ks. {cartTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                     </span>
                                 </td>
@@ -192,7 +192,7 @@ const Cart = () => {
                 </Link>
                 <button
                     onClick={handleCheckout}
-                    className="flex items-center gap-2 bg-[#8DB600] hover:bg-[#769800] text-white px-6 py-2.5 rounded-[4px] font-bold transition-colors shadow-md hover:shadow-lg text-sm"
+                    className="flex items-center gap-2 bg-primary-green hover:bg-primary-dark text-white px-6 py-2.5 rounded-[4px] font-bold transition-colors shadow-md hover:shadow-lg text-sm"
                 >
                     Proceed to Checkout <ArrowRight size={16} />
                 </button>

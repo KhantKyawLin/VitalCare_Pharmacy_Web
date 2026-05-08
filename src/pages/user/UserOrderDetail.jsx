@@ -72,9 +72,9 @@ const UserOrderDetail = () => {
             mainStatus = { text: 'Processing', bg: 'bg-blue-500 text-white' };
             delivery = { text: 'Shipping', bg: 'bg-blue-500 text-white' };
         } else if (s === 'completed') {
-            mainStatus = { text: 'Completed', bg: 'bg-[#218F56] text-white' };
-            delivery = { text: 'Delivered', bg: 'bg-[#218F56] text-white' };
-            payment = { text: 'Paid', bg: 'bg-[#218F56] text-white' };
+            mainStatus = { text: 'Completed', bg: 'bg-primary-green text-white' };
+            delivery = { text: 'Delivered', bg: 'bg-primary-green text-white' };
+            payment = { text: 'Paid', bg: 'bg-primary-green text-white' };
         } else if (s === 'cancelled') {
             mainStatus = { text: 'Cancelled', bg: 'bg-red-500 text-white' };
             delivery = { text: 'Cancelled', bg: 'bg-red-500 text-white' };
@@ -93,7 +93,7 @@ const UserOrderDetail = () => {
         <div className="space-y-6 pt-2 pb-8 max-w-7xl animate-in fade-in duration-500">
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl md:text-3xl font-bold text-[#A3C93A]">Order #{order.id}</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-primary-green">Order #{order.id}</h1>
                 <button 
                     onClick={() => navigate('/profile/orders')}
                     className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors text-sm font-medium"
@@ -108,19 +108,19 @@ const UserOrderDetail = () => {
                 <div className="flex border-b border-gray-200 bg-gray-50/50">
                     <button 
                         onClick={() => setActiveTab('order')}
-                        className={`px-6 py-4 text-sm font-bold flex items-center gap-2 transition-all border-b-2 ${activeTab === 'order' ? 'border-[#A3C93A] text-[#A3C93A] bg-white' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+                        className={`px-6 py-4 text-sm font-bold flex items-center gap-2 transition-all border-b-2 ${activeTab === 'order' ? 'border-primary-green text-primary-green bg-white' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
                     >
                         <Package size={18} /> Order
                     </button>
                     <button 
                         onClick={() => setActiveTab('delivery')}
-                        className={`px-6 py-4 text-sm font-bold flex items-center gap-2 transition-all border-b-2 ${activeTab === 'delivery' ? 'border-[#A3C93A] text-[#A3C93A] bg-white' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+                        className={`px-6 py-4 text-sm font-bold flex items-center gap-2 transition-all border-b-2 ${activeTab === 'delivery' ? 'border-primary-green text-primary-green bg-white' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
                     >
                         <Truck size={18} /> Delivery
                     </button>
                     <button 
                         onClick={() => setActiveTab('payment')}
-                        className={`px-6 py-4 text-sm font-bold flex items-center gap-2 transition-all border-b-2 ${activeTab === 'payment' ? 'border-[#A3C93A] text-[#A3C93A] bg-white' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+                        className={`px-6 py-4 text-sm font-bold flex items-center gap-2 transition-all border-b-2 ${activeTab === 'payment' ? 'border-primary-green text-primary-green bg-white' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
                     >
                         <CreditCard size={18} /> Payment
                     </button>
@@ -282,8 +282,8 @@ const UserOrderDetail = () => {
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded border border-gray-100 bg-white p-1 flex items-center justify-center shrink-0">
                                                 <img 
-                                                    src={item.product?.pictures?.[0]?.image_path ? `http://127.0.0.1:8000/storage/${item.product.pictures[0].image_path}` : 'https://placehold.co/50x50/f8fafc/a3c93a?text=P'} 
-                                                    alt={item.product?.name} 
+                                                    src={item.product?.pictures?.[0]?.image_path ? `http://127.0.0.1:8000/storage/${item.product.pictures[0].image_path}` : 'https://placehold.co/50x50/f8fafc/8DB600?text=P'} 
+                                                    alt={item.product?.name}
                                                     className="w-full h-full object-contain"
                                                 />
                                             </div>
@@ -305,7 +305,7 @@ const UserOrderDetail = () => {
                         <tfoot>
                             <tr>
                                 <td colSpan="3" className="py-6 text-right font-bold text-gray-800 text-base">Total:</td>
-                                <td className="py-6 text-right font-bold text-[#A3C93A] text-lg">
+                                <td className="py-6 text-right font-bold text-primary-green text-lg">
                                     Ks. {parseFloat(order.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2})}
                                 </td>
                             </tr>

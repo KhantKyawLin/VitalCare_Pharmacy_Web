@@ -584,7 +584,14 @@ const AdminPOS = () => {
             <div className="hidden print-only print:block w-[80mm] text-black bg-white p-4 font-mono">
                 {lastOrder && (
                     <div className="text-center">
-                        <h2 className="font-bold text-lg mb-1">Vital Care Pharmacy</h2>
+                        {settings.site_logo && (
+                            <img 
+                                src={`http://127.0.0.1:8000/storage/${settings.site_logo}`} 
+                                alt="Logo" 
+                                className="h-10 mx-auto mb-2 grayscale brightness-0" 
+                            />
+                        )}
+                        <h2 className="font-bold text-lg mb-1">{settings.site_name}</h2>
                         <p className="text-[10px] mb-4">Receipt #{lastOrder.receipt_number}<br />{new Date(lastOrder.created_at).toLocaleString()}</p>
                         
                         <div className="border-t border-b border-dashed border-black py-2 mb-2 text-left">
