@@ -12,10 +12,109 @@ import {
     TrendingUp,
     BookOpen,
     Pill,
-    Package
+    Package,
+    Activity
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+
+const SalesChart = ({ data }) => {
+    if (!data || data.length === 0) return null;
+    
+    const maxAmount = Math.max(...data.map(d => d.amount), 1000);
+    const height = 200;
+    const width = 600;
+    const padding = 40;
+    
+    const points = data.map((d, i) => {
+        const x = (i / (data.length - 1)) * (width - padding * 2) + padding;
+        const y = height - ((d.amount / maxAmount) * (height - padding * 2) + padding);
+        return { x, y };
+    });
+
+    const pathData = `M ${points[0].x} ${points[0].y} ` + points.slice(1).map(p => `L ${p.x} ${p.y}`).join(' ');
+    const areaData = `${pathData} L ${points[points.length-1].x} ${height} L ${points[0].x} ${height} Z`;
+
+    return (
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full flex flex-col">
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-primary-green animate-pulse"></div>
+                    <h3 className="text-[15px] font-black text-gray-800 uppercase tracking-widest">7-Day Sales Trend</h3>
+                </div>
+                <div className="text-[10px] font-black text-gray-400 bg-gray-50 px-2 py-1 rounded">CURRENCY: MMK</div>
+            </div>
+            <div className="relative flex-grow">
+                <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
+                    <defs>
+                        <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#8DB600" stopOpacity="0.3" />
+                            <stop offset="100%" stopColor="#8DB600" stopOpacity="0" />
+                        </linearGradient>
+                    </defs>
+                    
+                    {/* Grid Lines */}
+                    {[0, 0.25, 0.5, 0.75, 1].map(tick => (
+                        <line 
+                            key={tick}
+                            x1={padding} 
+                            y1={height - (tick * (height - padding * 2) + padding)} 
+                            x2={width - padding} 
+                            y2={height - (tick * (height - padding * 2) + padding)} 
+                            stroke="#f1f5f9" 
+                            strokeWidth="1"
+                        />
+                    ))}
+
+                    <path d={areaData} fill="url(#chartGradient)" />
+                    <path d={pathData} fill="none" stroke="#8DB600" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                    
+                    {points.map((p, i) => (
+                        <g key={i} className="group">
+                            <circle cx={p.x} cy={p.y} r="5" fill="#8DB600" stroke="white" strokeWidth="2" className="transition-all hover:r-7 cursor-pointer" />
+                            <text x={p.x} y={height - 10} textAnchor="middle" className="text-[12px] font-bold fill-gray-400">{data[i].day}</text>
+                            <text x={p.x} y={p.y - 15} textAnchor="middle" className="text-[10px] font-black fill-primary-green opacity-0 group-hover:opacity-100 transition-opacity">
+                                {data[i].amount.toLocaleString()}
+                            </text>
+                        </g>
+                    ))}
+                </svg>
+            </div>
+        </div>
+    );
+};
+
+const CategoryChart = ({ data }) => {
+    if (!data || data.length === 0) return null;
+    
+    const sortedData = [...data].sort((a, b) => b.value - a.value).slice(0, 5);
+    const maxVal = Math.max(...sortedData.map(d => d.value), 1);
+
+    return (
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full flex flex-col">
+            <div className="flex items-center gap-2 mb-6 border-b border-gray-50 pb-4">
+                <Activity size={18} className="text-primary-green" />
+                <h3 className="text-[15px] font-black text-gray-800 uppercase tracking-widest">Category Performance</h3>
+            </div>
+            <div className="space-y-5 flex-grow justify-center flex flex-col">
+                {sortedData.map((item, idx) => (
+                    <div key={idx} className="space-y-1.5">
+                        <div className="flex justify-between text-[11px] font-black text-gray-500 uppercase tracking-tighter">
+                            <span>{item.name}</span>
+                            <span className="text-gray-800">{item.value} Sales</span>
+                        </div>
+                        <div className="h-2 w-full bg-gray-50 rounded-full overflow-hidden">
+                            <div 
+                                className="h-full bg-primary-green rounded-full transition-all duration-1000"
+                                style={{ width: `${(item.value / maxVal) * 100}%`, opacity: 1 - (idx * 0.15) }}
+                            ></div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
 
 const AdminDashboard = () => {
     const { user } = useContext(AuthContext);
@@ -175,6 +274,16 @@ const AdminDashboard = () => {
                         </div>
                     </Link>
                 ))}
+            </div>
+
+            {/* Visual Analytics Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 min-h-[300px]">
+                    <SalesChart data={stats?.sales_trend} />
+                </div>
+                <div className="min-h-[300px]">
+                    <CategoryChart data={stats?.category_distribution} />
+                </div>
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">

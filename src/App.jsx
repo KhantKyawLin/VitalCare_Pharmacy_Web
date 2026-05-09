@@ -18,6 +18,8 @@ import UserOrderDetail from './pages/user/UserOrderDetail';
 import UserProfileSettings from './pages/user/UserProfileSettings';
 import HealthTips from './pages/HealthTips';
 import HealthTipDetail from './pages/HealthTipDetail';
+import Contact from './pages/Contact';
+import About from './pages/About';
 
 import AdminRoute from './components/auth/AdminRoute';
 import ForcePasswordChangeModal from './components/auth/ForcePasswordChangeModal';
@@ -48,6 +50,8 @@ import AdminProfileSettings from './pages/admin/AdminProfileSettings';
 import AdminUserList from './pages/admin/AdminUserList';
 import AdminActivityLogs from './pages/admin/AdminActivityLogs';
 import AdminBrandingSettings from './pages/admin/AdminBrandingSettings';
+import AdminMessages from './pages/admin/AdminMessages';
+import AdminAboutSettings from './pages/admin/AdminAboutSettings';
 
 const PublicLayout = () => {
   const location = useLocation();
@@ -66,8 +70,8 @@ const PublicLayout = () => {
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/health-tips" element={<HealthTips />} />
           <Route path="/health-tips/:id" element={<HealthTipDetail />} />
-          <Route path="/about" element={<div className="container mx-auto p-8"><h1 className="text-3xl font-bold">About Us</h1><p className="mt-4">Page coming soon...</p></div>} />
-          <Route path="/contact" element={<div className="container mx-auto p-8"><h1 className="text-3xl font-bold">Contact Us</h1><p className="mt-4">Page coming soon...</p></div>} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<div className="container mx-auto p-8 text-center py-20"><h1 className="text-4xl font-bold text-red-500">404</h1><p className="mt-4 text-slate-500">The page you are looking for does not exist.</p><Link to="/" className="mt-6 inline-block bg-green-600 text-white px-6 py-2 rounded-lg">Back to Home</Link></div>} />
@@ -97,6 +101,7 @@ function App() {
               <Route path="users" element={<AdminUserList />} />
               <Route path="logs" element={<AdminActivityLogs />} />
               <Route path="branding" element={<AdminBrandingSettings />} />
+            <Route path="about-settings" element={<AdminAboutSettings />} />
             </Route>
 
             {/* Admin & Pharmacist - Marketing & Content */}
@@ -125,7 +130,7 @@ function App() {
             <Route path="suppliers" element={<AdminSupplierList />} />
             <Route path="orders" element={<AdminOrderList />} />
             <Route path="orders/:id" element={<AdminOrderDetail />} />
-            <Route path="messages" element={<div className="p-8"><h2 className="text-2xl font-bold">Contact Messages</h2><p className="text-slate-500">Coming soon...</p></div>} />
+            <Route path="messages" element={<AdminMessages />} />
             <Route path="account-settings" element={<AdminProfileSettings />} />
           </Route>
         </Route>

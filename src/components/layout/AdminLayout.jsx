@@ -42,10 +42,10 @@ const AdminLayout = () => {
                                 {user?.profile ? (
                                     <img src={`http://localhost:8000/storage/${user.profile}`} alt="Profile" className="w-full h-full object-cover" />
                                 ) : (
-                                    <UserIcon size={18} className="text-slate-500 group-hover:text-[#6CA52C] transition-colors" />
+                                    <UserIcon size={18} className="text-slate-500 group-hover:text-primary-green transition-colors" />
                                 )}
                             </div>
-                            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full z-10"></span>
+                            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-primary-green border-2 border-white rounded-full z-10"></span>
                         </Link>
                     </div>
                 </header>

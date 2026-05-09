@@ -45,10 +45,10 @@ export const AuthProvider = ({ children }) => {
                     const response = await axios.get('http://127.0.0.1:8000/api/auth/me');
                     setUser(response.data);
                 } catch (error) {
-                    console.error("Error fetching user:", error);
                     if (error.response?.status === 401) {
                         logout(true); // Token invalid, clear locally without API call
                     } else {
+                        console.error("Error fetching user:", error);
                         setIsLoading(false);
                     }
                 }

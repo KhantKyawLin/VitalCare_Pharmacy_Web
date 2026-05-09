@@ -199,7 +199,7 @@ const ProductCard = ({ product }) => {
                         className={`flex items-center justify-center gap-1 bg-primary-green hover:bg-primary-dark text-white py-2 rounded text-[9px] font-bold transition-all shadow-sm disabled:opacity-50`}
                     >
                         <Heart size={12} fill={isWishlisted ? "white" : "none"} /> 
-                        {isAddingWishlist ? '...' : 'Add to Wishlist'}
+                        <span className="hidden sm:inline">{isAddingWishlist ? '...' : 'Add to Wishlist'}</span>
                     </button>
                     <button 
                         onClick={handleAddToCart}
@@ -207,7 +207,7 @@ const ProductCard = ({ product }) => {
                         className="flex items-center justify-center gap-1 bg-primary-green hover:bg-primary-dark text-white py-2 rounded text-[9px] font-bold transition-all shadow-sm disabled:opacity-50"
                     >
                         <ShoppingCart size={12} /> 
-                        {isAddingCart ? '...' : 'Add to Cart'}
+                        <span className="hidden sm:inline">{isAddingCart ? '...' : 'Add to Cart'}</span>
                     </button>
                 </div>
             )}

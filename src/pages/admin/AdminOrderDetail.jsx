@@ -18,8 +18,10 @@ import {
     MapPin,
     Package
 } from 'lucide-react';
+import { useSettings } from '../../context/SettingsContext';
 
 const AdminOrderDetail = () => {
+    const { settings } = useSettings();
     const { id } = useParams();
     const navigate = useNavigate();
     const [order, setOrder] = useState(null);
@@ -125,6 +127,24 @@ const AdminOrderDetail = () => {
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
+                    {/* Fulfillment Quick Actions */}
+                    {status === 'pending' && deliverStatus === 'pending' && (
+                        <button
+                            onClick={() => { setDeliverStatus('shipped'); setStatus('pending'); }}
+                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-black text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-blue-500/20"
+                        >
+                            <Package size={16} /> Mark as Shipped
+                        </button>
+                    )}
+                    {deliverStatus === 'shipped' && (
+                        <button
+                            onClick={() => { setDeliverStatus('delivered'); setStatus('completed'); setPaymentStatus('paid'); }}
+                            className="px-4 py-2 bg-primary-green text-white rounded-lg hover:bg-primary-dark transition-all font-black text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-green-500/20"
+                        >
+                            <CheckCircle size={16} /> Mark as Delivered
+                        </button>
+                    )}
+
                     <button
                         onClick={() => window.print()}
                         className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-all font-bold text-xs flex items-center gap-2 shadow-sm"
@@ -135,7 +155,7 @@ const AdminOrderDetail = () => {
                         to="/admin/orders"
                         className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-all font-bold text-xs flex items-center gap-2 shadow-sm"
                     >
-                        <ArrowLeft size={16} /> BACK TO LIST
+                        <ArrowLeft size={16} /> BACK
                     </Link>
                 </div>
             </div>
@@ -398,8 +418,93 @@ const AdminOrderDetail = () => {
                 </div>
             </div>
 
-            {/* --- Printable Receipt Area (Only visible when printing) --- */}
-            <div className="hidden print:block fixed top-0 left-0 w-[80mm] text-black bg-white p-4 z-[9999] text-sm h-auto overflow-visible">
+            {/* --- Printable Receipt Area (Advanced Invoice Template) --- */}
+            <div className="hidden print:block w-full max-w-[210mm] mx-auto text-black bg-white p-12">
+                <div className="flex justify-between items-start border-b-2 border-gray-900 pb-8 mb-8">
+                    <div className="space-y-2">
+                        {settings?.site_logo && (
+                            <img 
+                                src={`http://127.0.0.1:8000/storage/${settings.site_logo}`} 
+                                alt="Logo" 
+                                className="h-16 grayscale brightness-0" 
+                            />
+                        )}
+                        <h1 className="text-3xl font-black uppercase tracking-tighter">{settings?.site_name}</h1>
+                        <p className="text-sm font-medium text-gray-600 max-w-xs">
+                            Your Trusted Healthcare Partner.<br />
+                            Serving the community with excellence.
+                        </p>
+                    </div>
+                    <div className="text-right space-y-1">
+                        <h2 className="text-4xl font-black text-gray-200 uppercase mb-4 tracking-widest">INVOICE</h2>
+                        <p className="text-sm font-black">ORDER ID: #{order.receipt_number || order.id}</p>
+                        <p className="text-sm font-medium text-gray-500">DATE: {new Date(order.created_at).toLocaleString()}</p>
+                        <p className="text-sm font-medium text-gray-500 uppercase">STATUS: {order.status}</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-12 mb-12">
+                    <div>
+                        <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 border-b border-gray-100 pb-1">Billed To</h3>
+                        <p className="font-black text-lg">{order.user?.name || 'Walk-in Customer'}</p>
+                        <p className="text-sm text-gray-600 font-medium">{order.contact_phone || 'No phone provided'}</p>
+                        <p className="text-sm text-gray-600 font-medium max-w-xs">{order.delivery_address || 'Over-the-counter'}</p>
+                    </div>
+                    <div className="text-right">
+                        <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 border-b border-gray-100 pb-1 text-right">Payment Info</h3>
+                        <p className="font-black text-lg uppercase">{order.payment_method || 'Cash'}</p>
+                        <p className="text-sm text-gray-600 font-medium italic">Payment Status: {order.payment_status}</p>
+                    </div>
+                </div>
+
+                <table className="w-full mb-12">
+                    <thead>
+                        <tr className="border-y-2 border-gray-900">
+                            <th className="py-4 text-left text-xs font-black uppercase tracking-widest">Description</th>
+                            <th className="py-4 text-center text-xs font-black uppercase tracking-widest">Qty</th>
+                            <th className="py-4 text-right text-xs font-black uppercase tracking-widest">Unit Price</th>
+                            <th className="py-4 text-right text-xs font-black uppercase tracking-widest">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                        {order.order_products?.map((op, i) => (
+                            <tr key={i}>
+                                <td className="py-5">
+                                    <p className="font-black text-gray-900">{op.product?.name}</p>
+                                    {op.is_gift && <p className="text-[10px] font-black text-red-500 uppercase italic">Promotional Gift</p>}
+                                </td>
+                                <td className="py-5 text-center font-bold">{op.quantity}</td>
+                                <td className="py-5 text-right font-medium">{parseFloat(op.price).toLocaleString()} Ks</td>
+                                <td className="py-5 text-right font-black">{(parseFloat(op.price) * op.quantity).toLocaleString()} Ks</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+
+                <div className="flex justify-end border-t-2 border-gray-900 pt-8">
+                    <div className="w-full max-w-xs space-y-3">
+                        <div className="flex justify-between text-sm font-medium text-gray-500">
+                            <span>SUBTOTAL</span>
+                            <span>{(parseFloat(order.total_amount) + parseFloat(order.discount_amount || 0)).toLocaleString()} Ks</span>
+                        </div>
+                        {parseFloat(order.discount_amount) > 0 && (
+                            <div className="flex justify-between text-sm font-black text-red-500">
+                                <span>TOTAL DISCOUNT</span>
+                                <span>-{parseFloat(order.discount_amount).toLocaleString()} Ks</span>
+                            </div>
+                        )}
+                        <div className="flex justify-between text-2xl font-black text-gray-900 border-t border-gray-100 pt-3">
+                            <span>TOTAL</span>
+                            <span>{parseFloat(order.total_amount).toLocaleString()} Ks</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-20 pt-12 border-t border-gray-100 text-center">
+                    <p className="text-xs font-black uppercase tracking-[0.2em] text-gray-400 mb-2">Thank you for choosing {settings?.site_name}</p>
+                    <p className="text-[10px] text-gray-400 font-medium italic">This is a system-generated invoice and does not require a physical signature.</p>
+                </div>
+            </div>
                 <div className="text-center">
                     {settings.site_logo && (
                         <img 

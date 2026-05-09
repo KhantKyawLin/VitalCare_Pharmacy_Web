@@ -41,7 +41,7 @@ const ForcePasswordChangeModal = () => {
                 icon: 'success',
                 title: 'Password Updated!',
                 text: 'Your password has been successfully secured.',
-                confirmButtonColor: '#8DB600'
+                confirmButtonColor: 'var(--primary-color)'
             });
 
             // Update user state to remove modal

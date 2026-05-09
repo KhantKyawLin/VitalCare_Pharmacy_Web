@@ -144,7 +144,7 @@ const AdminReorderAlerts = () => {
                             {data.stats.critical} require attention
                         </p>
                     </div>
-                    <div className="bg-green-50 text-green-500 p-3 rounded">
+                    <div className="bg-primary-light text-primary-green p-3 rounded">
                         <Bell size={24} />
                     </div>
                 </div>

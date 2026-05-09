@@ -29,7 +29,8 @@ import {
     Plus,
     BarChart3,
     UserCircle,
-    Palette
+    Palette,
+    Info
 } from 'lucide-react';
 
 const AdminSidebar = ({ isOpen }) => {
@@ -178,6 +179,7 @@ const AdminSidebar = ({ isOpen }) => {
             roles: ['admin', 'superadmin', 'staff', 'pharmacist'],
             children: [
                 { name: 'Branding & UI', path: '/admin/branding', icon: <Palette size={18} className="stroke-2" />, roles: ['admin', 'superadmin'] },
+                { name: 'About Us Page', path: '/admin/about-settings', icon: <Info size={18} className="stroke-2" />, roles: ['admin', 'superadmin'] },
                 { name: 'Account Profile', path: '/admin/account-settings', icon: <UserCircle size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff', 'pharmacist'] }
             ]
         },
@@ -257,6 +259,7 @@ const AdminSidebar = ({ isOpen }) => {
                                                     <li key={cIdx} className={`w-full flex ${!isOpen ? 'justify-start pl-8' : 'justify-center'}`}>
                                                         <NavLink
                                                             to={child.path}
+                                                            end={true}
                                                             title={!isOpen ? child.name : ""}
                                                             className={({ isActive }) => 
                                                                 `flex items-center rounded-md font-medium text-sm transition-colors ${

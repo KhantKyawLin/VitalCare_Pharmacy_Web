@@ -316,7 +316,10 @@ const ProductDetail = () => {
                             >
                                 {tab.replace('_', ' ')}
                                 {activeTab === tab && (
-                                    <div className="absolute bottom-0 left-0 w-full h-1 bg-primary-green rounded-t-full shadow-[0_-2px_8px_#8DB60066]"></div>
+                                    <div 
+                                        className="absolute bottom-0 left-0 w-full h-1 bg-primary-green rounded-t-full"
+                                        style={{ boxShadow: '0 -2px 8px var(--primary-color-light)' }}
+                                    ></div>
                                 )}
                             </button>
                         ))}

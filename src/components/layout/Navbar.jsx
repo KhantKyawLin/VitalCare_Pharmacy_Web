@@ -140,7 +140,7 @@ const NavLinksList = ({ mobile = false, navLinks, isActive, setIsMobileMenuOpen,
                 <Link
                     to={link.path}
                     onClick={() => mobile && setIsMobileMenuOpen(false)}
-                    className={`block font-medium transition-colors hover:text-accent-green hover:-translate-y-0.5 duration-300 ${isActive(link.path) ? 'text-accent-green' : 'text-text-dark'}`}
+                    className={`block font-bold text-sm lg:text-[15px] transition-all hover:text-accent-green hover:-translate-y-0.5 duration-300 py-1 ${isActive(link.path) ? 'text-accent-green' : 'text-text-dark'}`}
                 >
                     {link.name}
                 </Link>
@@ -154,7 +154,7 @@ const NavLinksList = ({ mobile = false, navLinks, isActive, setIsMobileMenuOpen,
                         <Link 
                             to="/admin" 
                             onClick={() => mobile && setIsMobileMenuOpen(false)}
-                            className="block font-medium transition-colors hover:text-accent-green hover:-translate-y-0.5 duration-300 text-text-dark"
+                            className="block font-bold text-sm lg:text-[15px] transition-all hover:text-accent-green hover:-translate-y-0.5 duration-300 text-text-dark"
                         >
                             Admin Dashboard
                         </Link>
@@ -164,7 +164,7 @@ const NavLinksList = ({ mobile = false, navLinks, isActive, setIsMobileMenuOpen,
                         <Link 
                             to="/profile" 
                             onClick={() => mobile && setIsMobileMenuOpen(false)}
-                            className="block font-medium transition-colors hover:text-accent-green hover:-translate-y-0.5 duration-300 text-text-dark"
+                            className="block font-bold text-sm lg:text-[15px] transition-all hover:text-accent-green hover:-translate-y-0.5 duration-300 text-text-dark"
                         >
                             User Dashboard
                         </Link>
@@ -176,7 +176,7 @@ const NavLinksList = ({ mobile = false, navLinks, isActive, setIsMobileMenuOpen,
                             handleLogout();
                             if (mobile) setIsMobileMenuOpen(false);
                         }}
-                        className="bg-red-500 hover:bg-red-600 text-white px-5 py-1.5 rounded font-medium transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 duration-300"
+                        className="bg-red-500 hover:bg-red-600 text-white px-5 py-1.5 rounded-[4px] font-black uppercase tracking-widest text-[10px] transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 duration-300"
                     >
                         Logout
                     </button>
@@ -187,7 +187,7 @@ const NavLinksList = ({ mobile = false, navLinks, isActive, setIsMobileMenuOpen,
         {!isLoggedIn && !isLoading && (
             <li>
                 <Link to="/login" onClick={() => mobile && setIsMobileMenuOpen(false)}>
-                    <button className="bg-primary-green hover:bg-accent-green text-white px-6 py-1.5 rounded font-medium transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 duration-300">
+                    <button className="bg-primary-green hover:bg-accent-green text-white px-6 py-1.5 rounded-[4px] font-black uppercase tracking-widest text-[10px] transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 duration-300">
                         Login
                     </button>
                 </Link>
@@ -306,41 +306,77 @@ const Navbar = () => {
     return (
         <nav className="bg-white shadow-sm sticky top-0 z-50">
             <div className="container mx-auto px-4">
-                {/* Main Header Row: Logo & Desktop Icons/Search & Mobile Hamburger */}
-                <div className="flex items-center justify-between py-2 lg:py-4">
-                    {/* Logo */}
-                    <Link to="/" className="flex items-center text-primary-green font-bold text-lg lg:text-xl leading-tight hover:text-accent-green transition-colors">
-                        {settings.site_logo ? (
-                            <img src={`http://127.0.0.1:8000/storage/${settings.site_logo}`} alt="Logo" className="h-8 lg:h-10 mr-2 object-contain" />
-                        ) : (
-                            <img src="http://localhost/VitalCare/image/VitalCare_Logo.png" alt="VitalCare Logo" className="h-8 lg:h-10 mr-2 object-contain" />
-                        )}
-                        <span>{settings.site_name}</span>
+                {/* Desktop Header: Logo spanning both rows + Right side vertical stack */}
+                <div className="hidden lg:flex items-center justify-between py-2">
+                    {/* Left: Big Logo */}
+                    <Link to="/" className="flex items-center gap-1 group transition-all shrink-0">
+                        <div className="relative h-10 lg:h-13 w-auto flex items-center">
+                            {settings.site_logo ? (
+                                <img src={`http://127.0.0.1:8000/storage/${settings.site_logo}`} alt="Logo" className="h-full w-auto object-contain transition-transform group-hover:scale-105 duration-300" />
+                            ) : (
+                                <img src="http://localhost/VitalCare/image/VitalCare_Logo.png" alt="VitalCare Logo" className="h-full w-auto object-contain transition-transform group-hover:scale-105 duration-300" />
+                            )}
+                        </div>
+                        <span className="text-primary-green font-black text-lg lg:text-2xl tracking-tighter leading-none group-hover:text-accent-green transition-colors">
+                            VitalCare Pharmacy
+                        </span>
                     </Link>
 
-                    {/* Desktop Right (Search & Icons) */}
-                    <div className="hidden lg:flex items-center gap-6">
-                        <SearchBar 
-                            searchQuery={searchQuery}
-                            setSearchQuery={setSearchQuery}
-                            isSearching={isSearching}
-                            showSearchResults={showSearchResults}
-                            setShowSearchResults={setShowSearchResults}
-                            searchResults={searchResults}
-                            handleResultClick={handleResultClick}
-                        />
-                        <IconsRow 
-                            wishlistCount={wishlistCount}
-                            cartCount={cartCount}
-                            isLoading={isLoading}
-                            isLoggedIn={isLoggedIn}
-                            user={user}
-                        />
+                    {/* Right: Vertical Stack */}
+                    <div className="flex flex-col items-end gap-2">
+                        {/* Row 1: Search & Icons */}
+                        <div className="flex items-center gap-4 lg:gap-6">
+                            <SearchBar 
+                                searchQuery={searchQuery}
+                                setSearchQuery={setSearchQuery}
+                                isSearching={isSearching}
+                                showSearchResults={showSearchResults}
+                                setShowSearchResults={setShowSearchResults}
+                                searchResults={searchResults}
+                                handleResultClick={handleResultClick}
+                            />
+                            <IconsRow 
+                                wishlistCount={wishlistCount}
+                                cartCount={cartCount}
+                                isLoading={isLoading}
+                                isLoggedIn={isLoggedIn}
+                                user={user}
+                            />
+                        </div>
+
+                        {/* Row 2: Navigation Links */}
+                        <div className="flex justify-end">
+                            <NavLinksList 
+                                navLinks={navLinks}
+                                isActive={isActive}
+                                isLoggedIn={isLoggedIn}
+                                isLoading={isLoading}
+                                user={user}
+                                handleLogout={handleLogout}
+                            />
+                        </div>
                     </div>
+                </div>
+
+                {/* Mobile Header (Now with text logo) */}
+                <div className="lg:hidden flex items-center justify-between py-2">
+                    {/* Logo (Icon + Text for mobile) */}
+                    <Link to="/" className="flex items-center gap-1 group shrink-0">
+                         <div className="h-8 w-auto flex items-center">
+                            {settings.site_logo ? (
+                                <img src={`http://127.0.0.1:8000/storage/${settings.site_logo}`} alt="Logo" className="h-full w-auto object-contain" />
+                            ) : (
+                                <img src="http://localhost/VitalCare/image/VitalCare_Logo.png" alt="Logo" className="h-full w-auto object-contain" />
+                            )}
+                        </div>
+                        <span className="text-primary-green font-black text-base tracking-tighter leading-none">
+                            VitalCare Pharmacy
+                        </span>
+                    </Link>
 
                     {/* Mobile Hamburger Button */}
                     <button
-                        className="lg:hidden text-text-dark p-2 hover:bg-slate-50 rounded-lg transition-colors"
+                        className="text-text-dark p-2 hover:bg-slate-50 rounded-lg transition-colors"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     >
                         {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
@@ -364,18 +400,6 @@ const Navbar = () => {
                         isLoading={isLoading}
                         isLoggedIn={isLoggedIn}
                         user={user}
-                    />
-                </div>
-
-                {/* Desktop Third Row: Navigation Links */}
-                <div className="hidden lg:flex justify-end pb-3">
-                    <NavLinksList 
-                        navLinks={navLinks}
-                        isActive={isActive}
-                        isLoggedIn={isLoggedIn}
-                        isLoading={isLoading}
-                        user={user}
-                        handleLogout={handleLogout}
                     />
                 </div>
 

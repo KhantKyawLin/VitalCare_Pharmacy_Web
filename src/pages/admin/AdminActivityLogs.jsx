@@ -109,7 +109,7 @@ const AdminActivityLogs = () => {
 
     const getActionColor = (action) => {
         const a = action.toLowerCase();
-        if (a.includes('create') || a.includes('add')) return 'text-green-600 bg-green-50 border-green-100';
+        if (a.includes('create') || a.includes('add')) return 'text-primary-green bg-primary-light border-primary-green/20';
         if (a.includes('update') || a.includes('edit')) return 'text-blue-600 bg-blue-50 border-blue-100';
         if (a.includes('delete') || a.includes('remove')) return 'text-red-600 bg-red-50 border-red-100';
         if (a.includes('password')) return 'text-purple-600 bg-purple-50 border-purple-100';
@@ -257,9 +257,10 @@ const AdminActivityLogs = () => {
                                     <td className="px-6 py-4 text-center">
                                         <button 
                                             onClick={() => viewLogDetails(log)}
-                                            className="p-1.5 text-gray-400 hover:text-primary-green hover:bg-primary-light rounded transition-all"
+                                            className="px-3 py-1 flex items-center justify-center gap-1.5 w-max border border-primary-green text-primary-green rounded text-[11px] font-bold hover:bg-primary-green hover:text-white hover:scale-105 transition-all duration-300 shadow-sm mx-auto"
+                                            title="View Details"
                                         >
-                                            <Eye size={16} />
+                                            <Eye size={13} strokeWidth={2.5} /> View
                                         </button>
                                     </td>
                                 </tr>
