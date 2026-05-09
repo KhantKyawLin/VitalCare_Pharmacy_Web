@@ -74,7 +74,7 @@ const SearchBar = ({
                                             </span>
                                             {result.category && (
                                                 <span className="text-[10px] text-slate-400 font-medium truncate italic">
-                                                    {result.category.name}
+                                                    {result.category}
                                                 </span>
                                             )}
                                         </div>
