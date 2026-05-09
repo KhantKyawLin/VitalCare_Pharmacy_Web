@@ -14,6 +14,7 @@ import {
     Bookmark
 } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
+import useSEO from '../hooks/useSEO';
 
 const HealthTipDetail = () => {
     const { id } = useParams();
@@ -25,6 +26,13 @@ const HealthTipDetail = () => {
     const [popularTips, setPopularTips] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Dynamic SEO
+    useSEO({
+        title: tip?.title,
+        description: tip?.content ? tip.content.substring(0, 160) : "Expert health advice from Vital Care Pharmacy.",
+        image: tip?.image_path ? `http://127.0.0.1:8000/storage/${tip.image_path}` : null
+    });
     
     // Feedback State
     const [rating, setRating] = useState(0);

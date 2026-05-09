@@ -16,6 +16,7 @@ import { AuthContext } from '../context/AuthContext';
 import { WishlistContext } from '../context/WishlistContext';
 import ProductCard from '../components/common/ProductCard';
 import { showSuccessToast, showErrorToast } from '../utils/toast';
+import useSEO from '../hooks/useSEO';
 
 const ProductDetail = () => {
     const { id } = useParams();
@@ -33,6 +34,21 @@ const ProductDetail = () => {
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('description');
     const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+    // Dynamic SEO
+    useSEO({
+        title: product?.name,
+        description: product?.description ? stripTags(product.description).substring(0, 160) : "Authentic pharmaceutical products at Vital Care Pharmacy.",
+        image: product?.primary_image_url,
+        price: product?.price,
+        currency: 'MMK'
+    });
+
+    // Helper to strip HTML tags for meta descriptions
+    function stripTags(html) {
+        if (!html) return '';
+        return html.replace(/<[^>]*>?/gm, '');
+    }
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -275,6 +291,17 @@ const ProductDetail = () => {
                                         className={`w-16 h-14 border-2 rounded-[4px] flex items-center justify-center transition-all shadow-sm ${isWishlisted ? 'border-primary-green bg-primary-green text-white hover:bg-primary-dark hover:border-primary-dark' : 'border-gray-100 text-gray-300 hover:text-red-500 hover:border-red-500'} disabled:opacity-50`}
                                     >
                                         <Heart size={24} fill={isWishlisted ? "white" : "none"} />
+                                    </button>
+                                    <button 
+                                        onClick={() => {
+                                            const shareUrl = `http://127.0.0.1:8000/share/product/${product.id}`;
+                                            navigator.clipboard.writeText(shareUrl);
+                                            showSuccessToast('Shareable link (optimized for social media) copied to clipboard!');
+                                        }}
+                                        className="w-16 h-14 border-2 border-gray-100 rounded-[4px] flex items-center justify-center text-gray-400 hover:text-blue-500 hover:border-blue-500 transition-all shadow-sm"
+                                        title="Share Product"
+                                    >
+                                        <Send size={24} />
                                     </button>
                                 </div>
                             </div>
