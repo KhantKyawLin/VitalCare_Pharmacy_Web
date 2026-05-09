@@ -30,7 +30,8 @@ import {
     BarChart3,
     UserCircle,
     Palette,
-    Info
+    Info,
+    HelpCircle
 } from 'lucide-react';
 
 const AdminSidebar = ({ isOpen }) => {
@@ -159,7 +160,8 @@ const AdminSidebar = ({ isOpen }) => {
             roles: ['admin', 'superadmin', 'pharmacist'],
             children: [
                 { name: 'Health Tips Archive', path: '/admin/health-tips', icon: <ClipboardList size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'pharmacist'] },
-                { name: 'Create New Tip', path: '/admin/health-tips/create', icon: <Plus size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'pharmacist'] }
+                { name: 'Create New Tip', path: '/admin/health-tips/create', icon: <Plus size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'pharmacist'] },
+                { name: 'Manage FAQs', path: '/admin/faqs', icon: <HelpCircle size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'pharmacist'] }
             ]
         },
         { 

@@ -20,6 +20,7 @@ import HealthTips from './pages/HealthTips';
 import HealthTipDetail from './pages/HealthTipDetail';
 import Contact from './pages/Contact';
 import About from './pages/About';
+import FAQ from './pages/FAQ';
 
 import AdminRoute from './components/auth/AdminRoute';
 import ForcePasswordChangeModal from './components/auth/ForcePasswordChangeModal';
@@ -52,6 +53,7 @@ import AdminActivityLogs from './pages/admin/AdminActivityLogs';
 import AdminBrandingSettings from './pages/admin/AdminBrandingSettings';
 import AdminMessages from './pages/admin/AdminMessages';
 import AdminAboutSettings from './pages/admin/AdminAboutSettings';
+import AdminFaqList from './pages/admin/AdminFaqList';
 
 const PublicLayout = () => {
   const location = useLocation();
@@ -71,6 +73,7 @@ const PublicLayout = () => {
           <Route path="/health-tips" element={<HealthTips />} />
           <Route path="/health-tips/:id" element={<HealthTipDetail />} />
           <Route path="/about" element={<About />} />
+          <Route path="/faq" element={<FAQ />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -114,6 +117,7 @@ function App() {
               <Route path="health-tips/create" element={<AdminHealthTipForm />} />
               <Route path="health-tips/edit/:id" element={<AdminHealthTipForm />} />
               <Route path="health-tips/:id" element={<AdminHealthTipDetail />} />
+              <Route path="faqs" element={<AdminFaqList />} />
             </Route>
 
             {/* General Staff - Inventory & Sales */}
