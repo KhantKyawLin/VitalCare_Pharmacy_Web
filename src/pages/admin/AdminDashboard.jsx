@@ -153,6 +153,24 @@ const AdminDashboard = () => {
         );
     }
 
+    if (!stats) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-2xl border border-gray-100 p-12 text-center">
+                <div className="bg-red-50 p-4 rounded-full mb-4">
+                    <AlertTriangle size={48} className="text-red-500" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Dashboard Data Unavailable</h3>
+                <p className="text-gray-500 max-w-md mb-6">We encountered an error while fetching the latest statistics. Please try refreshing the page or contact the system administrator.</p>
+                <button 
+                    onClick={() => window.location.reload()}
+                    className="px-6 py-2 bg-primary-green text-white rounded-lg font-bold hover:bg-primary-dark transition-all"
+                >
+                    REFRESH DASHBOARD
+                </button>
+            </div>
+        );
+    }
+
     // Role-based stat cards logic
     let statCards = [];
 

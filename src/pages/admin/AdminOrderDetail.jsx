@@ -114,8 +114,8 @@ const AdminOrderDetail = () => {
 
     const isOnline = order.order_type === 'online';
 
-    return (
-        <div className="space-y-6 pb-12 print:p-0">
+    return <React.Fragment>
+            <div className="space-y-6 pb-12 print:p-0">
             {/* Header */}
             <div className="print:hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="flex items-center gap-3">
@@ -325,7 +325,7 @@ const AdminOrderDetail = () => {
                                                     </div>
                                                     <div>
                                                         <span className="font-bold text-gray-800">{item.product?.name}</span>
-                                                        {item.is_gift && <span className="ml-2 px-1.5 py-0.5 bg-red-50 text-red-500 rounded text-[9px] font-black border border-red-100 uppercase">Gift</span>}
+                                                        {!!item.is_gift && <span className="ml-2 px-1.5 py-0.5 bg-red-50 text-red-500 rounded text-[9px] font-black border border-red-100 uppercase">Gift</span>}
                                                     </div>
                                                 </div>
                                             </td>
@@ -471,7 +471,7 @@ const AdminOrderDetail = () => {
                             <tr key={i}>
                                 <td className="py-5">
                                     <p className="font-black text-gray-900">{op.product?.name}</p>
-                                    {op.is_gift && <p className="text-[10px] font-black text-red-500 uppercase italic">Promotional Gift</p>}
+                                    {!!op.is_gift && <p className="text-[10px] font-black text-red-500 uppercase italic">Promotional Gift</p>}
                                 </td>
                                 <td className="py-5 text-center font-bold">{op.quantity}</td>
                                 <td className="py-5 text-right font-medium">{parseFloat(op.price).toLocaleString()} Ks</td>
@@ -505,49 +505,8 @@ const AdminOrderDetail = () => {
                     <p className="text-[10px] text-gray-400 font-medium italic">This is a system-generated invoice and does not require a physical signature.</p>
                 </div>
             </div>
-                <div className="text-center">
-                    {settings.site_logo && (
-                        <img 
-                            src={`http://127.0.0.1:8000/storage/${settings.site_logo}`} 
-                            alt="Logo" 
-                            className="h-12 mx-auto mb-2 grayscale brightness-0" 
-                        />
-                    )}
-                    <h2 className="font-bold text-xl mb-1">{settings.site_name}</h2>
-                    <p className="text-xs text-gray-600 mb-4">Receipt #{order.receipt_number || order.id}<br />{new Date(order.created_at).toLocaleString()}</p>
-
-                    <div className="border-t border-b border-dashed border-gray-400 py-2 mb-2 text-left">
-                        <table className="w-full text-xs">
-                            <thead>
-                                <tr className="border-b border-gray-300">
-                                    <th className="text-left pb-1">Item</th>
-                                    <th className="text-right pb-1">Qty</th>
-                                    <th className="text-right pb-1">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {order.order_products?.map((op, i) => (
-                                    <tr key={i}>
-                                        <td className="py-1 pr-2">{op.product?.name} {op.is_gift ? '(Gift)' : ''}</td>
-                                        <td className="text-right py-1">{op.quantity}</td>
-                                        <td className="text-right py-1">{(parseFloat(op.price) * op.quantity).toLocaleString()} Ks</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div className="text-right text-xs space-y-1 mb-4">
-                        <p>Subtotal: {(parseFloat(order.total_amount) + parseFloat(order.discount_amount || 0)).toLocaleString()} Ks</p>
-                        {parseFloat(order.discount_amount) > 0 && <p>Discount: -{parseFloat(order.discount_amount).toLocaleString()} Ks</p>}
-                        <p className="font-bold text-sm mt-1">Total: {parseFloat(order.total_amount).toLocaleString()} Ks</p>
-                    </div>
-
-                    <p className="text-xs font-bold mt-6 mb-1 text-center">Thank you for your purchase!</p>
-                </div>
-            </div>
         </div>
-    );
+    </React.Fragment>;
 };
 
 export default AdminOrderDetail;
