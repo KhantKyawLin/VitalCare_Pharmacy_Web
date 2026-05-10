@@ -9,11 +9,10 @@ import {
     History,
     Star,
     Eye,
-    TrendingUp,
-    BookOpen,
-    Pill,
-    Package,
-    Activity
+    Activity,
+    TrendingDown,
+    DollarSign,
+    Trophy
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -79,6 +78,82 @@ const SalesChart = ({ data }) => {
                         </g>
                     ))}
                 </svg>
+            </div>
+        </div>
+    );
+};
+
+const MonthlySalesChart = ({ data }) => {
+    if (!data || data.length === 0) return null;
+    
+    const maxAmount = Math.max(...data.map(d => d.amount), 1000);
+    const height = 180;
+    const width = 500;
+    const padding = 30;
+    
+    return (
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full flex flex-col">
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <h3 className="text-[14px] font-black text-gray-800 uppercase tracking-widest">6-Month Trend</h3>
+                </div>
+            </div>
+            <div className="flex-grow flex items-end justify-between gap-2 px-2">
+                {data.map((d, i) => {
+                    const barHeight = (d.amount / maxAmount) * (height - padding);
+                    return (
+                        <div key={i} className="flex-grow group relative flex flex-col items-center">
+                            <div className="absolute -top-6 bg-slate-800 text-white text-[9px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
+                                Ks. {d.amount.toLocaleString()}
+                            </div>
+                            <div 
+                                className="w-full bg-blue-50 group-hover:bg-blue-100 transition-all rounded-t-sm relative flex items-end justify-center"
+                                style={{ height: `${height}px` }}
+                            >
+                                <div 
+                                    className="w-4/5 bg-blue-500 rounded-t-sm transition-all duration-700"
+                                    style={{ height: `${barHeight}px` }}
+                                ></div>
+                            </div>
+                            <span className="text-[10px] font-bold text-gray-400 mt-2">{d.month}</span>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+const TopProductsCard = ({ products }) => {
+    if (!products || products.length === 0) return null;
+    
+    return (
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full flex flex-col">
+            <div className="flex items-center justify-between mb-6 border-b border-gray-50 pb-4">
+                <div className="flex items-center gap-2">
+                    <Trophy size={18} className="text-amber-500" />
+                    <h3 className="text-[15px] font-black text-gray-800 uppercase tracking-widest">Top Products</h3>
+                </div>
+                <span className="text-[10px] font-black text-gray-400 uppercase">By Quantity</span>
+            </div>
+            <div className="space-y-4 flex-grow">
+                {products.map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between group">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-xs font-black text-gray-400 group-hover:bg-primary-green/10 group-hover:text-primary-green transition-colors">
+                                {idx + 1}
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold text-gray-800 line-clamp-1">{item.product?.name || 'Unknown Product'}</p>
+                                <p className="text-[10px] text-gray-400 font-medium tracking-tight">Revenue: Ks. {parseFloat(item.total_revenue).toLocaleString()}</p>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-xs font-black text-primary-green">{item.total_qty} Sold</p>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
@@ -212,7 +287,19 @@ const AdminDashboard = () => {
                 subtitleColor: (stats?.sales_change >= 0) ? 'text-primary-green' : 'text-red-500',
                 icon: <ShoppingCart className="text-primary-green" size={28} />,
                 trendUp: stats?.sales_change >= 0,
+                trendDown: stats?.sales_change < 0,
                 link: `/admin/orders`
+            },
+            { 
+                title: "Today's Profit", 
+                value: `Ks. ${stats?.today_profit?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || '0.00'}`, 
+                subtitle: `${stats?.profit_change || 0}% vs yesterday`,
+                subtitleColor: (stats?.profit_change >= 0) ? 'text-primary-green' : 'text-red-500',
+                icon: <DollarSign className="text-primary-green" size={28} />,
+                trendUp: stats?.profit_change >= 0,
+                trendDown: stats?.profit_change < 0,
+                bgIconColor: "bg-green-50",
+                link: "/admin/reports"
             },
             { 
                 title: "New Orders", 
@@ -223,7 +310,6 @@ const AdminDashboard = () => {
                 link: "/admin/orders"
             },
             commonCards[1], // Low Stock
-            commonCards[2]  // Expiring Soon
         ];
     } else if (user?.role === 'pharmacist') {
         statCards = [
@@ -288,6 +374,7 @@ const AdminDashboard = () => {
                         </div>
                         <div className={`text-sm mt-3 flex items-center gap-1 ${card.subtitleColor}`}>
                             {card.trendUp && <TrendingUp size={16} />}
+                            {card.trendDown && <TrendingDown size={16} />}
                             {card.subtitle}
                         </div>
                     </Link>
@@ -295,12 +382,15 @@ const AdminDashboard = () => {
             </div>
 
             {/* Visual Analytics Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 min-h-[300px]">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+                <div className="xl:col-span-2 min-h-[300px]">
                     <SalesChart data={stats?.sales_trend} />
                 </div>
                 <div className="min-h-[300px]">
-                    <CategoryChart data={stats?.category_distribution} />
+                    <MonthlySalesChart data={stats?.monthly_trend} />
+                </div>
+                <div className="min-h-[300px]">
+                    <TopProductsCard products={stats?.top_products} />
                 </div>
             </div>
 
@@ -381,47 +471,9 @@ const AdminDashboard = () => {
                             </div>
                         </div>
 
-                        {/* Top Products */}
+                        {/* Category distribution */}
                         <div className="bg-white rounded-lg border border-gray-100 shadow-sm flex flex-col">
-                            <div className="p-5 border-b border-gray-50 flex justify-between items-center">
-                                <h3 className="text-[17px] font-bold text-gray-800 flex items-center gap-2">
-                                    <Activity size={20} className="text-primary-green" /> System Audit List
-                                </h3>
-                                <Link to="/admin/logs" className="text-xs font-bold text-primary-green hover:underline">View All</Link>
-                            </div>
-                            <div className="flex-grow overflow-y-auto">
-                                {stats.recent_activity?.length > 0 ? (
-                                    <div className="divide-y divide-gray-50">
-                                        {stats.recent_activity.map((log) => (
-                                            <div key={log.id} className="p-4 hover:bg-gray-50/50 transition-colors">
-                                                <div className="flex items-center justify-between mb-1">
-                                                    <span className="text-xs font-black text-gray-800 uppercase tracking-tighter">
-                                                        {log.user?.name || 'System'}
-                                                    </span>
-                                                    <span className="text-[10px] font-bold text-gray-400">
-                                                        {new Date(log.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                    </span>
-                                                </div>
-                                                <p className="text-xs text-gray-600 line-clamp-1">{log.description}</p>
-                                                <div className="mt-1 flex items-center gap-2">
-                                                    <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded border ${
-                                                        log.action.includes('create') ? 'bg-green-50 text-green-600 border-green-100' :
-                                                        log.action.includes('update') ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                                                        'bg-gray-50 text-gray-600 border-gray-100'
-                                                    }`}>
-                                                        {log.action}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="h-64 flex flex-col items-center justify-center p-8 text-gray-400 text-sm">
-                                        <Activity size={32} className="opacity-20 mb-2" />
-                                        No recent activity logs
-                                    </div>
-                                )}
-                            </div>
+                            <CategoryChart data={stats?.category_distribution} />
                         </div>
                     </>
                 )}
