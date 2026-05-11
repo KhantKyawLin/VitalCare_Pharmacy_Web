@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { CheckCircle, Lock, ShoppingBag, List } from 'lucide-react';
+import { getStorageUrl } from '../utils/api';
 
 const OrderSuccess = () => {
     const location = useLocation();
@@ -114,7 +115,7 @@ const OrderSuccess = () => {
                                             const price = parseFloat(item.price || 0);
                                             const subtotal = price * item.quantity;
                                             const imageUrl = product?.pictures?.length > 0 
-                                                ? `http://127.0.0.1:8000/storage/${product.pictures[0].image_path}` 
+                                                ? getStorageUrl(product.pictures[0].image_path) 
                                                 : "https://placehold.co/40x40/f8fafc/a3c93a?text=P";
 
                                             return (

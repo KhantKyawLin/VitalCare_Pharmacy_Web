@@ -13,7 +13,8 @@ import {
     Phone,
     User,
     Lock,
-    X
+    X,
+    Download
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 
@@ -24,6 +25,15 @@ const UserOrderDetail = () => {
     const [order, setOrder] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('order');
+
+    const handleDownloadPDF = () => {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+        const pdfUrl = `${apiUrl}/auth/orders/${id}/pdf`;
+        
+        // Open in new tab with auth token
+        const win = window.open(`${pdfUrl}?token=${token}`, '_blank');
+        if (win) win.focus();
+    };
 
     const handleViewScreenshot = (imageUrl) => {
         Swal.fire({
@@ -92,12 +102,20 @@ const UserOrderDetail = () => {
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl md:text-3xl font-bold text-primary-green">Order #{order.id}</h1>
-                <button 
-                    onClick={() => navigate('/profile/orders')}
-                    className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors text-sm font-medium"
-                >
-                    <ChevronLeft size={16} /> Back
-                </button>
+                <div className="flex items-center gap-3">
+                    <button 
+                        onClick={handleDownloadPDF}
+                        className="flex items-center gap-2 px-4 py-2 bg-primary-green text-white rounded-md hover:bg-primary-dark transition-colors text-sm font-bold shadow-sm"
+                    >
+                        <Download size={16} /> Download Invoice
+                    </button>
+                    <button 
+                        onClick={() => navigate('/profile/orders')}
+                        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors text-sm font-medium"
+                    >
+                        <ChevronLeft size={16} /> Back
+                    </button>
+                </div>
             </div>
 
             {/* Main Tabs Section */}

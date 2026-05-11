@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { AuthContext } from './AuthContext';
 
 export const CartContext = createContext();
@@ -17,9 +17,7 @@ export const CartProvider = ({ children }) => {
         }
 
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/auth/cart', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get('/auth/cart');
             setCart(response.data);
         } catch (error) {
             console.error("Error fetching cart:", error);
@@ -38,11 +36,9 @@ export const CartProvider = ({ children }) => {
         if (!token) return { success: false, error: 'Please login to add items to cart' };
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/auth/cart/add', {
+            const response = await api.post('/auth/cart/add', {
                 product_id: productId,
                 quantity: quantity
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
             await fetchCart();
             return { success: true, message: response.data?.message };
@@ -56,9 +52,7 @@ export const CartProvider = ({ children }) => {
         if (!token) return { success: false };
 
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/auth/cart/remove/${productId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.delete(`/auth/cart/remove/${productId}`);
             await fetchCart();
             return { success: true };
         } catch (error) {
@@ -76,10 +70,8 @@ export const CartProvider = ({ children }) => {
         }
 
         try {
-            await axios.patch(`http://127.0.0.1:8000/api/auth/cart/update/${productId}`, {
+            await api.patch(`/auth/cart/update/${productId}`, {
                 quantity: quantity
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
             await fetchCart();
             return { success: true };

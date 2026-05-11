@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../../utils/api';
 import { AuthContext } from '../../context/AuthContext';
-import { Eye } from 'lucide-react';
+import { Eye, Download } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
@@ -11,6 +11,15 @@ const UserOrderHistory = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     const location = useLocation();
+
+    const handleDownloadPDF = (id) => {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+        const pdfUrl = `${apiUrl}/auth/orders/${id}/pdf`;
+        
+        // Open in new tab with auth token
+        const win = window.open(`${pdfUrl}?token=${token}`, '_blank');
+        if (win) win.focus();
+    };
 
     useEffect(() => {
         if (location.state?.orderPlaced) {
@@ -127,13 +136,19 @@ const UserOrderHistory = () => {
                                             </td>
                                             
                                             <td className="py-4 px-2 text-center">
-                                                <div className="flex justify-center">
+                                                <div className="flex justify-center gap-2">
                                                     <Link 
                                                         to={`/profile/orders/${order.id}`}
                                                         className="px-3 py-1 flex items-center justify-center gap-1.5 border border-primary-green text-primary-green rounded text-xs font-medium hover:bg-primary-light transition-colors"
                                                     >
                                                         <Eye size={14} /> View
                                                     </Link>
+                                                    <button 
+                                                        onClick={() => handleDownloadPDF(order.id)}
+                                                        className="px-3 py-1 flex items-center justify-center gap-1.5 border border-slate-200 text-slate-600 rounded text-xs font-medium hover:bg-slate-50 transition-colors"
+                                                    >
+                                                        <Download size={14} /> PDF
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>

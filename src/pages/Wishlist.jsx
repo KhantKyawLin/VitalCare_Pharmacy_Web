@@ -4,6 +4,7 @@ import { WishlistContext } from '../context/WishlistContext';
 import { CartContext } from '../context/CartContext';
 import { Heart, Trash2, ShoppingCart, ArrowLeft } from 'lucide-react';
 import { showSuccessToast, showErrorToast } from '../utils/toast';
+import { getStorageUrl } from '../utils/api';
 
 const Wishlist = () => {
     const { wishlist, removeFromWishlist, isLoading } = useContext(WishlistContext);
@@ -73,7 +74,7 @@ const Wishlist = () => {
 
                                 const price = parseFloat(product.price || 0);
                                 const imageUrl = product.pictures?.length > 0
-                                    ? `http://127.0.0.1:8000/storage/${product.pictures[0].image_path}`
+                                    ? getStorageUrl(product.pictures[0].image_path)
                                     : "https://placehold.co/80x80/f8fafc/a3c93a?text=P";
 
                                 return (

@@ -9,7 +9,8 @@ import {
     ChevronLeft,
     ChevronRight,
     Store,
-    Globe
+    Globe,
+    Download
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 
@@ -200,13 +201,23 @@ const AdminOrderList = () => {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <div className="flex justify-center">
+                                        <div className="flex justify-center gap-2">
                                             <Link 
                                                 to={`/admin/orders/${order.id}`}
-                                                className="px-3 py-1 flex items-center justify-center gap-1.5 w-max border border-primary-green text-primary-green rounded text-xs font-medium hover:bg-primary-green hover:text-white hover:scale-105 transition-all duration-300 shadow-sm"
+                                                className="px-3 py-1 flex items-center justify-center gap-1.5 w-max border border-primary-green text-primary-green rounded text-xs font-medium hover:bg-primary-green hover:text-white transition-all duration-300 shadow-sm"
                                             >
                                                 <Eye size={14} /> View
                                             </Link>
+                                            <button 
+                                                onClick={() => {
+                                                    const token = localStorage.getItem('token');
+                                                    const url = `${import.meta.env.VITE_API_URL}/admin/orders/${order.id}/pdf?token=${token}`;
+                                                    window.open(url, '_blank');
+                                                }}
+                                                className="px-3 py-1 flex items-center justify-center gap-1.5 w-max border border-slate-700 text-slate-700 rounded text-xs font-medium hover:bg-slate-700 hover:text-white transition-all duration-300 shadow-sm"
+                                            >
+                                                <Download size={14} /> PDF
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>

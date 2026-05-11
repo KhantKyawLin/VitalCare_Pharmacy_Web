@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { AuthContext } from './AuthContext';
 
 export const WishlistContext = createContext();
@@ -17,9 +17,7 @@ export const WishlistProvider = ({ children }) => {
         }
 
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/auth/wishlist', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get('/auth/wishlist');
             setWishlist(response.data);
         } catch (error) {
             console.error("Error fetching wishlist:", error);
@@ -38,7 +36,7 @@ export const WishlistProvider = ({ children }) => {
         if (!token) return { success: false, error: 'Please login to add items to wishlist' };
 
         try {
-            await axios.post('http://127.0.0.1:8000/api/auth/wishlist/add', {
+            await api.post('/auth/wishlist/add', {
                 product_id: productId
             });
             await fetchWishlist(); // Refresh wishlist data
@@ -55,7 +53,7 @@ export const WishlistProvider = ({ children }) => {
         if (!token) return { success: false };
 
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/auth/wishlist/remove/${productId}`);
+            await api.delete(`/auth/wishlist/remove/${productId}`);
             await fetchWishlist();
             return { success: true };
         } catch (error) {
