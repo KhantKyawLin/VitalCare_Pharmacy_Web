@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     LayoutDashboard,
     ShoppingCart,
@@ -195,12 +195,10 @@ const AdminDashboard = () => {
     const { user } = useContext(AuthContext);
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/admin/dashboard', getConfig());
+                const response = await api.get('/admin/dashboard');
                 setStats(response.data);
             } catch (error) {
                 console.error("Error fetching dashboard stats:", error);

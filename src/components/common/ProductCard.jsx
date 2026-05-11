@@ -5,6 +5,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { CartContext } from '../../context/CartContext';
 import { WishlistContext } from '../../context/WishlistContext';
 import { showSuccessToast, showErrorToast } from '../../utils/toast';
+import { getStorageUrl } from '../../utils/api';
 
 const ProductCard = ({ product }) => {
     const navigate = useNavigate();
@@ -150,7 +151,7 @@ const ProductCard = ({ product }) => {
 
                 <Link to={`/products/${product.id}`} className="block w-full h-full">
                     <img
-                        src={product.image || (product.pictures?.length > 0 ? `http://127.0.0.1:8000/storage/${product.pictures[0].image_path}` : "https://placehold.co/400x400/f8fafc/8DB600?text=Product")}
+                        src={product.image || (product.pictures?.length > 0 ? getStorageUrl(product.pictures[0].image_path) : "https://placehold.co/400x400/f8fafc/8DB600?text=Product")}
                         alt={product.name}
                         className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                     />

@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import api from '../utils/api';
 
 // Create the context
 export const AuthContext = createContext();
@@ -13,14 +14,16 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         } else {
             delete axios.defaults.headers.common['Authorization'];
+            delete api.defaults.headers.common['Authorization'];
         }
     }, [token]);
 
     // Global interceptor for 401 errors
     useEffect(() => {
-        const interceptor = axios.interceptors.response.use(
+        const interceptor = api.interceptors.response.use(
             (response) => response,
             (error) => {
                 if (error.response?.status === 401) {
@@ -34,7 +37,7 @@ export const AuthProvider = ({ children }) => {
             }
         );
 
-        return () => axios.interceptors.response.eject(interceptor);
+        return () => api.interceptors.response.eject(interceptor);
     }, []);
 
     // Check if user is logged in on mount
@@ -42,7 +45,7 @@ export const AuthProvider = ({ children }) => {
         const fetchUser = async () => {
             if (token) {
                 try {
-                    const response = await axios.get('http://127.0.0.1:8000/api/auth/me');
+                    const response = await api.get('/auth/me');
                     setUser(response.data);
                 } catch (error) {
                     if (error.response?.status === 401) {
@@ -63,7 +66,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/auth/login', {
+            const response = await api.post('/auth/login', {
                 email,
                 password
             });
@@ -86,7 +89,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (userData) => {
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/auth/register', userData);
+            const response = await api.post('/auth/register', userData);
 
             // Auto login after successful registration
             const { access_token, user: newUser } = response.data;
@@ -110,7 +113,7 @@ export const AuthProvider = ({ children }) => {
         try {
             if (token && !skipApi) {
                 // Inform backend
-                await axios.post('http://127.0.0.1:8000/api/auth/logout');
+                await api.post('/auth/logout');
             }
         } catch (error) {
             console.error("Logout error API:", error);
@@ -120,6 +123,7 @@ export const AuthProvider = ({ children }) => {
             setUser(null);
             localStorage.removeItem('token');
             delete axios.defaults.headers.common['Authorization'];
+            delete api.defaults.headers.common['Authorization'];
         }
     };
 

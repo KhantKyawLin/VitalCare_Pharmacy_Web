@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     ShoppingCart, 
     Search, 
@@ -25,8 +25,6 @@ const AdminOrderList = () => {
         date: searchParams.get('date') || ''
     });
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchOrders();
     }, [page, filters]);
@@ -34,12 +32,14 @@ const AdminOrderList = () => {
     const fetchOrders = async () => {
         setLoading(true);
         try {
-            let url = `http://127.0.0.1:8000/api/admin/orders?page=${page}`;
-            if (filters.status) url += `&status=${filters.status}`;
-            if (filters.order_type) url += `&order_type=${filters.order_type}`;
-            if (filters.date) url += `&date=${filters.date}`;
-
-            const response = await axios.get(url, getConfig());
+            const response = await api.get('/admin/orders', {
+                params: {
+                    page,
+                    status: filters.status,
+                    order_type: filters.order_type,
+                    date: filters.date
+                }
+            });
             setOrders(response.data.data);
             setTotalPages(response.data.last_page);
         } catch (error) {

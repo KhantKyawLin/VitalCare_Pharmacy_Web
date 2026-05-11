@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     Plus, 
     Search, 
@@ -29,8 +29,6 @@ const AdminCategoryList = () => {
     const [formData, setFormData] = useState({ name: '' });
     const [saving, setSaving] = useState(false);
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchCategories();
     }, []);
@@ -38,7 +36,7 @@ const AdminCategoryList = () => {
     const fetchCategories = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/admin/categories`, getConfig());
+            const response = await api.get(`/admin/categories`);
             setCategories(response.data.categories);
             setStats(response.data.stats);
         } catch (error) {
@@ -71,7 +69,7 @@ const AdminCategoryList = () => {
         setSaving(true);
         try {
             if (editingCategory) {
-                await axios.put(`http://127.0.0.1:8000/api/admin/categories/${editingCategory.id}`, formData, getConfig());
+                await api.put(`/admin/categories/${editingCategory.id}`, formData);
                 Swal.fire({
                     icon: 'success',
                     title: 'Updated!',
@@ -80,7 +78,7 @@ const AdminCategoryList = () => {
                     showConfirmButton: false
                 });
             } else {
-                await axios.post(`http://127.0.0.1:8000/api/admin/categories`, formData, getConfig());
+                await api.post(`/admin/categories`, formData);
                 Swal.fire({
                     icon: 'success',
                     title: 'Created!',
@@ -112,7 +110,7 @@ const AdminCategoryList = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/admin/categories/${id}`, getConfig());
+                await api.delete(`/admin/categories/${id}`);
                 Swal.fire('Deleted!', 'Category has been deleted.', 'success');
                 fetchCategories();
             } catch (error) {

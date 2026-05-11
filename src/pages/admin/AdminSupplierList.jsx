@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     Truck, 
     Plus, 
@@ -25,8 +25,6 @@ const AdminSupplierList = () => {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchSuppliers();
     }, []);
@@ -34,7 +32,7 @@ const AdminSupplierList = () => {
     const fetchSuppliers = async () => {
         setLoading(true);
         try {
-            const res = await axios.get('http://127.0.0.1:8000/api/admin/suppliers', getConfig());
+            const res = await api.get('/admin/suppliers');
             setSuppliers(res.data.suppliers);
             setStats(res.data.stats);
         } catch (error) {
@@ -86,10 +84,10 @@ const AdminSupplierList = () => {
         if (formValues) {
             try {
                 if (isEditing) {
-                    await axios.put(`http://127.0.0.1:8000/api/admin/suppliers/${supplier.id}`, formValues, getConfig());
+                    await api.put(`/admin/suppliers/${supplier.id}`, formValues);
                     Swal.fire('Updated!', 'Supplier updated successfully.', 'success');
                 } else {
-                    await axios.post('http://127.0.0.1:8000/api/admin/suppliers', formValues, getConfig());
+                    await api.post('/admin/suppliers', formValues);
                     Swal.fire('Added!', 'New supplier added.', 'success');
                 }
                 fetchSuppliers();
@@ -113,7 +111,7 @@ const AdminSupplierList = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/admin/suppliers/${id}`, getConfig());
+                await api.delete(`/admin/suppliers/${id}`);
                 Swal.fire('Deleted!', 'Supplier has been deleted.', 'success');
                 fetchSuppliers();
             } catch (error) {

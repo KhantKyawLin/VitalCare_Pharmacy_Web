@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../utils/api';
 import Swal from 'sweetalert2';
 import {
     TrendingUp, TrendingDown, DollarSign, ShoppingCart, AlertTriangle,
     ArrowRight, PieChart, BarChart3, Plus, Trash2, Edit, X, Receipt,
     Wallet, ArrowDownCircle, ArrowUpCircle, Info, RotateCcw
 } from 'lucide-react';
-
-const API = 'http://127.0.0.1:8000/api/admin';
 
 const AdminReports = () => {
     const [range, setRange] = useState('this_month');
@@ -24,8 +22,6 @@ const AdminReports = () => {
     const [editId, setEditId] = useState(null);
     const [form, setForm] = useState({ type: 'expense', category: '', title: '', amount: '', transaction_date: new Date().toISOString().split('T')[0], notes: '', reference_number: '' });
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => { fetchReportData(); }, [range]);
     useEffect(() => { fetchCategories(); }, []);
 
@@ -33,11 +29,11 @@ const AdminReports = () => {
         setLoading(true);
         try {
             const [overviewRes, chartRes, lossRes, topRes, txRes] = await Promise.all([
-                axios.get(`${API}/reports/overview?range=${range}`, getConfig()),
-                axios.get(`${API}/reports/charts?range=${range}`, getConfig()),
-                axios.get(`${API}/reports/losses?range=${range}`, getConfig()),
-                axios.get(`${API}/reports/top-profitable?range=${range}`, getConfig()),
-                axios.get(`${API}/external-transactions`, getConfig())
+                api.get(`/admin/reports/overview?range=${range}`),
+                api.get(`/admin/reports/charts?range=${range}`),
+                api.get(`/admin/reports/losses?range=${range}`),
+                api.get(`/admin/reports/top-profitable?range=${range}`),
+                api.get(`/admin/external-transactions`)
             ]);
             setSummary(overviewRes.data.summary);
             setChartData(chartRes.data);
@@ -51,7 +47,7 @@ const AdminReports = () => {
 
     const fetchCategories = async () => {
         try {
-            const res = await axios.get(`${API}/external-transactions/categories`, getConfig());
+            const res = await api.get(`/admin/external-transactions/categories`);
             setCategories(res.data);
         } catch (e) { console.error(e); }
     };
@@ -60,10 +56,10 @@ const AdminReports = () => {
         e.preventDefault();
         try {
             if (editId) {
-                await axios.put(`${API}/external-transactions/${editId}`, form, getConfig());
+                await api.put(`/admin/external-transactions/${editId}`, form);
                 Swal.fire('Updated!', 'Transaction updated.', 'success');
             } else {
-                await axios.post(`${API}/external-transactions`, form, getConfig());
+                await api.post(`/admin/external-transactions`, form);
                 Swal.fire('Recorded!', 'Transaction added.', 'success');
             }
             resetForm();
@@ -82,7 +78,7 @@ const AdminReports = () => {
     const handleDelete = async (id) => {
         const result = await Swal.fire({ title: 'Delete this record?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Delete' });
         if (result.isConfirmed) {
-            await axios.delete(`${API}/external-transactions/${id}`, getConfig());
+            await api.delete(`/admin/external-transactions/${id}`);
             Swal.fire('Deleted!', '', 'success');
             fetchReportData();
         }

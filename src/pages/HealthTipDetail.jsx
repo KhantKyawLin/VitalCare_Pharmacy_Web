@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api, { getStorageUrl } from '../utils/api';
 import { 
     Calendar, 
     User, 
@@ -31,7 +31,7 @@ const HealthTipDetail = () => {
     useSEO({
         title: tip?.title,
         description: tip?.content ? tip.content.substring(0, 160) : "Expert health advice from Vital Care Pharmacy.",
-        image: tip?.image_path ? `http://127.0.0.1:8000/storage/${tip.image_path}` : null
+        image: tip?.image_path ? getStorageUrl(tip.image_path) : null
     });
     
     // Feedback State
@@ -44,7 +44,7 @@ const HealthTipDetail = () => {
         const fetchTipDetail = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/health-tips/${id}`);
+                const response = await api.get(`/health-tips/${id}`);
                 setTip(response.data.tip);
                 setRelatedTips(response.data.related || []);
                 setPopularTips(response.data.popular || []);
@@ -72,13 +72,12 @@ const HealthTipDetail = () => {
 
         setIsSubmitting(true);
         try {
-            await axios.post(`http://127.0.0.1:8000/api/health-tips/${id}/feedback`, 
-                { rating, comments: comment },
-                { headers: { Authorization: `Bearer ${token}` } }
+            await api.post(`/health-tips/${id}/feedback`, 
+                { rating, comments: comment }
             );
             
             // Refresh tip to show new feedback
-            const response = await axios.get(`http://127.0.0.1:8000/api/health-tips/${id}`);
+            const response = await api.get(`/health-tips/${id}`);
             setTip(response.data.tip);
             
             // Reset form
@@ -137,7 +136,7 @@ const HealthTipDetail = () => {
                         {/* Featured Image */}
                         <div className="relative aspect-[21/9] rounded-2xl overflow-hidden mb-10 shadow-2xl">
                             <img 
-                                src={tip.image_path ? `http://127.0.0.1:8000/storage/${tip.image_path}` : "https://placehold.co/1200x500/f8fafc/a3c93a?text=Health+Tip"} 
+                                src={tip.image_path ? getStorageUrl(tip.image_path) : "https://placehold.co/1200x500/f8fafc/a3c93a?text=Health+Tip"} 
                                 alt={tip.title}
                                 className="w-full h-full object-cover"
                             />
@@ -300,7 +299,7 @@ const HealthTipDetail = () => {
                                     <Link key={rel.id} to={`/health-tips/${rel.id}`} className="flex gap-4 group">
                                         <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
                                             <img 
-                                                src={rel.image_path ? `http://127.0.0.1:8000/storage/${rel.image_path}` : "https://placehold.co/100x100/f8fafc/a3c93a?text=Tip"} 
+                                                src={rel.image_path ? getStorageUrl(rel.image_path) : "https://placehold.co/100x100/f8fafc/a3c93a?text=Tip"} 
                                                 alt="" 
                                                 className="w-full h-full object-cover transition-transform group-hover:scale-110"
                                             />
@@ -323,7 +322,7 @@ const HealthTipDetail = () => {
                                     <Link key={pop.id} to={`/health-tips/${pop.id}`} className="flex gap-4 group">
                                         <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 relative">
                                             <img 
-                                                src={pop.image_path ? `http://127.0.0.1:8000/storage/${pop.image_path}` : "https://placehold.co/100x100/f8fafc/a3c93a?text=Tip"} 
+                                                src={pop.image_path ? getStorageUrl(pop.image_path) : "https://placehold.co/100x100/f8fafc/a3c93a?text=Tip"} 
                                                 alt="" 
                                                 className="w-full h-full object-cover transition-transform group-hover:scale-110"
                                             />

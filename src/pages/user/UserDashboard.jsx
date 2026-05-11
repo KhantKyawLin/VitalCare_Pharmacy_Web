@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { Percent, LayoutDashboard, History, Star, Eye, ChevronRight } from 'lucide-react';
@@ -21,23 +21,11 @@ const UserDashboard = () => {
 
             try {
                 // Fetch orders
-                const ordersRes = await axios.get('http://127.0.0.1:8000/api/auth/orders', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const ordersRes = await api.get('/auth/orders');
                 setRecentOrders(ordersRes.data.slice(0, 5));
 
-                /* 
-                // Promotions route is currently admin-only. Removing from user dashboard to avoid 404.
                 try {
-                    const promosRes = await axios.get('http://127.0.0.1:8000/api/promotions');
-                    setPromotions(promosRes.data.slice(0, 1));
-                } catch (e) {
-                    console.warn("Promotions not available:", e.message);
-                }
-                */
-                
-                try {
-                    const offersRes = await axios.get('http://127.0.0.1:8000/api/products/special-offers');
+                    const offersRes = await api.get('/products/special-offers');
                     setSpecialOffers(offersRes.data.slice(0, 4));
                 } catch (e) {
                     console.warn("Special offers not available:", e.message);

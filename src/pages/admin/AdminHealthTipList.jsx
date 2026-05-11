@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import { 
     BookOpen, 
     Plus, 
@@ -35,10 +35,6 @@ const AdminHealthTipList = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [totalResults, setTotalResults] = useState(0);
 
-    const getConfig = () => ({
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    });
-
     useEffect(() => {
         fetchTips();
     }, [currentPage]);
@@ -46,8 +42,7 @@ const AdminHealthTipList = () => {
     const fetchTips = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/admin/health-tips`, {
-                ...getConfig(),
+            const response = await api.get(`/admin/health-tips`, {
                 params: {
                     page: currentPage,
                     search: search
@@ -88,7 +83,7 @@ const AdminHealthTipList = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/admin/health-tips/${id}`, getConfig());
+                await api.delete(`/admin/health-tips/${id}`);
                 Swal.fire('Deleted!', 'Health tip has been deleted.', 'success');
                 fetchTips();
             } catch (error) {
@@ -103,7 +98,7 @@ const AdminHealthTipList = () => {
 
     const handleToggleStatus = async (id, currentStatus) => {
         try {
-            await axios.patch(`http://127.0.0.1:8000/api/admin/health-tips/${id}/toggle-status`, {}, getConfig());
+            await api.patch(`/admin/health-tips/${id}/toggle-status`, {});
             setTips(prev => prev.map(tip => tip.id === id ? { ...tip, is_published: !currentStatus } : tip));
         } catch (error) {
             Swal.fire('Error', 'Failed to update status.', 'error');
@@ -231,7 +226,7 @@ const AdminHealthTipList = () => {
                                                 <div className="w-10 h-8 rounded border border-gray-200 overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
                                                     {tip.image_path ? (
                                                         <img 
-                                                            src={`http://127.0.0.1:8000/storage/${tip.image_path}`} 
+                                                            src={getStorageUrl(tip.image_path)} 
                                                             alt="" 
                                                             className="w-full h-full object-cover"
                                                         />

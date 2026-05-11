@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { getStorageUrl } from '../utils/api';
 import { Link } from 'react-router-dom';
 import { 
     BookOpen, 
@@ -20,7 +20,7 @@ const HealthTips = () => {
     useEffect(() => {
         const fetchTips = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/health-tips');
+                const response = await api.get('/health-tips');
                 setTips(response.data);
                 setIsLoading(false);
             } catch (error) {
@@ -96,7 +96,7 @@ const HealthTips = () => {
                             {/* Image Container */}
                             <div className="relative aspect-[16/9] overflow-hidden">
                                 <img 
-                                    src={tip.image_path ? `http://127.0.0.1:8000/storage/${tip.image_path}` : "https://placehold.co/800x450/f8fafc/a3c93a?text=Health+Tip"} 
+                                    src={tip.image_path ? getStorageUrl(tip.image_path) : "https://placehold.co/800x450/f8fafc/a3c93a?text=Health+Tip"} 
                                     alt={tip.title}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />

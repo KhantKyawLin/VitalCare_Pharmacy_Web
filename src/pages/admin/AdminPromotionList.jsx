@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     Plus, 
     Search, 
@@ -19,8 +19,6 @@ const AdminPromotionList = () => {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchPromotions();
     }, []);
@@ -28,7 +26,7 @@ const AdminPromotionList = () => {
     const fetchPromotions = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/admin/promotions`, getConfig());
+            const response = await api.get(`/admin/promotions`);
             setPromotions(response.data.promotions);
         } catch (error) {
             console.error("Error fetching promotions:", error);
@@ -51,7 +49,7 @@ const AdminPromotionList = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/admin/promotions/${id}`, getConfig());
+                await api.delete(`/admin/promotions/${id}`);
                 Swal.fire('Deleted!', 'Promotion has been deleted.', 'success');
                 fetchPromotions(); 
             } catch (error) {

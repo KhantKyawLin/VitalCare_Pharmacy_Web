@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import { AuthContext } from '../../context/AuthContext';
 import { 
     ChevronLeft, 
@@ -48,9 +48,7 @@ const UserOrderDetail = () => {
             }
 
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/auth/orders/${id}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const response = await api.get(`/auth/orders/${id}`);
                 setOrder(response.data);
             } catch (error) {
                 console.error("Error fetching order detail:", error);
@@ -240,10 +238,10 @@ const UserOrderDetail = () => {
                                 <div className="w-40 h-40 rounded-lg border border-gray-100 bg-gray-50 flex items-center justify-center overflow-hidden">
                                     {order.slip_image ? (
                                         <img 
-                                            src={`http://127.0.0.1:8000/storage/${order.slip_image}`} 
+                                            src={getStorageUrl(order.slip_image)} 
                                             alt="Payment Proof" 
                                             className="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform"
-                                            onClick={() => handleViewScreenshot(`http://127.0.0.1:8000/storage/${order.slip_image}`)}
+                                            onClick={() => handleViewScreenshot(getStorageUrl(order.slip_image))}
                                         />
                                     ) : (
                                         <div className="flex flex-col items-center gap-2 text-gray-300">
@@ -282,7 +280,7 @@ const UserOrderDetail = () => {
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded border border-gray-100 bg-white p-1 flex items-center justify-center shrink-0">
                                                 <img 
-                                                    src={item.product?.pictures?.[0]?.image_path ? `http://127.0.0.1:8000/storage/${item.product.pictures[0].image_path}` : 'https://placehold.co/50x50/f8fafc/8DB600?text=P'} 
+                                                    src={item.product?.pictures?.[0]?.image_path ? getStorageUrl(item.product.pictures[0].image_path) : 'https://placehold.co/50x50/f8fafc/8DB600?text=P'} 
                                                     alt={item.product?.name}
                                                     className="w-full h-full object-contain"
                                                 />

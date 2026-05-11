@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import { 
     Layout, 
     Upload, 
@@ -42,8 +42,8 @@ const AdminAboutSettings = () => {
                 about_vision_title: settings.about_vision_title || 'Our Vision',
                 about_vision_desc: settings.about_vision_desc || '',
             });
-            if (settings.about_hero_image) setHeroPreview(`http://127.0.0.1:8000/storage/${settings.about_hero_image}`);
-            if (settings.about_story_image) setStoryPreview(`http://127.0.0.1:8000/storage/${settings.about_story_image}`);
+            if (settings.about_hero_image) setHeroPreview(getStorageUrl(settings.about_hero_image));
+            if (settings.about_story_image) setStoryPreview(getStorageUrl(settings.about_story_image));
         }
     }, [settings]);
 
@@ -62,9 +62,8 @@ const AdminAboutSettings = () => {
         if (storyFile) data.append('about_story_image', storyFile);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/admin/site-settings', data, {
+            const response = await api.post('/admin/site-settings', data, {
                 headers: { 
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'multipart/form-data'
                 }
             });

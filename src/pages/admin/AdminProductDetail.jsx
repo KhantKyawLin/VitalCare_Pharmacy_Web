@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import { 
     Package, 
     Edit, 
@@ -24,7 +24,7 @@ const AdminProductDetail = () => {
     const [loading, setLoading] = useState(true);
     const [activeImage, setActiveImage] = useState(0);
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+
 
     useEffect(() => {
         fetchProduct();
@@ -32,7 +32,7 @@ const AdminProductDetail = () => {
 
     const fetchProduct = async () => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/admin/products/${id}`, getConfig());
+            const response = await api.get(`/admin/products/${id}`);
             setProduct(response.data);
             setLoading(false);
         } catch (error) {
@@ -55,7 +55,7 @@ const AdminProductDetail = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/admin/products/${id}`, getConfig());
+                await api.delete(`/admin/products/${id}`);
                 Swal.fire('Deleted!', 'Product has been deleted.', 'success');
                 navigate('/admin/products');
             } catch (error) {
@@ -112,9 +112,7 @@ const AdminProductDetail = () => {
                                 {product.pictures?.length > 0 ? (
                                     <>
                                         <img 
-                                            src={product.pictures[activeImage].image_path.startsWith('http') 
-                                                ? product.pictures[activeImage].image_path 
-                                                : `http://127.0.0.1:8000/storage/${product.pictures[activeImage].image_path}`} 
+                                            src={getStorageUrl(product.pictures[activeImage].image_path)} 
                                             alt={product.name}
                                             className="w-full h-full object-contain p-4"
                                         />
@@ -154,7 +152,7 @@ const AdminProductDetail = () => {
                                         }`}
                                     >
                                         <img 
-                                            src={pic.image_path.startsWith('http') ? pic.image_path : `http://127.0.0.1:8000/storage/${pic.image_path}`} 
+                                            src={getStorageUrl(pic.image_path)} 
                                             alt=""
                                             className="w-full h-full object-cover rounded-lg"
                                         />

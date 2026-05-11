@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import { 
     Palette, 
     Upload, 
@@ -32,7 +32,7 @@ const AdminBrandingSettings = () => {
                 accent_color: settings.accent_color || '#7fa400'
             });
             if (settings.site_logo) {
-                setLogoPreview(`http://127.0.0.1:8000/storage/${settings.site_logo}`);
+                setLogoPreview(getStorageUrl(settings.site_logo));
             }
         }
     }, [settings]);
@@ -62,9 +62,8 @@ const AdminBrandingSettings = () => {
         }
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/admin/site-settings', data, {
+            const response = await api.post('/admin/site-settings', data, {
                 headers: { 
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'multipart/form-data'
                 }
             });

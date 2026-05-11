@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { 
@@ -72,13 +72,6 @@ const AdminHealthTipForm = () => {
     const [completedCrop, setCompletedCrop] = useState(null);
     const imgRef = useRef(null);
 
-    const getConfig = () => ({
-        headers: { 
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${localStorage.getItem('token')}` 
-        }
-    });
-
     useEffect(() => {
         if (isEdit) {
             fetchTip();
@@ -87,9 +80,7 @@ const AdminHealthTipForm = () => {
 
     const fetchTip = async () => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/admin/health-tips/${id}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const response = await api.get(`/admin/health-tips/${id}`);
             const tip = response.data.tip;
             setFormData({
                 title: tip.title,
@@ -98,7 +89,7 @@ const AdminHealthTipForm = () => {
                 is_published: !!tip.is_published
             });
             if (tip.image_path) {
-                setImagePreview(`http://127.0.0.1:8000/storage/${tip.image_path}`);
+                setImagePreview(getStorageUrl(tip.image_path));
             }
         } catch (error) {
             Swal.fire('Error', 'Failed to load health tip details.', 'error');
@@ -166,10 +157,12 @@ const AdminHealthTipForm = () => {
 
         try {
             const url = isEdit 
-                ? `http://127.0.0.1:8000/api/admin/health-tips/${id}` 
-                : 'http://127.0.0.1:8000/api/admin/health-tips';
+                ? `/admin/health-tips/${id}` 
+                : '/admin/health-tips';
             
-            await axios.post(url, data, getConfig());
+            await api.post(url, data, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
             
             Swal.fire({
                 title: 'Success!',

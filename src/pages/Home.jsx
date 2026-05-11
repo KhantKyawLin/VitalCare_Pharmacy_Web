@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { getStorageUrl } from '../utils/api';
 import { 
     ChevronRight, 
     Star, 
@@ -28,9 +28,9 @@ const Home = () => {
             setIsLoading(true);
             try {
                 const [topRes, specialRes, tipsRes] = await Promise.all([
-                    axios.get('http://127.0.0.1:8000/api/products/top-sellers'),
-                    axios.get('http://127.0.0.1:8000/api/products/special-offers'),
-                    axios.get('http://127.0.0.1:8000/api/health-tips')
+                    api.get('/products/top-sellers'),
+                    api.get('/products/special-offers'),
+                    api.get('/health-tips')
                 ]);
                 
                 setTopSellers(topRes.data || []);
@@ -229,7 +229,7 @@ const Home = () => {
                             >
                                 <div className="relative aspect-video overflow-hidden">
                                     <img 
-                                        src={tip.image_path ? `http://127.0.0.1:8000/storage/${tip.image_path}` : "https://placehold.co/400x225/f8fafc/a3c93a?text=Health+Tip"} 
+                                        src={tip.image_path ? getStorageUrl(tip.image_path) : "https://placehold.co/400x225/f8fafc/a3c93a?text=Health+Tip"} 
                                         alt={tip.title}
                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import {
     Plus,
     Search,
@@ -46,8 +46,6 @@ const AdminProductList = () => {
         visibility: true,
     });
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchProducts();
     }, [currentPage]);
@@ -55,8 +53,7 @@ const AdminProductList = () => {
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/admin/products`, {
-                ...getConfig(),
+            const response = await api.get(`/admin/products`, {
                 params: {
                     page: currentPage,
                     search: search,
@@ -108,7 +105,7 @@ const AdminProductList = () => {
 
     const handleTogglePublish = async (id, currentStatus) => {
         try {
-            await axios.patch(`http://127.0.0.1:8000/api/admin/products/${id}/toggle-publish`, {}, getConfig());
+            await api.patch(`/admin/products/${id}/toggle-publish`, {});
             setProducts(products.map(p => p.id === id ? { ...p, is_published: !currentStatus } : p));
         } catch (error) {
             Swal.fire('Error', 'Failed to update visibility', 'error');
@@ -128,7 +125,7 @@ const AdminProductList = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/admin/products/${id}`, getConfig());
+                await api.delete(`/admin/products/${id}`);
                 Swal.fire('Deleted!', 'Product has been deleted.', 'success');
                 fetchProducts();
             } catch (error) {
@@ -353,9 +350,7 @@ const AdminProductList = () => {
                                                 <div className="w-8 h-8 rounded border border-gray-200 overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
                                                     {product.pictures?.length > 0 ? (
                                                         <img
-                                                            src={product.pictures[0].image_path.startsWith('http')
-                                                                ? product.pictures[0].image_path
-                                                                : `http://127.0.0.1:8000/storage/${product.pictures[0].image_path}`}
+                                                            src={getStorageUrl(product.pictures[0].image_path)}
                                                             alt={product.name}
                                                             className="w-full h-full object-contain p-0.5"
                                                         />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     ArrowLeft, 
     Save, 
@@ -38,8 +38,6 @@ const AdminPurchaseForm = () => {
     const [isSearching, setIsSearching] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchSuppliers();
         
@@ -62,7 +60,7 @@ const AdminPurchaseForm = () => {
 
     const fetchSuppliers = async () => {
         try {
-            const res = await axios.get('http://127.0.0.1:8000/api/admin/suppliers', getConfig());
+            const res = await api.get('/admin/suppliers');
             setSuppliers(res.data.suppliers);
         } catch (error) {
             console.error("Error fetching suppliers:", error);
@@ -71,7 +69,7 @@ const AdminPurchaseForm = () => {
     
     const autoAddProduct = async (id) => {
         try {
-            const res = await axios.get(`http://127.0.0.1:8000/api/admin/products/${id}`, getConfig());
+            const res = await api.get(`/admin/products/${id}`);
             if (res.data) {
                 addProductToItems(res.data);
             }
@@ -88,7 +86,7 @@ const AdminPurchaseForm = () => {
         }
         setIsSearching(true);
         try {
-            const res = await axios.get(`http://127.0.0.1:8000/api/admin/products-search?q=${val}`, getConfig());
+            const res = await api.get(`/admin/products-search?q=${val}`);
             setSearchResults(res.data);
         } catch (error) {
             console.error("Search error:", error);
@@ -191,7 +189,7 @@ const AdminPurchaseForm = () => {
 
         setLoading(true);
         try {
-            await axios.post('http://127.0.0.1:8000/api/admin/purchases', finalPayload, getConfig());
+            await api.post('/admin/purchases', finalPayload);
             Swal.fire('Success', 'Purchase recorded successfully!', 'success');
             navigate('/admin/purchases');
         } catch (error) {

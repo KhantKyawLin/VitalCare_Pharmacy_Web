@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     Search, 
     Eye,
@@ -30,8 +30,6 @@ const AdminPurchaseList = () => {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [selectedPurchase, setSelectedPurchase] = useState(null);
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchPurchases();
     }, [currentPage]);
@@ -39,8 +37,7 @@ const AdminPurchaseList = () => {
     const fetchPurchases = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/admin/purchases`, {
-                ...getConfig(),
+            const response = await api.get(`/admin/purchases`, {
                 params: {
                     page: currentPage,
                     search: search

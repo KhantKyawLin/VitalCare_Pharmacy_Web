@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     Bell, 
     AlertTriangle, 
@@ -18,8 +18,6 @@ const AdminReorderAlerts = () => {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchAlerts();
     }, []);
@@ -27,7 +25,7 @@ const AdminReorderAlerts = () => {
     const fetchAlerts = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/admin/inventory/low-stock', getConfig());
+            const response = await api.get('/admin/inventory/low-stock');
             if (response.data) {
                 setData({
                     alerts: response.data.alerts || [],

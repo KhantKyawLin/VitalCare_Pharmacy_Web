@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef } from 'react';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import { AuthContext } from '../../context/AuthContext';
 import Swal from 'sweetalert2';
 import ReactCrop from 'react-image-crop';
@@ -41,7 +41,7 @@ const getCroppedImg = (imageElement, crop, fileName) => {
 };
 
 const AdminProfileSettings = () => {
-    const { user, token, setUser } = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext);
     
     // Profile State
     const [profileData, setProfileData] = useState({
@@ -61,7 +61,7 @@ const AdminProfileSettings = () => {
 
     // Profile Image State
     const [profilePreview, setProfilePreview] = useState(
-        user?.profile ? `http://localhost:8000/storage/${user.profile}` : null
+        user?.profile ? getStorageUrl(user.profile) : null
     );
     const [profileFile, setProfileFile] = useState(null);
 
@@ -135,9 +135,8 @@ const AdminProfileSettings = () => {
             formData.append('address', profileData.address || '');
             formData.append('gender', profileData.gender);
 
-            const response = await axios.post('http://localhost:8000/api/auth/profile', formData, {
+            const response = await api.post('/auth/profile', formData, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
             });
@@ -147,7 +146,7 @@ const AdminProfileSettings = () => {
                 setProfileFile(null);
                 setProfilePreview(
                     response.data.user.profile 
-                        ? `http://localhost:8000/storage/${response.data.user.profile}` 
+                        ? getStorageUrl(response.data.user.profile) 
                         : null
                 );
                 Swal.fire({
@@ -181,9 +180,8 @@ const AdminProfileSettings = () => {
                 formData.append('address', profileData.address || '');
                 formData.append('gender', profileData.gender);
 
-                const response = await axios.post('http://localhost:8000/api/auth/profile', formData, {
+                const response = await api.post('/auth/profile', formData, {
                     headers: {
-                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'multipart/form-data'
                     }
                 });
@@ -192,14 +190,12 @@ const AdminProfileSettings = () => {
                     setProfileFile(null);
                     setProfilePreview(
                         response.data.user.profile
-                            ? `http://localhost:8000/storage/${response.data.user.profile}`
+                            ? getStorageUrl(response.data.user.profile)
                             : null
                     );
                 }
             } else {
-                const response = await axios.put('http://localhost:8000/api/auth/profile', profileData, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const response = await api.put('/auth/profile', profileData);
                 if (response.data.user) {
                     setUser(response.data.user);
                 }
@@ -229,11 +225,9 @@ const AdminProfileSettings = () => {
         setErrors({});
 
         try {
-            const response = await axios.put('http://localhost:8000/api/auth/profile', {
+            const response = await api.put('/auth/profile', {
                 ...profileData,
                 ...passwordData
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
 
             if (response.data.status === 'success') {

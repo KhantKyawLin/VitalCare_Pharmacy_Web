@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     Plus, 
     Search, 
@@ -26,8 +26,6 @@ const AdminUnitList = () => {
     const [formData, setFormData] = useState({ name: '' });
     const [saving, setSaving] = useState(false);
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchUnits();
     }, []);
@@ -35,7 +33,7 @@ const AdminUnitList = () => {
     const fetchUnits = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/admin/units`, getConfig());
+            const response = await api.get(`/admin/units`);
             setUnits(response.data.units);
             setStats(response.data.stats);
         } catch (error) {
@@ -68,7 +66,7 @@ const AdminUnitList = () => {
         setSaving(true);
         try {
             if (editingUnit) {
-                await axios.put(`http://127.0.0.1:8000/api/admin/units/${editingUnit.id}`, formData, getConfig());
+                await api.put(`/admin/units/${editingUnit.id}`, formData);
                 Swal.fire({
                     icon: 'success',
                     title: 'Updated!',
@@ -77,7 +75,7 @@ const AdminUnitList = () => {
                     showConfirmButton: false
                 });
             } else {
-                await axios.post(`http://127.0.0.1:8000/api/admin/units`, formData, getConfig());
+                await api.post(`/admin/units`, formData);
                 Swal.fire({
                     icon: 'success',
                     title: 'Created!',
@@ -109,7 +107,7 @@ const AdminUnitList = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/admin/units/${id}`, getConfig());
+                await api.delete(`/admin/units/${id}`);
                 Swal.fire('Deleted!', 'Unit has been deleted.', 'success');
                 fetchUnits();
             } catch (error) {

@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
-import axios from 'axios';
+import api, { getStorageUrl } from '../utils/api';
 import Swal from 'sweetalert2';
 
 const Checkout = () => {
@@ -58,9 +58,8 @@ const Checkout = () => {
                 formData.append('payment_proof', paymentProof);
             }
 
-            const response = await axios.post('http://localhost:8000/api/auth/checkout', formData, {
+            const response = await api.post('/auth/checkout', formData, {
                 headers: { 
-                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
             });
@@ -108,7 +107,7 @@ const Checkout = () => {
                                         const price = parseFloat(product.price || 0);
                                         const subtotal = price * item.quantity;
                                         const imageUrl = product.pictures?.length > 0 
-                                            ? `http://127.0.0.1:8000/storage/${product.pictures[0].image_path}` 
+                                            ? getStorageUrl(product.pictures[0].image_path) 
                                             : "https://placehold.co/40x40/f8fafc/8DB600?text=P";
 
                                         return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import Swal from 'sweetalert2';
@@ -57,8 +57,6 @@ const AdminProductForm = () => {
     const navigate = useNavigate();
     const isEdit = !!id;
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     const [loading, setLoading] = useState(isEdit);
     const [submitting, setSubmitting] = useState(false);
     const [categories, setCategories] = useState([]);
@@ -98,8 +96,8 @@ const AdminProductForm = () => {
     const fetchInitialData = async () => {
         try {
             const [catRes, unitRes] = await Promise.all([
-                axios.get('http://127.0.0.1:8000/api/categories', getConfig()),
-                axios.get('http://127.0.0.1:8000/api/admin/units', getConfig())
+                api.get('/categories'),
+                api.get('/admin/units')
             ]);
             setCategories(catRes.data);
             setUnits(unitRes.data.units || unitRes.data || []);
@@ -110,7 +108,7 @@ const AdminProductForm = () => {
 
     const fetchProduct = async () => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/admin/products/${id}`, getConfig());
+            const response = await api.get(`/admin/products/${id}`);
             const product = response.data;
             if (product) {
                 setFormData({
@@ -131,9 +129,7 @@ const AdminProductForm = () => {
                     product.pictures.forEach((pic, i) => {
                         if (i < 5) {
                             newSlots[i] = { 
-                                url: pic.image_path.startsWith('http') 
-                                    ? pic.image_path 
-                                    : `http://127.0.0.1:8000/storage/${pic.image_path}`, 
+                                url: getStorageUrl(pic.image_path), 
                                 existing: true, 
                                 id: pic.id 
                             };
@@ -160,7 +156,7 @@ const AdminProductForm = () => {
     const handleQuickAddCategory = async () => {
         if (!newCategoryName.trim()) return;
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/admin/categories', { name: newCategoryName }, getConfig());
+            const response = await api.post('/admin/categories', { name: newCategoryName });
             setCategories(prev => [...prev, response.data.category]);
             setFormData(prev => ({ ...prev, category_id: response.data.category.id }));
             setNewCategoryName('');
@@ -173,7 +169,7 @@ const AdminProductForm = () => {
     const handleQuickAddUnit = async () => {
         if (!newUnitName.trim()) return;
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/admin/units', { name: newUnitName }, getConfig());
+            const response = await api.post('/admin/units', { name: newUnitName });
             setUnits(prev => [...prev, response.data.unit]);
             setFormData(prev => ({ ...prev, unit_id: response.data.unit.id }));
             setNewUnitName('');
@@ -263,9 +259,9 @@ const AdminProductForm = () => {
         try {
             if (isEdit) {
                 data.append('_method', 'PUT');
-                await axios.post(`http://127.0.0.1:8000/api/admin/products/${id}`, data, getConfig());
+                await api.post(`/admin/products/${id}`, data);
             } else {
-                await axios.post('http://127.0.0.1:8000/api/admin/products', data, getConfig());
+                await api.post('/admin/products', data);
             }
             Swal.fire({
                 icon: 'success',

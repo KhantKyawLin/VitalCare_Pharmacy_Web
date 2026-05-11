@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import { 
     BookOpen, 
     ChevronLeft, 
@@ -26,10 +26,6 @@ const AdminHealthTipDetail = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const getConfig = () => ({
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    });
-
     useEffect(() => {
         fetchTipDetails();
     }, [id]);
@@ -37,7 +33,7 @@ const AdminHealthTipDetail = () => {
     const fetchTipDetails = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/admin/health-tips/${id}`, getConfig());
+            const response = await api.get(`/admin/health-tips/${id}`);
             setData(response.data);
         } catch (error) {
             Swal.fire('Error', 'Failed to load health tip details.', 'error');
@@ -60,7 +56,7 @@ const AdminHealthTipDetail = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/admin/health-tips/${id}`, getConfig());
+                await api.delete(`/admin/health-tips/${id}`);
                 Swal.fire('Deleted!', 'Health tip has been deleted.', 'success');
                 navigate('/admin/health-tips');
             } catch (error) {
@@ -114,7 +110,7 @@ const AdminHealthTipDetail = () => {
                         <div className="relative aspect-[16/9] w-full">
                             {tip.image_path ? (
                                 <img 
-                                    src={`http://127.0.0.1:8000/storage/${tip.image_path}`} 
+                                    src={getStorageUrl(tip.image_path)} 
                                     alt={tip.title} 
                                     className="w-full h-full object-cover"
                                 />
@@ -182,7 +178,7 @@ const AdminHealthTipDetail = () => {
                                     >
                                         <div className="w-24 h-20 rounded-xl overflow-hidden shrink-0">
                                             {rel.image_path ? (
-                                                <img src={`http://127.0.0.1:8000/storage/${rel.image_path}`} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                <img src={getStorageUrl(rel.image_path)} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                             ) : (
                                                 <div className="w-full h-full bg-gray-50 flex items-center justify-center text-gray-200">
                                                     <BookOpen size={24} />

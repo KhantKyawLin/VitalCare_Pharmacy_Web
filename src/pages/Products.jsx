@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { 
     Search, 
     Filter, 
@@ -33,7 +33,7 @@ const Products = () => {
         setIsLoading(true);
         try {
             const [productsRes, categoriesRes] = await Promise.all([
-                axios.get(`http://127.0.0.1:8000/api/products`, {
+                api.get(`/products`, {
                     params: {
                         page,
                         category_id: selectedCategory,
@@ -41,7 +41,7 @@ const Products = () => {
                         type: selectedType !== 'all' ? selectedType : null
                     }
                 }),
-                axios.get('http://127.0.0.1:8000/api/categories')
+                api.get('/categories')
             ]);
 
             setProducts(productsRes.data.data);

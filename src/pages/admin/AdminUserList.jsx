@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import Swal from 'sweetalert2';
 import { 
     Search, Plus, Shield, User, Stethoscope, 
@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 
 const AdminUserList = () => {
-    const { token, user: currentUser } = useContext(AuthContext);
+    const { user: currentUser } = useContext(AuthContext);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -36,14 +36,13 @@ const AdminUserList = () => {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/admin/users', {
+            const response = await api.get('/admin/users', {
                 params: {
                     search: search,
                     role: roleFilter,
                     page: pagination.current_page,
                     per_page: 10
-                },
-                headers: { Authorization: `Bearer ${token}` }
+                }
             });
             setUsers(response.data.data);
             setPagination({
@@ -65,9 +64,7 @@ const AdminUserList = () => {
         setFormErrors({});
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/admin/staff', formData, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.post('/admin/staff', formData);
 
             if (response.status === 201) {
                 Swal.fire({
@@ -121,9 +118,7 @@ const AdminUserList = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/admin/users/${id}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                await api.delete(`/admin/users/${id}`);
                 Swal.fire('Deleted!', 'User account has been deleted.', 'success');
                 fetchUsers();
             } catch (error) {
@@ -144,9 +139,7 @@ const AdminUserList = () => {
 
         if (result.isConfirmed) {
             try {
-                const response = await axios.post(`http://127.0.0.1:8000/api/admin/users/${id}/reset-password`, {}, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const response = await api.post(`/admin/users/${id}/reset-password`);
                 
                 Swal.fire({
                     icon: 'success',
@@ -281,7 +274,7 @@ const AdminUserList = () => {
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 shrink-0 overflow-hidden">
                                                     {u.profile ? (
-                                                        <img src={`http://127.0.0.1:8000/storage/${u.profile}`} alt={u.name} className="w-full h-full object-cover" />
+                                                        <img src={getStorageUrl(u.profile)} alt={u.name} className="w-full h-full object-cover" />
                                                     ) : (
                                                         <UserCircle size={20} />
                                                     )}
@@ -518,7 +511,7 @@ const AdminUserList = () => {
                             <div className="flex items-center gap-4 p-4 bg-slate-50 rounded border border-slate-100">
                                 <div className="w-16 h-16 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-300 overflow-hidden shadow-sm">
                                     {selectedUser.profile ? (
-                                        <img src={`http://127.0.0.1:8000/storage/${selectedUser.profile}`} alt={selectedUser.name} className="w-full h-full object-cover" />
+                                        <img src={getStorageUrl(selectedUser.profile)} alt={selectedUser.name} className="w-full h-full object-cover" />
                                     ) : (
                                         <UserCircle size={40} />
                                     )}

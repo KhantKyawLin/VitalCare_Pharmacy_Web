@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import { Search, ShoppingCart, Plus, Minus, Trash2, X, CreditCard, Banknote, QrCode, Printer, AlertTriangle, Info, RefreshCw } from 'lucide-react';
 import Swal from 'sweetalert2';
 
@@ -46,8 +46,6 @@ const AdminPOS = () => {
     const [lastOrder, setLastOrder] = useState(null);
     const [allPromotions, setAllPromotions] = useState([]);
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useBarcodeScanner((barcode) => {
         searchAndAddProduct(barcode);
     });
@@ -55,7 +53,7 @@ const AdminPOS = () => {
     useEffect(() => {
         const fetchPromos = async () => {
             try {
-                const res = await axios.get('http://127.0.0.1:8000/api/admin/promotions', getConfig());
+                const res = await api.get('/admin/promotions');
                 const promos = Array.isArray(res.data?.promotions) ? res.data.promotions : [];
                 setAllPromotions(promos.filter(p => p.is_active));
             } catch (err) {
@@ -80,7 +78,7 @@ const AdminPOS = () => {
     const fetchSearchResults = async (query) => {
         setIsSearching(true);
         try {
-            const res = await axios.get(`http://127.0.0.1:8000/api/admin/pos/search?q=${query}`, getConfig());
+            const res = await api.get(`/admin/pos/search?q=${query}`);
             setSearchResults(res.data);
         } catch (err) {
             console.error("Search error:", err);
@@ -91,7 +89,7 @@ const AdminPOS = () => {
 
     const searchAndAddProduct = async (query) => {
         try {
-            const res = await axios.get(`http://127.0.0.1:8000/api/admin/pos/search?q=${query}`, getConfig());
+            const res = await api.get(`/admin/pos/search?q=${query}`);
             if (res.data.length === 1) {
                 addToCart(res.data[0]);
                 setSearchQuery('');
@@ -356,7 +354,7 @@ const AdminPOS = () => {
                 change_return: Math.max(0, changeReturn)
             };
 
-            const res = await axios.post('http://127.0.0.1:8000/api/admin/pos/checkout', payload, getConfig());
+            const res = await api.post('/admin/pos/checkout', payload);
 
             Swal.fire({ title: 'Payment Successful!', text: `Receipt: ${res.data.order.receipt_number}`, icon: 'success', timer: 1500, showConfirmButton: false });
 
@@ -586,7 +584,7 @@ const AdminPOS = () => {
                     <div className="text-center">
                         {settings.site_logo && (
                             <img 
-                                src={`http://127.0.0.1:8000/storage/${settings.site_logo}`} 
+                                src={getStorageUrl(settings.site_logo)} 
                                 alt="Logo" 
                                 className="h-10 mx-auto mb-2 grayscale brightness-0" 
                             />

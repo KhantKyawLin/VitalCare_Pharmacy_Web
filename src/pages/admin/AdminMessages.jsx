@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     Mail, 
     MessageSquare, 
@@ -37,9 +37,7 @@ const AdminMessages = () => {
     const fetchMessages = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/admin/contact-messages', {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const response = await api.get('/admin/contact-messages');
             setMessages(response.data);
             
             // Notification for unread messages if any
@@ -66,9 +64,7 @@ const AdminMessages = () => {
 
     const handleStatusUpdate = async (id, status) => {
         try {
-            await axios.put(`http://127.0.0.1:8000/api/admin/contact-messages/${id}`, { status }, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            await api.put(`/admin/contact-messages/${id}`, { status });
             setMessages(messages.map(m => m.id === id ? { ...m, status } : m));
             if (selectedMessage?.id === id) {
                 setSelectedMessage({ ...selectedMessage, status });

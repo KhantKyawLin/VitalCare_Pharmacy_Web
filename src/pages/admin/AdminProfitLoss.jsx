@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     TrendingUp, 
     TrendingDown, 
@@ -32,8 +32,6 @@ const AdminProfitLoss = () => {
     });
     const [searchTerm, setSearchTerm] = useState('');
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchLedger();
     }, [filters]);
@@ -42,7 +40,7 @@ const AdminProfitLoss = () => {
         setLoading(true);
         try {
             const queryParams = new URLSearchParams(filters).toString();
-            const response = await axios.get(`http://127.0.0.1:8000/api/admin/reports/detailed-ledger?${queryParams}`, getConfig());
+            const response = await api.get(`/admin/reports/detailed-ledger?${queryParams}`);
             setRecords(response.data.data);
             setSummary(response.data.summary);
         } catch (error) {

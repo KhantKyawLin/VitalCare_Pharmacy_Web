@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import { 
     AlertTriangle, 
     Clock, 
@@ -37,8 +37,6 @@ const AdminExpiredItemList = () => {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [selectedItemDetail, setSelectedItemDetail] = useState(null);
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchData();
     }, [expiringDays]);
@@ -48,9 +46,9 @@ const AdminExpiredItemList = () => {
         try {
             // Fetch multiple endpoints in parallel
             const [expiredRes, expiringRes, disposalsRes] = await Promise.all([
-                axios.get(`http://127.0.0.1:8000/api/admin/inventory/expired-items`, getConfig()),
-                axios.get(`http://127.0.0.1:8000/api/admin/inventory/expiring-soon-configured?days=${expiringDays}`, getConfig()),
-                axios.get(`http://127.0.0.1:8000/api/admin/inventory/disposals`, getConfig())
+                api.get(`/admin/inventory/expired-items`),
+                api.get(`/admin/inventory/expiring-soon-configured?days=${expiringDays}`),
+                api.get(`/admin/inventory/disposals`)
             ]);
 
             setData({
@@ -99,9 +97,9 @@ const AdminExpiredItemList = () => {
 
         if (result.isConfirmed) {
             try {
-                const res = await axios.post(`http://127.0.0.1:8000/api/admin/inventory/expired-items/dispose`, {
+                const res = await api.post(`/admin/inventory/expired-items/dispose`, {
                     movement_ids: selectedItems
-                }, getConfig());
+                });
 
                 Swal.fire({
                     title: 'Disposed!',
@@ -505,7 +503,7 @@ const AdminExpiredItemList = () => {
                             <div className="w-full md:w-1/3 flex justify-center items-center bg-gray-50 rounded-xl p-4 border border-gray-100">
                                 {selectedItemDetail.product?.pictures && selectedItemDetail.product?.pictures.length > 0 ? (
                                     <img 
-                                        src={selectedItemDetail.product.pictures[0].image_path.startsWith('http') ? selectedItemDetail.product.pictures[0].image_path : `http://127.0.0.1:8000/storage/${selectedItemDetail.product.pictures[0].image_path}`}
+                                        src={getStorageUrl(selectedItemDetail.product.pictures[0].image_path)}
                                         alt="Product"
                                         className="h-48 object-contain"
                                     />

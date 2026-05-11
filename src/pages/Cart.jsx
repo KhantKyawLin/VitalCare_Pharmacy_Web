@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
 import { Trash2, ShoppingCart, ArrowLeft, ArrowRight } from 'lucide-react';
 import { showSuccessToast, showErrorToast, showWarningToast } from '../utils/toast';
+import { getStorageUrl } from '../utils/api';
 import Swal from 'sweetalert2';
 
 const Cart = () => {
@@ -92,7 +93,7 @@ const Cart = () => {
                                 const price = parseFloat(product.price || 0);
                                 const subtotal = price * item.quantity;
                                 const imageUrl = product.pictures?.length > 0 
-                                    ? `http://127.0.0.1:8000/storage/${product.pictures[0].image_path}` 
+                                    ? getStorageUrl(product.pictures[0].image_path) 
                                     : "https://placehold.co/80x80/f8fafc/a3c93a?text=P";
 
                                 return (

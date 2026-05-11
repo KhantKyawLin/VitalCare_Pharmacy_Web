@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     Search, 
     Filter, 
@@ -18,8 +18,6 @@ import {
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 
-const API = 'http://127.0.0.1:8000/api/admin/activity-logs';
-
 const AdminActivityLogs = () => {
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -36,10 +34,6 @@ const AdminActivityLogs = () => {
     const [pagination, setPagination] = useState(null);
     const [selectedLog, setSelectedLog] = useState(null);
 
-    const getConfig = () => ({
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    });
-
     useEffect(() => {
         fetchFilters();
     }, []);
@@ -50,7 +44,7 @@ const AdminActivityLogs = () => {
 
     const fetchFilters = async () => {
         try {
-            const res = await axios.get(`${API}/filters`, getConfig());
+            const res = await api.get('/admin/activity-logs/filters');
             setAvailableFilters(res.data);
         } catch (e) { console.error(e); }
     };
@@ -59,7 +53,7 @@ const AdminActivityLogs = () => {
         setLoading(true);
         try {
             const params = new URLSearchParams(filters).toString();
-            const res = await axios.get(`${API}?${params}`, getConfig());
+            const res = await api.get(`/admin/activity-logs?${params}`);
             setLogs(res.data.data);
             setPagination(res.data);
         } catch (e) {
@@ -94,7 +88,7 @@ const AdminActivityLogs = () => {
 
         if (days) {
             try {
-                const res = await axios.delete(`${API}/cleanup?days=${days}`, getConfig());
+                const res = await api.delete(`/admin/activity-logs/cleanup?days=${days}`);
                 Swal.fire('Cleaned!', res.data.message, 'success');
                 fetchLogs();
             } catch (e) {

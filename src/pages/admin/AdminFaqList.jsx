@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     HelpCircle, 
     Plus, 
@@ -26,8 +26,6 @@ const AdminFaqList = () => {
         is_published: true
     });
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchFaqs();
     }, []);
@@ -35,7 +33,7 @@ const AdminFaqList = () => {
     const fetchFaqs = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/admin/faqs', getConfig());
+            const response = await api.get('/admin/faqs');
             setFaqs(response.data);
         } catch (error) {
             console.error("Error fetching FAQs:", error);
@@ -72,10 +70,10 @@ const AdminFaqList = () => {
         e.preventDefault();
         try {
             if (currentFaq) {
-                await axios.put(`http://127.0.0.1:8000/api/admin/faqs/${currentFaq.id}`, formData, getConfig());
+                await api.put(`/admin/faqs/${currentFaq.id}`, formData);
                 Swal.fire({ icon: 'success', title: 'Updated', text: 'FAQ updated successfully', timer: 1500, showConfirmButton: false });
             } else {
-                await axios.post('http://127.0.0.1:8000/api/admin/faqs', formData, getConfig());
+                await api.post('/admin/faqs', formData);
                 Swal.fire({ icon: 'success', title: 'Created', text: 'FAQ created successfully', timer: 1500, showConfirmButton: false });
             }
             fetchFaqs();
@@ -98,7 +96,7 @@ const AdminFaqList = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/admin/faqs/${id}`, getConfig());
+                await api.delete(`/admin/faqs/${id}`);
                 Swal.fire('Deleted!', 'FAQ has been deleted.', 'success');
                 fetchFaqs();
             } catch (error) {
@@ -109,9 +107,9 @@ const AdminFaqList = () => {
 
     const togglePublish = async (faq) => {
         try {
-            await axios.put(`http://127.0.0.1:8000/api/admin/faqs/${faq.id}`, {
+            await api.put(`/admin/faqs/${faq.id}`, {
                 is_published: !faq.is_published
-            }, getConfig());
+            });
             fetchFaqs();
         } catch (error) {
             Swal.fire('Error', 'Failed to update status.', 'error');

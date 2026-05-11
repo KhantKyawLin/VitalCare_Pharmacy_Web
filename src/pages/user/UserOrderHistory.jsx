@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { AuthContext } from '../../context/AuthContext';
 import { Eye } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -38,9 +38,7 @@ const UserOrderHistory = () => {
             }
 
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/auth/orders', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const response = await api.get('/auth/orders');
                 setOrders(response.data);
             } catch (error) {
                 console.error("Error fetching orders:", error);

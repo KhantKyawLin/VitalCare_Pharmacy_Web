@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
     TrendingUp, 
     ArrowLeft, 
@@ -19,8 +19,6 @@ const AdminTopProfitableProducts = () => {
     const [range, setRange] = useState('this_month');
     const [searchTerm, setSearchTerm] = useState('');
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchProducts();
     }, [range]);
@@ -28,7 +26,7 @@ const AdminTopProfitableProducts = () => {
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/admin/reports/top-profitable?range=${range}`, getConfig());
+            const response = await api.get(`/admin/reports/top-profitable?range=${range}`);
             setProducts(response.data);
         } catch (error) {
             console.error("Error fetching top products:", error);

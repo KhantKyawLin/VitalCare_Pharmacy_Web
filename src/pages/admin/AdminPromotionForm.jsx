@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import {
     Save,
@@ -50,14 +50,12 @@ const AdminPromotionForm = () => {
     const [search, setSearch] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('');
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         const init = async () => {
             setFetchingData(true);
             try {
                 // Fetch products for the selection table
-                const prodRes = await axios.get('http://127.0.0.1:8000/api/admin/promotions/products', getConfig());
+                const prodRes = await api.get('/admin/promotions/products');
                 const prods = prodRes.data.products;
                 setProducts(prods);
 
@@ -69,7 +67,7 @@ const AdminPromotionForm = () => {
 
                 // If editing, fetch promotion details
                 if (isEditing) {
-                    const promoRes = await axios.get(`http://127.0.0.1:8000/api/admin/promotions/${id}`, getConfig());
+                    const promoRes = await api.get(`/admin/promotions/${id}`);
                     const p = promoRes.data.promotion;
                     if (p) {
                         setFormData({
@@ -195,10 +193,10 @@ const AdminPromotionForm = () => {
             }
 
             if (isEditing) {
-                await axios.put(`http://127.0.0.1:8000/api/admin/promotions/${id}`, payload, getConfig());
+                await api.put(`/admin/promotions/${id}`, payload);
                 Swal.fire('Success', 'Promotion updated successfully', 'success');
             } else {
-                await axios.post('http://127.0.0.1:8000/api/admin/promotions', payload, getConfig());
+                await api.post('/admin/promotions', payload);
                 Swal.fire('Success', 'Promotion created successfully', 'success');
             }
             navigate('/admin/promotions');

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api, { getStorageUrl } from '../utils/api';
 import { 
     ShoppingCart, 
     Heart, 
@@ -9,7 +9,8 @@ import {
     CheckCircle,
     Zap,
     ShieldCheck,
-    Truck
+    Truck,
+    Send
 } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
@@ -54,7 +55,7 @@ const ProductDetail = () => {
         const fetchProduct = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/products/${id}`);
+                const response = await api.get(`/products/${id}`);
                 setProduct(response.data.product);
                 setRelatedProducts(response.data.related || []);
                 setIsLoading(false);
@@ -159,7 +160,7 @@ const ProductDetail = () => {
     }
 
     const images = product.pictures?.length > 0 
-        ? product.pictures.map(p => `http://127.0.0.1:8000/storage/${p.image_path}`)
+        ? product.pictures.map(p => getStorageUrl(p.image_path))
         : ["https://placehold.co/600x600/f8fafc/8DB600?text=Product"];
 
     const showActionButtons = true; // Show for everyone, handlers will manage restrictions
@@ -294,7 +295,7 @@ const ProductDetail = () => {
                                     </button>
                                     <button 
                                         onClick={() => {
-                                            const shareUrl = `http://127.0.0.1:8000/share/product/${product.id}`;
+                                            const shareUrl = `${import.meta.env.VITE_BASE_URL || 'http://127.0.0.1:8000'}/share/product/${product.id}`;
                                             navigator.clipboard.writeText(shareUrl);
                                             showSuccessToast('Shareable link (optimized for social media) copied to clipboard!');
                                         }}

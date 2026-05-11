@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import {
@@ -16,7 +16,8 @@ import {
     Image as ImageIcon,
     Phone,
     MapPin,
-    Package
+    Package,
+    Download
 } from 'lucide-react';
 import { useSettings } from '../../context/SettingsContext';
 
@@ -34,15 +35,13 @@ const AdminOrderDetail = () => {
     const [paymentStatus, setPaymentStatus] = useState('');
     const [refundReason, setRefundReason] = useState('');
 
-    const getConfig = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-
     useEffect(() => {
         fetchOrder();
     }, [id]);
 
     const fetchOrder = async () => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/admin/orders/${id}`, getConfig());
+            const response = await api.get(`/admin/orders/${id}`);
             const data = response.data;
             setOrder(data);
             setStatus(data.status || 'pending');
@@ -61,12 +60,12 @@ const AdminOrderDetail = () => {
     const handleSave = async () => {
         setSaving(true);
         try {
-            await axios.put(`http://127.0.0.1:8000/api/admin/orders/${id}`, {
+            await api.put(`/admin/orders/${id}`, {
                 status,
                 deliver_status: deliverStatus,
                 payment_status: paymentStatus,
                 refund_reason: refundReason
-            }, getConfig());
+            });
 
             Swal.fire({
                 icon: 'success',
@@ -84,6 +83,12 @@ const AdminOrderDetail = () => {
         }
     };
 
+    const handleDownloadPDF = () => {
+        const token = localStorage.getItem('token');
+        const url = `${import.meta.env.VITE_API_URL}/admin/orders/${id}/pdf?token=${token}`;
+        window.open(url, '_blank');
+    };
+
     const showPaymentSlip = () => {
         if (!order.slip_image) {
             Swal.fire('No Slip', 'No payment screenshot has been uploaded for this order.', 'info');
@@ -92,7 +97,7 @@ const AdminOrderDetail = () => {
 
         Swal.fire({
             title: 'Payment Verification',
-            imageUrl: `http://127.0.0.1:8000/storage/${order.slip_image}`,
+            imageUrl: getStorageUrl(order.slip_image),
             imageAlt: 'Payment Slip',
             width: 'auto',
             padding: '1em',
@@ -145,6 +150,12 @@ const AdminOrderDetail = () => {
                         </button>
                     )}
 
+                    <button
+                        onClick={handleDownloadPDF}
+                        className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-all font-bold text-xs flex items-center gap-2 shadow-sm"
+                    >
+                        <Download size={16} /> DOWNLOAD PDF
+                    </button>
                     <button
                         onClick={() => window.print()}
                         className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-all font-bold text-xs flex items-center gap-2 shadow-sm"
@@ -317,7 +328,7 @@ const AdminOrderDetail = () => {
                                                     <div className="w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center overflow-hidden border border-gray-200">
                                                         {item.product?.pictures?.[0] ? (
                                                             <img
-                                                                src={`http://127.0.0.1:8000/storage/${item.product.pictures[0].image_path}`}
+                                                                src={getStorageUrl(item.product.pictures[0].image_path)}
                                                                 alt=""
                                                                 className="w-full h-full object-cover"
                                                             />
@@ -424,7 +435,7 @@ const AdminOrderDetail = () => {
                     <div className="space-y-2">
                         {settings?.site_logo && (
                             <img 
-                                src={`http://127.0.0.1:8000/storage/${settings.site_logo}`} 
+                                src={getStorageUrl(settings.site_logo)} 
                                 alt="Logo" 
                                 className="h-16 grayscale brightness-0" 
                             />
