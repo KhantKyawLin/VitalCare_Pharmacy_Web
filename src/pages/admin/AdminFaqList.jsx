@@ -130,7 +130,7 @@ const AdminFaqList = () => {
                 </div>
                 <button 
                     onClick={() => handleOpenModal()}
-                    className="px-6 py-2.5 bg-primary-green text-white rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 hover:bg-primary-dark transition-all shadow-lg shadow-primary-green/20"
+                    className="px-6 py-2.5 bg-primary-green text-white rounded font-black uppercase tracking-widest text-[10px] flex items-center gap-2 hover:bg-primary-dark transition-all shadow-lg shadow-primary-green/20"
                 >
                     <Plus size={16} /> Add New FAQ
                 </button>
@@ -145,7 +145,7 @@ const AdminFaqList = () => {
             ) : faqs.length > 0 ? (
                 <div className="space-y-4">
                     {faqs.map((faq, index) => (
-                        <div key={faq.id} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-start gap-4 hover:border-primary-green/30 transition-all group">
+                        <div key={faq.id} className="bg-white p-5 rounded border border-gray-100 shadow-sm flex items-start gap-4 hover:border-primary-green/30 transition-all group">
                             <div className="mt-1 text-gray-300 cursor-grab active:cursor-grabbing">
                                 <GripVertical size={20} />
                             </div>
@@ -183,7 +183,7 @@ const AdminFaqList = () => {
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+                <div className="text-center py-20 bg-gray-50 rounded border-2 border-dashed border-gray-200">
                     <HelpCircle size={48} className="mx-auto text-gray-200 mb-4" />
                     <h3 className="text-lg font-bold text-gray-400 italic">No FAQs configured yet.</h3>
                     <button 
@@ -198,7 +198,7 @@ const AdminFaqList = () => {
             {/* Modal */}
             {modalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+                    <div className="bg-white w-full max-w-lg rounded shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
                         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                             <h3 className="font-black text-gray-800 uppercase tracking-widest text-sm flex items-center gap-2">
                                 {currentFaq ? <><Edit2 size={16} className="text-blue-500" /> Edit FAQ</> : <><Plus size={16} className="text-primary-green" /> New FAQ</>}
@@ -216,7 +216,7 @@ const AdminFaqList = () => {
                                     value={formData.question}
                                     onChange={(e) => setFormData({...formData, question: e.target.value})}
                                     placeholder="e.g. Do you accept credit cards?"
-                                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary-green/20 transition-all font-bold"
+                                    className="w-full bg-slate-50 border border-gray-200 rounded px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary-green/20 transition-all font-bold"
                                 />
                             </div>
                             <div className="space-y-2">
@@ -227,10 +227,10 @@ const AdminFaqList = () => {
                                     onChange={(e) => setFormData({...formData, answer: e.target.value})}
                                     rows="5"
                                     placeholder="Provide a clear, detailed answer..."
-                                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary-green/20 transition-all resize-none leading-relaxed font-medium"
+                                    className="w-full bg-slate-50 border border-gray-200 rounded px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary-green/20 transition-all resize-none leading-relaxed font-medium"
                                 />
                             </div>
-                            <div className="flex items-center gap-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                            <div className="flex items-center gap-3 bg-gray-50 p-4 rounded border border-gray-100">
                                 <input 
                                     type="checkbox"
                                     id="is_published"
@@ -245,13 +245,13 @@ const AdminFaqList = () => {
                                 <button 
                                     type="button"
                                     onClick={handleCloseModal}
-                                    className="flex-1 py-3 border border-gray-200 rounded-xl text-gray-400 font-black uppercase tracking-widest text-[10px] hover:bg-gray-50 transition-all"
+                                    className="flex-1 py-3 border border-gray-200 rounded text-gray-400 font-black uppercase tracking-widest text-[10px] hover:bg-gray-50 transition-all"
                                 >
                                     Cancel
                                 </button>
                                 <button 
                                     type="submit"
-                                    className="flex-1 py-3 bg-primary-green text-white rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-primary-dark transition-all shadow-lg shadow-primary-green/20"
+                                    className="flex-1 py-3 bg-primary-green text-white rounded font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-primary-dark transition-all shadow-lg shadow-primary-green/20"
                                 >
                                     <Save size={16} /> Save FAQ
                                 </button>

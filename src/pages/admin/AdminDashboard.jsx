@@ -11,8 +11,12 @@ import {
     Eye,
     Activity,
     TrendingDown,
+    TrendingUp,
     DollarSign,
-    Trophy
+    Trophy,
+    Pill,
+    BookOpen,
+    Package
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
