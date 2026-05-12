@@ -8,7 +8,9 @@ import {
     RefreshCcw, 
     CheckCircle2,
     Layout,
-    Type
+    Type,
+    X,
+    ImageIcon
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { useSettings } from '../../context/SettingsContext';
@@ -33,6 +35,8 @@ const AdminBrandingSettings = () => {
             });
             if (settings.site_logo) {
                 setLogoPreview(getStorageUrl(settings.site_logo));
+            } else {
+                setLogoPreview("http://localhost/VitalCare/image/VitalCare_Logo.png");
             }
         }
     }, [settings]);
@@ -46,6 +50,16 @@ const AdminBrandingSettings = () => {
         if (file) {
             setLogoFile(file);
             setLogoPreview(URL.createObjectURL(file));
+        }
+    };
+
+    const handleClearLogo = () => {
+        setLogoFile(null);
+        // Reset to original setting or default
+        if (settings && settings.site_logo) {
+            setLogoPreview(getStorageUrl(settings.site_logo));
+        } else {
+            setLogoPreview("http://localhost/VitalCare/image/VitalCare_Logo.png");
         }
     };
 
@@ -295,21 +309,43 @@ const AdminBrandingSettings = () => {
                             <h3 className="font-bold text-gray-800 text-sm">Pharmacy Logo</h3>
                         </div>
 
-                        <div className="relative group w-full aspect-[4/3] bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center overflow-hidden transition-all hover:bg-gray-100/80">
-                            {logoPreview ? (
-                                <img src={logoPreview} alt="Logo Preview" className="max-h-[70%] max-w-[70%] object-contain p-2" />
-                            ) : (
-                                <div className="flex flex-col items-center text-gray-400">
-                                    <Upload size={30} className="mb-1 opacity-20" />
-                                    <p className="text-[10px] font-bold">No Logo</p>
-                                </div>
-                            )}
+                        <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 w-full flex flex-col items-center shadow-sm">
+                            <div className="flex justify-between items-center w-full mb-3">
+                                <p className="font-bold text-[11px] text-gray-500 uppercase tracking-widest">Logo Branding</p>
+                            </div>
                             
-                            <label className="absolute inset-0 cursor-pointer flex flex-col items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Upload size={20} className="mb-1" />
-                                <span className="text-[10px] font-bold uppercase">Change</span>
-                                <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
-                            </label>
+                            <div className="bg-white border border-gray-100 border-dashed h-44 w-full flex items-center justify-center mb-4 rounded-xl p-2 overflow-hidden shadow-inner relative group/img">
+                                {logoPreview ? (
+                                    <img src={logoPreview} alt="Logo Preview" className="max-h-[85%] max-w-[85%] object-contain p-2 drop-shadow-sm" />
+                                ) : (
+                                    <div className="flex flex-col items-center gap-2 text-gray-300">
+                                        <ImageIcon size={40} className="opacity-20" />
+                                        <span className="text-[10px] font-bold uppercase tracking-wider">No Logo</span>
+                                    </div>
+                                )}
+                                
+                                {logoPreview && (
+                                    <button 
+                                        type="button"
+                                        onClick={handleClearLogo}
+                                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover/img:opacity-100 transition-opacity shadow-lg"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                )}
+                            </div>
+                            
+                            <div className="w-full">
+                                <label className="w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-bold cursor-pointer transition-all shadow-sm border bg-[#4A90E2] text-white border-transparent hover:bg-[#357ABD] hover:shadow-md active:scale-95">
+                                    <Upload size={14} /> {logoFile ? 'Replace Selection' : (settings.site_logo ? 'Replace Logo' : 'Upload Logo')}
+                                    <input 
+                                        type="file" 
+                                        className="hidden" 
+                                        accept="image/*" 
+                                        onChange={handleFileChange} 
+                                    />
+                                </label>
+                            </div>
                         </div>
                     </div>
 
@@ -327,7 +363,7 @@ const AdminBrandingSettings = () => {
                                 type="submit"
                                 disabled={saving}
                                 style={{ backgroundColor: formData.primary_color }}
-                                className="w-full py-3 rounded-lg text-white font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 shadow-lg shadow-primary-green/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:grayscale"
+                                className="w-full py-3 rounded-lg text-white font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 shadow-lg shadow-primary-green/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:grayscale cursor-pointer"
                             >
                                 {saving ? (
                                     <><RefreshCcw size={14} className="animate-spin" /> Updating...</>

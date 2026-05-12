@@ -59,7 +59,7 @@ const AdminOrderList = () => {
         <div className="space-y-6 pb-12">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
                 <div className="flex items-center gap-3">
-                    <div className="bg-primary-green p-2 rounded-lg text-white">
+                    <div className="bg-primary-green p-2 rounded text-white">
                         <ShoppingCart size={22} className="stroke-2" />
                     </div>
                     <div>
@@ -70,7 +70,7 @@ const AdminOrderList = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-wrap gap-4 items-end">
+            <div className="bg-white p-4 rounded shadow-sm border border-gray-100 flex flex-wrap gap-4 items-end">
                 <div className="space-y-1.5">
                     <label className="text-xs font-bold text-gray-500 uppercase flex items-center gap-1">
                         <Filter size={12}/> Order Type
@@ -79,7 +79,7 @@ const AdminOrderList = () => {
                         name="order_type"
                         value={filters.order_type}
                         onChange={handleFilterChange}
-                        className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-green outline-none min-w-[150px]"
+                        className="bg-gray-50 border border-gray-200 rounded px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary-green outline-none min-w-[150px]"
                     >
                         <option value="">All Orders</option>
                         <option value="walk-in">Walk-in POS</option>
@@ -95,7 +95,7 @@ const AdminOrderList = () => {
                         name="status"
                         value={filters.status}
                         onChange={handleFilterChange}
-                        className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-green outline-none min-w-[150px]"
+                        className="bg-gray-50 border border-gray-200 rounded px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary-green outline-none min-w-[150px]"
                     >
                         <option value="">All Status</option>
                         <option value="pending">Pending</option>
@@ -113,7 +113,7 @@ const AdminOrderList = () => {
                         name="date"
                         value={filters.date}
                         onChange={handleFilterChange}
-                        className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-green outline-none"
+                        className="bg-gray-50 border border-gray-200 rounded px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary-green outline-none"
                     />
                 </div>
 
@@ -126,7 +126,7 @@ const AdminOrderList = () => {
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded shadow-sm border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm whitespace-nowrap">
                         <thead className="bg-gray-50 text-gray-500 border-b border-gray-100">
@@ -157,11 +157,11 @@ const AdminOrderList = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         {order.order_type === 'walk-in' ? (
-                                            <span className="flex items-center gap-1.5 text-blue-600 font-bold text-xs bg-blue-50 px-2 py-1 rounded-md w-max">
+                                            <span className="flex items-center gap-1.5 text-blue-600 font-bold text-xs bg-blue-50 px-2 py-1 rounded w-max">
                                                 <Store size={12}/> POS
                                             </span>
                                         ) : (
-                                            <span className="flex items-center gap-1.5 text-purple-600 font-bold text-xs bg-purple-50 px-2 py-1 rounded-md w-max">
+                                            <span className="flex items-center gap-1.5 text-purple-600 font-bold text-xs bg-purple-50 px-2 py-1 rounded w-max">
                                                 <Globe size={12}/> Online
                                             </span>
                                         )}
@@ -193,7 +193,7 @@ const AdminOrderList = () => {
                                         {parseFloat(order.total_amount).toLocaleString()} Ks
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className={`px-2.5 py-1 rounded-md text-[11px] font-black text-white ${
+                                        <span className={`px-2.5 py-1 rounded text-[11px] font-black text-white ${
                                             order.status === 'completed' ? 'bg-primary-dark' : 
                                             order.status === 'pending' ? 'bg-[#FFB822]' : 'bg-red-500'
                                         }`}>
@@ -238,14 +238,14 @@ const AdminOrderList = () => {
                             <button 
                                 disabled={page === 1}
                                 onClick={() => setPage(p => p - 1)}
-                                className="p-2 bg-white border border-gray-200 rounded-lg disabled:opacity-30 hover:bg-gray-50 transition-colors"
+                                className="p-2 bg-white border border-gray-200 rounded disabled:opacity-30 hover:bg-gray-50 transition-colors"
                             >
                                 <ChevronLeft size={16}/>
                             </button>
                             <button 
                                 disabled={page === totalPages}
                                 onClick={() => setPage(p => p + 1)}
-                                className="p-2 bg-white border border-gray-200 rounded-lg disabled:opacity-30 hover:bg-gray-50 transition-colors"
+                                className="p-2 bg-white border border-gray-200 rounded disabled:opacity-30 hover:bg-gray-50 transition-colors"
                             >
                                 <ChevronRight size={16}/>
                             </button>

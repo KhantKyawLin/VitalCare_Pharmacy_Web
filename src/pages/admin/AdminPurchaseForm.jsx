@@ -205,9 +205,9 @@ const AdminPurchaseForm = () => {
         <div className="max-w-[1700px] mx-auto px-4 sm:px-6 pt-2 pb-10 space-y-6">
             
             {/* Header Area */}
-            <div className="flex justify-between items-center bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+            <div className="flex justify-between items-center bg-white p-5 rounded shadow-sm border border-gray-100">
                 <div className="flex items-center gap-4">
-                    <div className="bg-primary-light p-3 rounded-xl">
+                    <div className="bg-primary-light p-3 rounded">
                         <ShoppingCart className="text-primary-green" size={28} />
                     </div>
                     <div>
@@ -217,7 +217,7 @@ const AdminPurchaseForm = () => {
                         </p>
                     </div>
                 </div>
-                <Link to="/admin/purchases" className="flex items-center gap-2 text-gray-500 hover:text-gray-800 font-bold text-sm bg-gray-50 px-4 py-2 rounded-xl border border-gray-200 transition-all">
+                <Link to="/admin/purchases" className="flex items-center gap-2 text-gray-500 hover:text-gray-800 font-bold text-sm bg-gray-50 px-4 py-2 rounded border border-gray-200 transition-all">
                     <ArrowLeft size={18} /> Back to Purchases
                 </Link>
             </div>
@@ -225,7 +225,7 @@ const AdminPurchaseForm = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
                 
                 {/* Top Configuration Card */}
-                <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">
+                <div className="bg-white rounded shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
                         {/* Supplier Selection */}
                         <div className="space-y-2">
@@ -237,7 +237,7 @@ const AdminPurchaseForm = () => {
                                 required
                                 value={formData.supplier_id}
                                 onChange={(e) => setFormData({...formData, supplier_id: e.target.value})}
-                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl px-5 py-4 focus:bg-white focus:border-primary-green transition-all outline-none appearance-none"
+                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded px-5 py-2.5 focus:bg-white focus:border-primary-green transition-all outline-none appearance-none"
                                 style={{ backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.25rem center', backgroundSize: '1.2em' }}
                             >
                                 <option value="">Select Supplier</option>
@@ -251,7 +251,7 @@ const AdminPurchaseForm = () => {
                                 <UserIcon size={14} className="text-primary-green"/>
                                 Team Member
                             </label>
-                            <div className="w-full bg-gray-100 border border-gray-200 text-gray-500 font-bold text-[15px] rounded-2xl px-5 py-4 flex items-center">
+                            <div className="w-full bg-gray-100 border border-gray-200 text-gray-500 font-bold text-[15px] rounded px-5 py-2.5 flex items-center">
                                 {user?.name || 'Administrator'}
                             </div>
                         </div>
@@ -267,7 +267,7 @@ const AdminPurchaseForm = () => {
                                 required
                                 value={formData.purchase_date}
                                 onChange={(e) => setFormData({...formData, purchase_date: e.target.value})}
-                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl px-5 py-4 focus:bg-white focus:border-primary-green transition-all outline-none"
+                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded px-5 py-2.5 focus:bg-white focus:border-primary-green transition-all outline-none"
                             />
                         </div>
 
@@ -282,7 +282,7 @@ const AdminPurchaseForm = () => {
                                 placeholder="0"
                                 value={deliveryFee}
                                 onChange={(e) => setDeliveryFee(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl px-5 py-4 focus:bg-white focus:border-primary-green transition-all outline-none"
+                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded px-5 py-2.5 focus:bg-white focus:border-primary-green transition-all outline-none"
                             />
                         </div>
                         
@@ -296,14 +296,14 @@ const AdminPurchaseForm = () => {
                                 placeholder="0%"
                                 value={taxFee}
                                 onChange={(e) => setTaxFee(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl px-5 py-4 focus:bg-white focus:border-primary-green transition-all outline-none"
+                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded px-5 py-2.5 focus:bg-white focus:border-primary-green transition-all outline-none"
                             />
                         </div>
                     </div>
                 </div>
 
                 {/* Product Search & List Card */}
-                <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
+                <div className="bg-white rounded shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
                     
                     {/* Inner Search Box */}
                     <div className="p-8 border-b border-gray-50">
@@ -312,7 +312,7 @@ const AdminPurchaseForm = () => {
                             <input 
                                 type="text"
                                 placeholder="Search product to add (min 2 chars)..."
-                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded-2xl pl-14 pr-6 py-4 focus:bg-white focus:border-primary-green transition-all outline-none shadow-inner"
+                                className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[15px] rounded pl-14 pr-6 py-2.5 focus:bg-white focus:border-primary-green transition-all outline-none shadow-inner"
                                 value={productSearch}
                                 onChange={(e) => handleProductSearch(e.target.value)}
                                 onFocus={() => productSearch.length >= 2 && setIsSearching(true)}
@@ -320,14 +320,14 @@ const AdminPurchaseForm = () => {
                             
                             {/* Search Results Dropdown */}
                             {searchResults.length > 0 && (
-                                <div className="absolute top-full left-0 right-0 z-50 bg-white shadow-2xl rounded-2xl mt-2 border border-gray-100 max-h-80 overflow-y-auto animate-in slide-in-from-top-4 duration-200">
+                                <div className="absolute top-full left-0 right-0 z-50 bg-white shadow-2xl rounded mt-2 border border-gray-100 max-h-80 overflow-y-auto animate-in slide-in-from-top-4 duration-200">
                                     {searchResults.map(p => (
                                         <div 
                                             key={p.id}
                                             onClick={() => addProductToItems(p)}
-                                            className="flex items-center gap-4 p-4 hover:bg-green-50 cursor-pointer border-b border-gray-50 last:border-0 transition-colors group"
+                                            className="flex items-center gap-4 p-3 hover:bg-green-50 cursor-pointer border-b border-gray-50 last:border-0 transition-colors group"
                                         >
-                                            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-white transition-colors">
+                                            <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center group-hover:bg-white transition-colors">
                                                 <Package size={20} className="text-gray-400 group-hover:text-primary-green"/>
                                             </div>
                                             <div className="flex-1">
@@ -370,7 +370,7 @@ const AdminPurchaseForm = () => {
                                                 min="1"
                                                 value={item.quantity}
                                                 onChange={(e) => updateItem(idx, 'quantity', e.target.value === '' ? '' : parseInt(e.target.value))}
-                                                className="w-20 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-bold focus:border-primary-green outline-none transition-all"
+                                                className="w-20 bg-gray-50 border border-gray-200 rounded px-3 py-2.5 font-bold focus:border-primary-green outline-none transition-all"
                                             />
                                         </td>
                                         <td className="py-5 px-4">
@@ -380,7 +380,7 @@ const AdminPurchaseForm = () => {
                                                     type="number"
                                                     value={item.purchase_price}
                                                     onChange={(e) => updateItem(idx, 'purchase_price', e.target.value === '' ? '' : parseFloat(e.target.value))}
-                                                    className="w-28 bg-gray-50 border border-gray-200 rounded-xl pl-9 pr-3 py-2.5 font-bold focus:border-primary-green outline-none transition-all"
+                                                    className="w-28 bg-gray-50 border border-gray-200 rounded pl-9 pr-3 py-2.5 font-bold focus:border-primary-green outline-none transition-all"
                                                 />
                                             </div>
                                         </td>
@@ -391,7 +391,7 @@ const AdminPurchaseForm = () => {
                                                     type="number"
                                                     value={item.sale_price}
                                                     onChange={(e) => updateItem(idx, 'sale_price', e.target.value === '' ? '' : parseFloat(e.target.value))}
-                                                    className="w-28 bg-primary-light border border-primary-green/20 rounded-xl pl-9 pr-3 py-2.5 font-bold text-primary-green focus:border-primary-green outline-none transition-all"
+                                                    className="w-28 bg-primary-light border border-primary-green/20 rounded pl-9 pr-3 py-2.5 font-bold text-primary-green focus:border-primary-green outline-none transition-all"
                                                 />
                                             </div>
                                         </td>
@@ -401,7 +401,7 @@ const AdminPurchaseForm = () => {
                                                 value={item.manufactured_date}
                                                 max={new Date().toISOString().split('T')[0]}
                                                 onChange={(e) => updateItem(idx, 'manufactured_date', e.target.value)}
-                                                className="bg-gray-50 border border-gray-200 rounded-xl px-2 py-2.5 font-bold text-[13px] focus:border-primary-green outline-none transition-all"
+                                                className="bg-gray-50 border border-gray-200 rounded px-2 py-2.5 font-bold text-[13px] focus:border-primary-green outline-none transition-all"
                                             />
                                         </td>
                                         <td className="py-5 px-4">
@@ -411,7 +411,7 @@ const AdminPurchaseForm = () => {
                                                 min={new Date().toISOString().split('T')[0]}
                                                 value={item.expired_date}
                                                 onChange={(e) => updateItem(idx, 'expired_date', e.target.value)}
-                                                className="bg-gray-50 border border-gray-200 rounded-xl px-2 py-2.5 font-bold text-[13px] focus:border-primary-green outline-none transition-all text-red-500"
+                                                className="bg-gray-50 border border-gray-200 rounded px-2 py-2.5 font-bold text-[13px] focus:border-primary-green outline-none transition-all text-red-500"
                                             />
                                         </td>
                                         <td className="py-5 px-4">
@@ -421,7 +421,7 @@ const AdminPurchaseForm = () => {
                                             <button 
                                                 type="button"
                                                 onClick={() => removeItem(idx)}
-                                                className="p-3 text-red-400 hover:text-white hover:bg-red-500 rounded-2xl transition-all border border-transparent hover:border-red-600"
+                                                className="p-3 text-red-400 hover:text-white hover:bg-red-500 rounded transition-all border border-transparent hover:border-red-600"
                                             >
                                                 <Trash2 size={18} />
                                             </button>
@@ -445,7 +445,7 @@ const AdminPurchaseForm = () => {
                     {/* Bottom Grand Total Bar */}
                     <div className="bg-gray-800 p-8 flex flex-col md:flex-row justify-between items-center gap-6">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-white/10 rounded-2xl">
+                            <div className="p-3 bg-white/10 rounded">
                                 <DollarSign size={24} className="text-primary-green" />
                             </div>
                             <div>
@@ -458,21 +458,21 @@ const AdminPurchaseForm = () => {
                             <button 
                                 type="button"
                                 onClick={() => setFormData({ ...formData, items: [] })}
-                                className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-bold flex items-center gap-3 transition-all active:scale-95"
+                                className="px-8 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded font-bold flex items-center gap-3 transition-all active:scale-95"
                             >
                                 <RotateCcw size={20} /> Reset Form
                             </button>
                             <button 
                                 type="submit"
                                 disabled={loading || formData.items.length === 0}
-                                className="px-10 py-4 bg-primary-green hover:bg-primary-dark text-white rounded-2xl font-black flex items-center gap-3 shadow-xl shadow-primary-green/20 transition-all disabled:opacity-50 disabled:scale-100 active:scale-95 group"
+                                className="px-10 py-2.5 bg-primary-green hover:bg-primary-dark text-white rounded font-black flex items-center gap-3 shadow-xl shadow-primary-green/20 transition-all disabled:opacity-50 disabled:scale-100 active:scale-95 group"
                             >
                                 {loading ? (
                                     <>Saving...</>
                                 ) : (
                                     <>
                                         <Save size={20} /> Complete Purchase
-                                        <div className="bg-white/20 w-8 h-8 rounded-lg flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                                        <div className="bg-white/20 w-8 h-8 rounded flex items-center justify-center group-hover:translate-x-1 transition-transform">
                                             <ArrowLeft size={16} className="rotate-180"/>
                                         </div>
                                     </>
