@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import echo from '../../utils/echo';
 
 const AdminPromotionList = () => {
     const [promotions, setPromotions] = useState([]);
@@ -21,6 +22,15 @@ const AdminPromotionList = () => {
 
     useEffect(() => {
         fetchPromotions();
+
+        const channel = echo.channel('admin-alerts')
+            .listen('.promotion-created', (e) => {
+                fetchPromotions();
+            });
+
+        return () => {
+            echo.leaveChannel('admin-alerts');
+        };
     }, []);
 
     const fetchPromotions = async () => {

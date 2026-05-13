@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import echo from '../../utils/echo';
 
 const AdminProductList = () => {
     const [products, setProducts] = useState([]);
@@ -48,6 +49,22 @@ const AdminProductList = () => {
 
     useEffect(() => {
         fetchProducts();
+
+        // Real-time Listeners
+        const channel = echo.channel('admin-alerts')
+            .listen('.new-order', (e) => {
+                fetchProducts();
+            })
+            .listen('.new-purchase', (e) => {
+                fetchProducts();
+            })
+            .listen('.low-stock', (e) => {
+                fetchProducts();
+            });
+
+        return () => {
+            echo.leaveChannel('admin-alerts');
+        };
     }, [currentPage]);
 
     const fetchProducts = async () => {

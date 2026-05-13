@@ -13,6 +13,7 @@ import {
     Download
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
+import echo from '../../utils/echo';
 
 const AdminOrderList = () => {
     const [searchParams] = useSearchParams();
@@ -28,6 +29,19 @@ const AdminOrderList = () => {
 
     useEffect(() => {
         fetchOrders();
+
+        // Real-time Listeners
+        const channel = echo.channel('admin-alerts')
+            .listen('.new-order', (e) => {
+                fetchOrders();
+            })
+            .listen('.order-status-updated', (e) => {
+                fetchOrders();
+            });
+
+        return () => {
+            echo.leaveChannel('admin-alerts');
+        };
     }, [page, filters]);
 
     const fetchOrders = async () => {

@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import echo from '../../utils/echo';
+import Swal from 'sweetalert2';
 
 const SalesChart = ({ data }) => {
     if (!data || data.length === 0) return null;
@@ -212,6 +214,52 @@ const AdminDashboard = () => {
         };
 
         fetchDashboardData();
+
+        const showToast = (title, text, icon) => {
+            Swal.fire({
+                title,
+                text,
+                icon,
+                toast: true,
+                position: 'top-end',
+                timer: 6000,
+                showConfirmButton: false,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        };
+
+        // Real-time Business Alerts
+        const alertChannel = echo.channel('admin-alerts')
+            .listen('.new-order', (e) => {
+                showToast('New Order Received!', `Receipt: ${e.order.receipt_number || e.order.id} (Ks. ${parseFloat(e.order.total_amount).toLocaleString()})`, 'success');
+                // Refresh data to show new order in list
+                fetchDashboardData();
+            })
+            .listen('.low-stock', (e) => {
+                showToast('Low Stock Warning!', `${e.product.name} has only ${e.product.current_stock || 'few'} items left.`, 'warning');
+            })
+            .listen('.new-purchase', (e) => {
+                showToast('Inventory Update', `New purchase recorded from ${e.purchase.supplier?.name || 'Supplier'}`, 'info');
+                fetchDashboardData();
+            })
+            .listen('.promotion-created', (e) => {
+                showToast('New Campaign!', `Promotion "${e.promotion.title}" is now live.`, 'info');
+            });
+
+        // Keep old test channel for now if needed, or remove it
+        const testChannel = echo.channel('test-channel')
+            .listen('.test-event', (e) => {
+                showToast('System Message', e.message, 'info');
+            });
+
+        return () => {
+            echo.leaveChannel('admin-alerts');
+            echo.leaveChannel('test-channel');
+        };
     }, []);
 
     if (loading) {

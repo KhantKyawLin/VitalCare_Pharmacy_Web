@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import echo from '../../utils/echo';
 
 const AdminPurchaseList = () => {
     const [purchases, setPurchases] = useState([]);
@@ -32,6 +33,15 @@ const AdminPurchaseList = () => {
 
     useEffect(() => {
         fetchPurchases();
+
+        const channel = echo.channel('admin-alerts')
+            .listen('.new-purchase', (e) => {
+                fetchPurchases();
+            });
+
+        return () => {
+            echo.leaveChannel('admin-alerts');
+        };
     }, [currentPage]);
 
     const fetchPurchases = async () => {

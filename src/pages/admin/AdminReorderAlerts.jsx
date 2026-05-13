@@ -11,6 +11,7 @@ import {
     Plus
 } from 'lucide-react';
 import Swal from 'sweetalert2';
+import echo from '../../utils/echo';
 
 const AdminReorderAlerts = () => {
     const navigate = useNavigate();
@@ -20,6 +21,21 @@ const AdminReorderAlerts = () => {
 
     useEffect(() => {
         fetchAlerts();
+
+        const channel = echo.channel('admin-alerts')
+            .listen('.low-stock', (e) => {
+                fetchAlerts();
+            })
+            .listen('.new-order', (e) => {
+                fetchAlerts();
+            })
+            .listen('.new-purchase', (e) => {
+                fetchAlerts();
+            });
+
+        return () => {
+            echo.leaveChannel('admin-alerts');
+        };
     }, []);
 
     const fetchAlerts = async () => {
