@@ -207,12 +207,19 @@ const AdminOrderList = () => {
                                         {parseFloat(order.total_amount).toLocaleString()} Ks
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className={`px-2.5 py-1 rounded text-[11px] font-black text-white ${
-                                            order.status === 'completed' ? 'bg-primary-dark' : 
-                                            order.status === 'pending' ? 'bg-[#FFB822]' : 'bg-red-500'
-                                        }`}>
-                                            {order.status?.toUpperCase()}
-                                        </span>
+                                        <div className="flex flex-col gap-1.5">
+                                            <span className={`px-2.5 py-1 rounded text-[11px] font-black text-white w-fit ${
+                                                order.status === 'completed' ? 'bg-primary-dark' : 
+                                                order.status === 'pending' ? 'bg-[#FFB822]' : 'bg-red-500'
+                                            }`}>
+                                                {order.status?.toUpperCase()}
+                                            </span>
+                                            {order.prescription_status === 'pending' && (
+                                                <span className="px-2 py-0.5 rounded text-[9px] font-black bg-red-100 text-red-600 border border-red-200 w-fit">
+                                                    RX REVIEW
+                                                </span>
+                                            )}
+                                        </div>
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex justify-center gap-2">

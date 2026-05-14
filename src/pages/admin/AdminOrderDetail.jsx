@@ -17,7 +17,10 @@ import {
     Phone,
     MapPin,
     Package,
-    Download
+    Download,
+    FileText,
+    AlertTriangle,
+    XCircle
 } from 'lucide-react';
 import { useSettings } from '../../context/SettingsContext';
 
@@ -109,6 +112,55 @@ const AdminOrderDetail = () => {
         });
     };
 
+    const showPrescriptionImage = () => {
+        if (!order.prescription_image) {
+            Swal.fire('No Image', 'No prescription image was uploaded for this order.', 'info');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Prescription Document',
+            imageUrl: getStorageUrl(order.prescription_image),
+            imageAlt: 'Prescription',
+            width: 'auto',
+            padding: '1em',
+            showCloseButton: true,
+            showConfirmButton: false,
+            customClass: {
+                image: 'max-h-[80vh] object-contain rounded-lg shadow-lg'
+            }
+        });
+    };
+
+    const handlePrescriptionReview = async (reviewStatus) => {
+        try {
+            const confirmText = reviewStatus === 'approved' 
+                ? 'Approve prescription and allow fulfillment?' 
+                : 'Reject prescription? This will automatically cancel the restricted items from the order and reverse inventory.';
+                
+            const result = await Swal.fire({
+                title: 'Review Prescription',
+                text: confirmText,
+                icon: reviewStatus === 'approved' ? 'question' : 'warning',
+                showCancelButton: true,
+                confirmButtonColor: reviewStatus === 'approved' ? '#10b981' : '#ef4444',
+                confirmButtonText: `Yes, ${reviewStatus} it!`
+            });
+
+            if (result.isConfirmed) {
+                setSaving(true);
+                await api.patch(`/admin/orders/${id}/prescription`, {
+                    prescription_status: reviewStatus
+                });
+                Swal.fire('Success', `Prescription ${reviewStatus}.`, 'success');
+                fetchOrder();
+            }
+        } catch (error) {
+            Swal.fire('Error', 'Failed to update prescription status.', 'error');
+            setSaving(false);
+        }
+    };
+
     if (loading) return (
         <div className="flex items-center justify-center min-h-[400px]">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-green"></div>
@@ -171,6 +223,41 @@ const AdminOrderDetail = () => {
                 </div>
             </div>
 
+            {/* Prescription Review Alert */}
+            {order.prescription_status === 'pending' && (
+                <div className="print:hidden bg-red-50 border-2 border-red-200 rounded-xl p-5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center shrink-0">
+                            <AlertTriangle size={24} />
+                        </div>
+                        <div>
+                            <h3 className="text-red-700 font-bold text-lg">Prescription Review Required</h3>
+                            <p className="text-red-600/80 text-sm font-medium">This order contains restricted medicine. You must review and approve the prescription before fulfillment.</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                        <button 
+                            onClick={showPrescriptionImage}
+                            className="px-4 py-2.5 bg-white border border-red-200 text-red-600 font-bold text-sm rounded-lg hover:bg-red-50 transition-colors flex items-center gap-2 shadow-sm"
+                        >
+                            <FileText size={16} /> View Image
+                        </button>
+                        <button 
+                            onClick={() => handlePrescriptionReview('approved')}
+                            className="px-4 py-2.5 bg-primary-green text-white font-bold text-sm rounded-lg hover:bg-primary-dark transition-colors flex items-center gap-2 shadow-sm"
+                        >
+                            <CheckCircle size={16} /> Approve
+                        </button>
+                        <button 
+                            onClick={() => handlePrescriptionReview('rejected')}
+                            className="px-4 py-2.5 bg-red-600 text-white font-bold text-sm rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 shadow-sm"
+                        >
+                            <XCircle size={16} /> Reject
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Main Edit Form */}
             <div className="print:hidden bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-4 border-b border-gray-50 bg-gray-50/50 flex items-center gap-2">
@@ -221,6 +308,24 @@ const AdminOrderDetail = () => {
                                     )}
                                 </div>
                             </div>
+                            
+                            {/* Display Prescription Status if it's already reviewed */}
+                            {order.prescription_status && order.prescription_status !== 'pending' && (
+                                <div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Prescription Status</p>
+                                    <div className="flex items-center gap-2">
+                                        <span className={`px-2.5 py-1 rounded text-[11px] font-black text-white ${order.prescription_status === 'approved' ? 'bg-primary-green' : 'bg-red-500'}`}>
+                                            {order.prescription_status.toUpperCase()}
+                                        </span>
+                                        <button 
+                                            onClick={showPrescriptionImage}
+                                            className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-[10px] font-black hover:bg-gray-200 transition-colors border border-gray-200 flex items-center gap-1"
+                                        >
+                                            <FileText size={12} /> VIEW
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Status Selectors */}
@@ -337,6 +442,7 @@ const AdminOrderDetail = () => {
                                                     <div>
                                                         <span className="font-bold text-gray-800">{item.product?.name}</span>
                                                         {!!item.is_gift && <span className="ml-2 px-1.5 py-0.5 bg-red-50 text-red-500 rounded text-[9px] font-black border border-red-100 uppercase">Gift</span>}
+                                                        {item.product?.requires_prescription == 1 && <span className="ml-2 px-1.5 py-0.5 bg-purple-50 text-purple-600 rounded text-[9px] font-black border border-purple-100 uppercase">Rx</span>}
                                                     </div>
                                                 </div>
                                             </td>

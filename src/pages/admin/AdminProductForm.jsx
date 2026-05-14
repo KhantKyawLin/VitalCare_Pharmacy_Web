@@ -82,7 +82,7 @@ const AdminProductForm = () => {
 
     const [formData, setFormData] = useState({
         name: '', category_id: '', unit_id: '', minimum_quantity: '10', price: '', description: '', dosage: '', usage: '', side_effects: '',
-        is_published: true
+        is_published: true, requires_prescription: false
     });
 
     const [errors, setErrors] = useState({});
@@ -121,7 +121,8 @@ const AdminProductForm = () => {
                     usage: product.usage || '',
                     side_effects: product.side_effects || '',
                     dosage: product.dosage || '',
-                    is_published: product.is_published === 1 || product.is_published === true
+                    is_published: product.is_published === 1 || product.is_published === true,
+                    requires_prescription: product.requires_prescription === 1 || product.requires_prescription === true
                 });
 
                 if (product.pictures && product.pictures.length > 0) {
@@ -236,7 +237,7 @@ const AdminProductForm = () => {
 
         const data = new FormData();
         Object.keys(formData).forEach(key => {
-            if (key === 'is_published') {
+            if (key === 'is_published' || key === 'requires_prescription') {
                 data.append(key, formData[key] ? '1' : '0');
             } else {
                 data.append(key, formData[key]);
@@ -404,7 +405,7 @@ const AdminProductForm = () => {
                                 </div>
                             </div>
 
-                            <div className="pt-2">
+                            <div className="pt-2 flex flex-col sm:flex-row gap-6">
                                 <label className="flex items-center gap-3 cursor-pointer group w-fit">
                                     <div className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none border-2 border-transparent">
                                         <input 
@@ -420,6 +421,24 @@ const AdminProductForm = () => {
                                     <div className="flex flex-col">
                                         <span className="text-sm font-bold text-gray-700 group-hover:text-primary-green transition-colors">Publish to Storefront</span>
                                         <span className="text-[11px] text-gray-400 font-medium">When enabled, customers can see and buy this product online</span>
+                                    </div>
+                                </label>
+
+                                <label className="flex items-center gap-3 cursor-pointer group w-fit">
+                                    <div className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none border-2 border-transparent">
+                                        <input 
+                                            type="checkbox" 
+                                            name="requires_prescription"
+                                            checked={formData.requires_prescription}
+                                            onChange={handleChange}
+                                            className="sr-only"
+                                        />
+                                        <div className={`w-full h-full rounded-full transition-colors ${formData.requires_prescription ? 'bg-red-500' : 'bg-gray-200'}`}></div>
+                                        <div className={`absolute left-1 bg-white w-4 h-4 rounded-full transition-transform ${formData.requires_prescription ? 'translate-x-5' : ''}`}></div>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-bold text-gray-700 group-hover:text-red-500 transition-colors">Requires Prescription</span>
+                                        <span className="text-[11px] text-gray-400 font-medium">Customers must upload an image of their prescription at checkout</span>
                                     </div>
                                 </label>
                             </div>

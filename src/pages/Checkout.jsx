@@ -15,6 +15,9 @@ const Checkout = () => {
     const [contactPhone, setContactPhone] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('cash'); // 'cash' or 'online'
     const [paymentProof, setPaymentProof] = useState(null);
+    const [prescriptionImage, setPrescriptionImage] = useState(null);
+
+    const requiresPrescription = cartItems?.some(item => item.product?.requires_prescription === 1 || item.product?.requires_prescription === true) || false;
 
     useEffect(() => {
         if (!token) {
@@ -34,6 +37,12 @@ const Checkout = () => {
         }
     };
 
+    const handlePrescriptionChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setPrescriptionImage(e.target.files[0]);
+        }
+    };
+
     const handlePlaceOrder = async () => {
         if (!deliveryAddress.trim()) {
             Swal.fire('Error', 'Please provide a delivery address.', 'warning');
@@ -47,6 +56,10 @@ const Checkout = () => {
             Swal.fire('Error', 'Please upload a payment screenshot for online payment.', 'warning');
             return;
         }
+        if (requiresPrescription && !prescriptionImage) {
+            Swal.fire('Prescription Required', 'This order contains restricted medicine. You must upload a valid prescription.', 'warning');
+            return;
+        }
 
         setIsPlacingOrder(true);
         try {
@@ -56,6 +69,9 @@ const Checkout = () => {
             formData.append('payment_method', paymentMethod === 'online' ? 'Online' : 'Cash');
             if (paymentMethod === 'online' && paymentProof) {
                 formData.append('payment_proof', paymentProof);
+            }
+            if (requiresPrescription && prescriptionImage) {
+                formData.append('prescription_image', prescriptionImage);
             }
 
             const response = await api.post('/auth/checkout', formData, {
@@ -116,7 +132,10 @@ const Checkout = () => {
                                                     <div className="w-10 h-10 border border-gray-200 p-0.5 rounded bg-white shrink-0">
                                                         <img src={imageUrl} alt={product.name} className="w-full h-full object-contain" />
                                                     </div>
-                                                    <span className="text-gray-800">{product.name}</span>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-gray-800">{product.name}</span>
+                                                        {product.requires_prescription == 1 && <span className="text-[10px] text-red-500 font-bold uppercase mt-0.5">Rx Required</span>}
+                                                    </div>
                                                 </td>
                                                 <td className="py-3 text-center text-gray-800">{item.quantity}</td>
                                                 <td className="py-3 text-right text-gray-800">Ks. {price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
@@ -221,6 +240,31 @@ const Checkout = () => {
                                         </span>
                                     </div>
                                     <p className="text-xs text-gray-500 mt-1">Please upload a screenshot of your successful payment.</p>
+                                </div>
+                            )}
+
+                            {/* Prescription Requirement (Conditional) */}
+                            {requiresPrescription && (
+                                <div className="bg-red-50 border border-red-200 rounded p-4 text-sm mt-3 animate-in fade-in slide-in-from-top-2">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                        </svg>
+                                        <h4 className="font-bold text-red-700">Prescription Required</h4>
+                                    </div>
+                                    <p className="text-red-600/80 mb-4 text-xs font-medium">Your cart contains restricted items. You must upload a valid medical prescription before placing this order. Our pharmacists will review it.</p>
+                                    
+                                    <label className="block text-gray-700 mb-1 font-medium">Upload Prescription Image <span className="text-red-500">*</span></label>
+                                    <div className="flex items-center border border-gray-300 rounded bg-white overflow-hidden">
+                                        <label className="bg-gray-50 border-r border-gray-300 px-3 py-1.5 cursor-pointer hover:bg-gray-100 text-gray-700 font-medium">
+                                            Choose File
+                                            <input type="file" className="hidden" onChange={handlePrescriptionChange} accept="image/*" />
+                                        </label>
+                                        <span className="px-3 text-gray-500 flex-1 truncate">
+                                            {prescriptionImage ? prescriptionImage.name : 'No file chosen'}
+                                        </span>
+                                    </div>
+                                    <p className="text-[10px] text-gray-500 mt-1.5 italic">Accepted formats: JPG, PNG, PDF</p>
                                 </div>
                             )}
 
