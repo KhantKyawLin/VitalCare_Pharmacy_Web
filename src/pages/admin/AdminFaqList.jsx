@@ -25,6 +25,9 @@ const AdminFaqList = () => {
         answer: '',
         is_published: true
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [viewModalOpen, setViewModalOpen] = useState(false);
+    const [selectedFaq, setSelectedFaq] = useState(null);
 
     useEffect(() => {
         fetchFaqs();
@@ -68,19 +71,50 @@ const AdminFaqList = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (isSubmitting) return;
+
+        setIsSubmitting(true);
         try {
             if (currentFaq) {
                 await api.put(`/admin/faqs/${currentFaq.id}`, formData);
-                Swal.fire({ icon: 'success', title: 'Updated', text: 'FAQ updated successfully', timer: 1500, showConfirmButton: false });
+                Swal.fire({ 
+                    icon: 'success', 
+                    title: 'Updated', 
+                    text: 'FAQ updated successfully', 
+                    timer: 2000, 
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
             } else {
                 await api.post('/admin/faqs', formData);
-                Swal.fire({ icon: 'success', title: 'Created', text: 'FAQ created successfully', timer: 1500, showConfirmButton: false });
+                Swal.fire({ 
+                    icon: 'success', 
+                    title: 'Created', 
+                    text: 'FAQ created successfully', 
+                    timer: 2000, 
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
             }
             fetchFaqs();
             handleCloseModal();
         } catch (error) {
             Swal.fire('Error', 'Failed to save FAQ.', 'error');
+        } finally {
+            setIsSubmitting(false);
         }
+    };
+
+    const handleViewFaq = (faq) => {
+        setSelectedFaq(faq);
+        setViewModalOpen(true);
+    };
+
+    const closeViewModal = () => {
+        setViewModalOpen(false);
+        setSelectedFaq(null);
     };
 
     const handleDelete = async (id) => {
@@ -91,7 +125,8 @@ const AdminFaqList = () => {
             showCancelButton: true,
             confirmButtonColor: '#8DB600',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonText: 'Yes, delete it!',
+            reverseButtons: true
         });
 
         if (result.isConfirmed) {
@@ -106,12 +141,17 @@ const AdminFaqList = () => {
     };
 
     const togglePublish = async (faq) => {
+        const originalStatus = faq.is_published;
+        // Optimistic Update: Change local state immediately for a smooth experience
+        setFaqs(faqs.map(f => f.id === faq.id ? { ...f, is_published: !originalStatus } : f));
+        
         try {
             await api.put(`/admin/faqs/${faq.id}`, {
-                is_published: !faq.is_published
+                is_published: !originalStatus
             });
-            fetchFaqs();
         } catch (error) {
+            // Revert state if API fails
+            setFaqs(faqs.map(f => f.id === faq.id ? { ...f, is_published: originalStatus } : f));
             Swal.fire('Error', 'Failed to update status.', 'error');
         }
     };
@@ -158,25 +198,31 @@ const AdminFaqList = () => {
                                 </div>
                                 <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{faq.answer}</p>
                             </div>
-                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="flex items-center gap-2">
                                 <button 
                                     onClick={() => togglePublish(faq)}
                                     title={faq.is_published ? "Unpublish" : "Publish"}
-                                    className={`p-2 rounded-lg transition-colors ${faq.is_published ? 'text-amber-500 hover:bg-amber-50' : 'text-primary-green hover:bg-primary-green/10'}`}
+                                    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${faq.is_published ? 'bg-primary-green' : 'bg-gray-200'}`}
                                 >
-                                    {faq.is_published ? <Eye size={16} /> : <EyeOff size={16} />}
+                                    <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${faq.is_published ? 'translate-x-5' : 'translate-x-1'}`} />
+                                </button>
+                                <button 
+                                    onClick={() => handleViewFaq(faq)}
+                                    className="p-1.5 border border-primary-green/30 text-primary-green hover:bg-primary-green hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
+                                >
+                                    <Eye size={14} strokeWidth={2.5} />
                                 </button>
                                 <button 
                                     onClick={() => handleOpenModal(faq)}
-                                    className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                                    className="p-1.5 border border-blue-500/30 text-blue-500 hover:bg-blue-500 hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
                                 >
-                                    <Edit2 size={16} />
+                                    <Edit2 size={14} strokeWidth={2.5} />
                                 </button>
                                 <button 
                                     onClick={() => handleDelete(faq.id)}
-                                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                    className="p-1.5 border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors shadow-sm bg-white cursor-pointer"
                                 >
-                                    <Trash2 size={16} />
+                                    <Trash2 size={14} strokeWidth={2.5} />
                                 </button>
                             </div>
                         </div>
@@ -249,14 +295,68 @@ const AdminFaqList = () => {
                                 >
                                     Cancel
                                 </button>
-                                <button 
+                                 <button 
                                     type="submit"
-                                    className="flex-1 py-3 bg-primary-green text-white rounded font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-primary-dark transition-all shadow-lg shadow-primary-green/20"
+                                    disabled={isSubmitting}
+                                    className="flex-1 py-3 bg-primary-green text-white rounded font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-primary-dark transition-all shadow-lg shadow-primary-green/20 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    <Save size={16} /> Save FAQ
+                                    {isSubmitting ? (
+                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                    ) : (
+                                        <Save size={16} />
+                                    )}
+                                    {isSubmitting ? 'Saving...' : 'Save FAQ'}
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* View Detail Modal */}
+            {viewModalOpen && selectedFaq && (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white w-full max-w-2xl rounded shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+                        <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-primary-green/5">
+                            <h3 className="font-black text-primary-green uppercase tracking-widest text-sm flex items-center gap-2">
+                                <HelpCircle size={18} /> FAQ Details
+                            </h3>
+                            <button onClick={closeViewModal} className="p-1 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
+                                <X size={20} className="text-gray-400" />
+                            </button>
+                        </div>
+                        <div className="p-8 space-y-8">
+                            <div className="space-y-3">
+                                <span className="text-[10px] font-black text-primary-green uppercase tracking-[0.2em] px-2 py-1 bg-primary-green/10 rounded">Question</span>
+                                <h2 className="text-2xl font-black text-gray-900 leading-tight">
+                                    {selectedFaq.question}
+                                </h2>
+                            </div>
+                            
+                            <div className="space-y-3">
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Answer</span>
+                                <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                                    <p className="text-gray-600 leading-relaxed whitespace-pre-wrap font-medium">
+                                        {selectedFaq.answer}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between items-center pt-4 border-t border-gray-50">
+                                <div className="flex items-center gap-2">
+                                    <span className={`w-2 h-2 rounded-full ${selectedFaq.is_published ? 'bg-primary-green' : 'bg-gray-300'}`}></span>
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                        Status: {selectedFaq.is_published ? 'Published' : 'Draft'}
+                                    </span>
+                                </div>
+                                <button 
+                                    onClick={closeViewModal}
+                                    className="px-8 py-3 bg-gray-900 text-white rounded font-black uppercase tracking-widest text-[10px] hover:bg-black transition-all shadow-lg cursor-pointer"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

@@ -137,7 +137,8 @@ const AdminProductList = () => {
             showCancelButton: true,
             confirmButtonColor: '#ef4444',
             cancelButtonColor: '#94a3b8',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonText: 'Yes, delete it!',
+            reverseButtons: true
         });
 
         if (result.isConfirmed) {

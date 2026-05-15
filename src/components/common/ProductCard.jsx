@@ -154,6 +154,10 @@ const ProductCard = ({ product }) => {
                         src={product.image || (product.pictures?.length > 0 ? getStorageUrl(product.pictures[0].image_path) : "https://placehold.co/400x400/f8fafc/8DB600?text=Product")}
                         alt={product.name}
                         className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                        onError={(e) => {
+                            e.target.onerror = null; // Prevent infinite loops
+                            e.target.src = "https://placehold.co/400x400/f8fafc/8DB600?text=Product";
+                        }}
                     />
                 </Link>
 

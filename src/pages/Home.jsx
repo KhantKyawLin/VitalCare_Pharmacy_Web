@@ -232,6 +232,10 @@ const Home = () => {
                                         src={tip.image_path ? getStorageUrl(tip.image_path) : "https://placehold.co/400x225/f8fafc/a3c93a?text=Health+Tip"} 
                                         alt={tip.title}
                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = "https://placehold.co/400x225/f8fafc/a3c93a?text=Health+Tip";
+                                        }}
                                     />
                                     <div className="absolute top-2 right-2 px-2 py-0.5 bg-white/90 backdrop-blur-sm rounded-[2px] text-[8px] font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
                                         <Clock size={10} className="text-primary-green" /> 5 min
