@@ -13,7 +13,8 @@ import {
     ArrowLeft,
     AlertTriangle,
     ShieldCheck,
-    Tag
+    Tag,
+    Activity
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 
@@ -23,6 +24,15 @@ const AdminProductDetail = () => {
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeImage, setActiveImage] = useState(0);
+    
+    // Adjustment Modal State
+    const [showAdjModal, setShowAdjModal] = useState(false);
+    const [adjData, setAdjData] = useState({
+        adjustment: '',
+        reason: 'damaged',
+        notes: ''
+    });
+    const [submittingAdj, setSubmittingAdj] = useState(false);
 
 
 
@@ -39,6 +49,32 @@ const AdminProductDetail = () => {
             console.error("Error fetching product:", error);
             Swal.fire('Error', 'Failed to load product details', 'error');
             navigate('/admin/products');
+        }
+    };
+
+    const handleAdjSubmit = async (e) => {
+        e.preventDefault();
+        setSubmittingAdj(true);
+        try {
+            await api.post('/admin/inventory/adjustments', {
+                product_id: id,
+                ...adjData
+            });
+            Swal.fire({
+                icon: 'success',
+                title: 'Adjustment Recorded',
+                text: 'Inventory has been updated successfully.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            setShowAdjModal(false);
+            setAdjData({ adjustment: '', reason: 'damaged', notes: '' });
+            fetchProduct();
+        } catch (error) {
+            console.error("Adjustment error:", error);
+            Swal.fire('Error', error.response?.data?.message || 'Failed to adjust stock', 'error');
+        } finally {
+            setSubmittingAdj(false);
         }
     };
 
@@ -218,12 +254,20 @@ const AdminProductDetail = () => {
                                             <span className="text-xl font-black text-gray-800">{totalStock}</span>
                                             <span className="text-[10px] text-gray-400 font-bold uppercase">Current Stock</span>
                                         </div>
-                                        <span className={`px-3 py-1.5 rounded-lg font-bold text-[11px] shadow-sm flex items-center gap-1.5 ${
-                                            isLowStock ? 'bg-red-500 text-white' : 'bg-primary-green text-white'
-                                        }`}>
-                                            {isLowStock ? <AlertTriangle size={14} /> : <ShieldCheck size={14} />}
-                                            {isLowStock ? 'Needs Reorder' : 'Healthy Stock'}
-                                        </span>
+                                        <div className="flex flex-col gap-2 items-end">
+                                            <span className={`px-3 py-1.5 rounded-lg font-bold text-[11px] shadow-sm flex items-center gap-1.5 ${
+                                                isLowStock ? 'bg-red-500 text-white' : 'bg-primary-green text-white'
+                                            }`}>
+                                                {isLowStock ? <AlertTriangle size={14} /> : <ShieldCheck size={14} />}
+                                                {isLowStock ? 'Needs Reorder' : 'Healthy Stock'}
+                                            </span>
+                                            <button 
+                                                onClick={() => setShowAdjModal(true)}
+                                                className="text-[10px] font-black text-blue-600 hover:underline flex items-center gap-1"
+                                            >
+                                                <Activity size={12} /> Adjust Manually
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="p-4 rounded-2xl border border-gray-50 bg-gray-50/30">
@@ -304,6 +348,86 @@ const AdminProductDetail = () => {
                     </div>
                 </div>
             </div>
+            {/* Adjustment Modal */}
+            {showAdjModal && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                            <div className="flex items-center gap-2">
+                                <Activity size={20} className="text-blue-600" />
+                                <h3 className="text-lg font-bold text-gray-800 uppercase tracking-tight">Manual Adjustment</h3>
+                            </div>
+                            <button onClick={() => setShowAdjModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                                <ChevronLeft size={24} className="rotate-90" />
+                            </button>
+                        </div>
+                        <form onSubmit={handleAdjSubmit} className="p-6 space-y-4">
+                            <div className="bg-blue-50 p-3 rounded-xl border border-blue-100 mb-2">
+                                <p className="text-xs text-blue-700 font-medium leading-relaxed">
+                                    Use this to record breakage, damage, or stock counting errors. All adjustments are logged for audit.
+                                </p>
+                            </div>
+                            
+                            <div>
+                                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-1.5">Adjustment Quantity</label>
+                                <input 
+                                    type="number" 
+                                    required
+                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-bold"
+                                    placeholder="e.g. -5 for loss, 10 for correction"
+                                    value={adjData.adjustment}
+                                    onChange={(e) => setAdjData({...adjData, adjustment: e.target.value})}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-1.5">Reason for Change</label>
+                                <select 
+                                    required
+                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-bold bg-white"
+                                    value={adjData.reason}
+                                    onChange={(e) => setAdjData({...adjData, reason: e.target.value})}
+                                >
+                                    <option value="damaged">Damaged / Broken</option>
+                                    <option value="lost">Lost / Missing</option>
+                                    <option value="expired">Expired (Manual removal)</option>
+                                    <option value="counting_error">Counting Error / Correction</option>
+                                    <option value="other">Other (Explain in notes)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-1.5">Audit Notes / Explanation</label>
+                                <textarea 
+                                    required
+                                    rows="3"
+                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-medium resize-none"
+                                    placeholder="Please provide details for the audit trail..."
+                                    value={adjData.notes}
+                                    onChange={(e) => setAdjData({...adjData, notes: e.target.value})}
+                                ></textarea>
+                            </div>
+
+                            <div className="flex gap-3 pt-2">
+                                <button 
+                                    type="button"
+                                    onClick={() => setShowAdjModal(false)}
+                                    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold hover:bg-gray-50 transition-all text-xs uppercase"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    type="submit"
+                                    disabled={submittingAdj}
+                                    className="flex-1 px-4 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all text-xs uppercase disabled:opacity-50"
+                                >
+                                    {submittingAdj ? 'Recording...' : 'Record Adjustment'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

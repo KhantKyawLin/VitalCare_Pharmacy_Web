@@ -443,6 +443,19 @@ const AdminOrderDetail = () => {
                                                         <span className="font-bold text-gray-800">{item.product?.name}</span>
                                                         {!!item.is_gift && <span className="ml-2 px-1.5 py-0.5 bg-red-50 text-red-500 rounded text-[9px] font-black border border-red-100 uppercase">Gift</span>}
                                                         {item.product?.requires_prescription == 1 && <span className="ml-2 px-1.5 py-0.5 bg-purple-50 text-purple-600 rounded text-[9px] font-black border border-purple-100 uppercase">Rx</span>}
+                                                        
+                                                        {/* Batch Info */}
+                                                        {item.batches && item.batches.length > 0 && (
+                                                            <div className="mt-1 space-y-0.5">
+                                                                {item.batches.map(batch => (
+                                                                    <div key={batch.id} className="text-[10px] text-gray-500 flex items-center gap-2">
+                                                                        <span className="bg-gray-100 px-1 rounded font-medium">Batch: {batch.product_movement?.batch_number || 'N/A'}</span>
+                                                                        <span className="text-red-400 font-medium">Exp: {batch.product_movement?.expired_date}</span>
+                                                                        <span className="bg-blue-50 text-blue-600 px-1 rounded font-bold">Qty: {batch.quantity}</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </td>

@@ -248,6 +248,9 @@ const AdminDashboard = () => {
             })
             .listen('.promotion-created', (e) => {
                 showToast('New Campaign!', `Promotion "${e.promotion.title}" is now live.`, 'info');
+            })
+            .listen('.staff-logged-in', (e) => {
+                showToast('Staff Login Alert', `${e.user.name} (${e.user.role}) just logged in.`, 'info');
             });
 
         // Keep old test channel for now if needed, or remove it
