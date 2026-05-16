@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import ScrollToTop from './components/common/ScrollToTop';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
@@ -88,6 +89,7 @@ const PublicLayout = () => {
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <ForcePasswordChangeModal />
       <Routes>
         {/* Admin Routes - No Public Navbar/Footer */}

@@ -29,7 +29,12 @@ const Checkout = () => {
             setDeliveryAddress(user.address || 'Yangon'); // Defaulting to Yangon to match screenshot
             setContactPhone(user.phone || '');
         }
-    }, [token, cartItems, navigate, user]);
+
+        // If prescription is required, force Cash on Delivery
+        if (requiresPrescription) {
+            setPaymentMethod('cash');
+        }
+    }, [token, cartItems, navigate, user, requiresPrescription]);
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -202,7 +207,7 @@ const Checkout = () => {
                                         />
                                         <span className={`text-sm ${paymentMethod === 'cash' ? 'text-primary-green' : 'text-gray-600'}`}>Cash on Delivery</span>
                                     </label>
-                                    <label className="flex items-center gap-2 cursor-pointer">
+                                    <label className={`flex items-center gap-2 ${requiresPrescription ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}>
                                         <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${paymentMethod === 'online' ? 'border-primary-green' : 'border-gray-300'}`}>
                                             {paymentMethod === 'online' && <div className="w-2 h-2 bg-primary-green rounded-full"></div>}
                                         </div>
@@ -210,11 +215,15 @@ const Checkout = () => {
                                             type="radio" 
                                             name="paymentMethod" 
                                             value="online" 
+                                            disabled={requiresPrescription}
                                             checked={paymentMethod === 'online'} 
                                             onChange={() => setPaymentMethod('online')} 
                                             className="hidden" 
                                         />
-                                        <span className={`text-sm ${paymentMethod === 'online' ? 'text-primary-green' : 'text-gray-600'}`}>Online Payment (Bank Transfer / Mobile Pay)</span>
+                                        <div className="flex flex-col">
+                                            <span className={`text-sm ${paymentMethod === 'online' ? 'text-primary-green' : 'text-gray-600'}`}>Online Payment (Bank Transfer / Mobile Pay)</span>
+                                            {requiresPrescription && <span className="text-[10px] text-red-500 font-bold italic">Disabled: Prescription items require pharmacist review. Only Cash on Delivery is allowed.</span>}
+                                        </div>
                                     </label>
                                 </div>
                             </div>
