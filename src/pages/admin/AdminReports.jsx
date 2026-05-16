@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import {
     TrendingUp, TrendingDown, DollarSign, ShoppingCart, AlertTriangle,
     ArrowRight, PieChart, BarChart3, Plus, Trash2, Edit, X, Receipt,
-    Wallet, ArrowDownCircle, ArrowUpCircle, Info, RotateCcw
+    Wallet, ArrowDownCircle, ArrowUpCircle, Info, RotateCcw, RotateCw
 } from 'lucide-react';
 
 const AdminReports = () => {
@@ -117,6 +117,7 @@ const AdminReports = () => {
                 <StatCard title="Total Revenue" value={summary?.total_revenue} icon={<DollarSign className="text-blue-600" />} trend={summary?.revenue_trend} color="blue" />
                 <StatCard title="Total Refunds" value={summary?.total_refunds} icon={<RotateCcw className="text-purple-600" />} subtitle="Money Returned" color="purple" />
                 <StatCard title="Gross Profit" value={summary?.gross_profit} icon={<TrendingUp className="text-green-600" />} subtitle={`Margin: ${summary?.margin}%`} color="green" />
+                <StatCard title="Supplier Returns" value={summary?.recoverable_returns} icon={<RotateCw className="text-blue-600" />} subtitle="Recoverable Credit" color="blue" />
                 <StatCard title="Inventory Losses" value={summary?.total_losses} icon={<AlertTriangle className="text-red-600" />} subtitle="Expired & Damaged" color="red" />
                 <StatCard title="Operating Expenses" value={summary?.external_expenses} icon={<Wallet className="text-orange-600" />} subtitle="Utility & Bills" color="orange" />
                 <StatCard title="Net Profit" value={summary?.net_profit} icon={<BarChart3 className="text-primary-green" />} subtitle="Final Earnings" color="lime" />
@@ -167,8 +168,16 @@ const AdminReports = () => {
                             const pct = (parseFloat(loss.value) / totalLoss) * 100;
                             return (
                                 <div key={idx} className="space-y-1.5">
-                                    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-gray-500"><span>{loss.reason}</span><span className="text-gray-800 font-bold">{parseFloat(loss.value).toLocaleString()} Ks</span></div>
-                                    <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden"><div className={`h-full rounded-full ${loss.reason === 'expired' ? 'bg-orange-500' : 'bg-red-500'}`} style={{ width: `${pct}%` }}></div></div>
+                                    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-gray-500">
+                                        <span>{loss.reason.replace(/_/g, ' ')}</span>
+                                        <span className="text-gray-800 font-bold">{parseFloat(loss.value).toLocaleString()} Ks</span>
+                                    </div>
+                                    <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                                        <div className={`h-full rounded-full ${
+                                            loss.reason === 'expired' ? 'bg-orange-500' : 
+                                            loss.reason === 'returned_to_supplier' ? 'bg-blue-500' : 'bg-red-500'
+                                        }`} style={{ width: `${pct}%` }}></div>
+                                    </div>
                                 </div>
                             );
                         }) : <div className="text-center py-10 text-gray-300 text-xs italic">No losses recorded.</div>}

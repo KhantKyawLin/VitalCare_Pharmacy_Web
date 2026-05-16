@@ -10,7 +10,9 @@ import {
     Eye,
     ShieldAlert,
     CheckSquare,
-    Square
+    Square,
+    RotateCcw,
+    Truck
 } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -82,6 +84,39 @@ const AdminExpiredItemList = () => {
         }
     };
 
+    const handleReturnSelected = async () => {
+        if (selectedItems.length === 0) return;
+
+        const result = await Swal.fire({
+            title: 'Confirm Supplier Return',
+            text: `You are about to return ${selectedItems.length} selected batches to their suppliers. This helps you get credit back instead of taking a full loss.`,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3b82f6',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Return to Supplier!'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                const res = await api.post(`/admin/inventory/expired-items/dispose`, {
+                    movement_ids: selectedItems,
+                    reason: 'returned_to_supplier'
+                });
+
+                Swal.fire({
+                    title: 'Returned!',
+                    text: `Successfully marked ${res.data.disposed_count} items as returned to supplier.`,
+                    icon: 'success'
+                });
+                
+                fetchData();
+            } catch (error) {
+                Swal.fire('Error', 'Failed to process return.', 'error');
+            }
+        }
+    };
+
     const handleDisposeSelected = async () => {
         if (selectedItems.length === 0) return;
 
@@ -98,7 +133,8 @@ const AdminExpiredItemList = () => {
         if (result.isConfirmed) {
             try {
                 const res = await api.post(`/admin/inventory/expired-items/dispose`, {
-                    movement_ids: selectedItems
+                    movement_ids: selectedItems,
+                    reason: 'expired'
                 });
 
                 Swal.fire({
@@ -157,6 +193,11 @@ const AdminExpiredItemList = () => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    };
+
+    const handleReturnSingle = async (id) => {
+        setSelectedItems([id]);
+        setTimeout(() => handleReturnSelected(), 50);
     };
 
     const handleDisposeSingle = async (id) => {
@@ -334,13 +375,22 @@ const AdminExpiredItemList = () => {
                         </div>
                         
                         {(activeTab === 'expired' || activeTab === 'expiring_soon') && (
-                            <button 
-                                onClick={handleDisposeSelected}
-                                disabled={selectedItems.length === 0}
-                                className="bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded flex items-center gap-2 hover:bg-red-100 transition-colors text-[13px] font-bold disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                <Trash2 size={16} strokeWidth={2.5}/> Dispose Selected ({selectedItems.length})
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <button 
+                                    onClick={handleReturnSelected}
+                                    disabled={selectedItems.length === 0}
+                                    className="bg-blue-50 text-blue-600 border border-blue-200 px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-100 transition-colors text-[13px] font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <RotateCcw size={16} strokeWidth={2.5}/> Return Selected ({selectedItems.length})
+                                </button>
+                                <button 
+                                    onClick={handleDisposeSelected}
+                                    disabled={selectedItems.length === 0}
+                                    className="bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded flex items-center gap-2 hover:bg-red-100 transition-colors text-[13px] font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <Trash2 size={16} strokeWidth={2.5}/> Dispose Selected ({selectedItems.length})
+                                </button>
+                            </div>
                         )}
                         
                         <button 
@@ -368,12 +418,13 @@ const AdminExpiredItemList = () => {
                                 )}
                                 {activeTab === 'disposals' && <th className="py-3 px-6 font-semibold">Date Disposed</th>}
                                 <th className="py-3 px-6 font-semibold">Product</th>
+                                <th className="py-3 px-6 font-semibold">Supplier</th>
                                 <th className="py-3 px-6 font-semibold">Expiry Date</th>
                                 <th className="py-3 px-6 font-semibold">{activeTab === 'expired' ? 'Days Expired' : 'Days Left'}</th>
                                 <th className="py-3 px-6 font-semibold">Qty</th>
                                 <th className="py-3 px-6 font-semibold">Loss Value</th>
                                 {(activeTab === 'expired' || activeTab === 'expiring_soon') && (
-                                    <th className="py-3 px-6 font-semibold text-center">Actions</th>
+                                <th className="py-3 px-6 font-semibold text-center whitespace-nowrap">Actions / Status</th>
                                 )}
                             </tr>
                         </thead>
@@ -427,6 +478,17 @@ const AdminExpiredItemList = () => {
                                                 <span className="text-[11px] text-gray-500">{productItem?.category?.name || 'No Category'}</span>
                                             </div>
                                         </td>
+                                        <td className="py-4 px-6">
+                                            <div className="flex flex-col">
+                                                <span className="font-bold text-gray-800 uppercase tracking-tight text-[11px] flex items-center gap-1.5">
+                                                    <Truck size={12} className="text-gray-400" />
+                                                    {isDisposalRecord 
+                                                        ? (item.product_movement?.purchase_product?.purchase?.supplier?.name || '-')
+                                                        : (item.purchase_product?.purchase?.supplier?.name || '-')
+                                                    }
+                                                </span>
+                                            </div>
+                                        </td>
                                         <td className="py-4 px-6 text-gray-600 font-medium">
                                             {formattedExpiry}
                                         </td>
@@ -456,17 +518,33 @@ const AdminExpiredItemList = () => {
                                                 <div className="flex items-center justify-center gap-2">
                                                     <button 
                                                         onClick={() => openDetailModal(item)}
-                                                        className="p-1 border border-[#3b82f6]/30 text-[#3b82f6] hover:bg-[#3b82f6] hover:text-white rounded shadow-sm bg-white/50 transition-colors"
+                                                        className="p-1.5 border border-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg shadow-sm bg-white transition-all"
+                                                        title="View Details"
                                                     >
                                                         <Eye size={14} />
                                                     </button>
                                                     <button 
+                                                        onClick={() => handleReturnSingle(item.id)}
+                                                        className="p-1.5 border border-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg shadow-sm bg-white transition-all"
+                                                        title="Return to Supplier"
+                                                    >
+                                                        <RotateCcw size={14} />
+                                                    </button>
+                                                    <button 
                                                         onClick={() => handleDisposeSingle(item.id)}
-                                                        className="p-1 border border-[#ef4444]/30 text-[#ef4444] hover:bg-[#ef4444] hover:text-white rounded shadow-sm bg-white/50 transition-colors"
+                                                        className="p-1.5 border border-red-100 text-red-600 hover:bg-red-600 hover:text-white rounded-lg shadow-sm bg-white transition-all"
+                                                        title="Dispose Item"
                                                     >
                                                         <Trash2 size={14} />
                                                     </button>
                                                 </div>
+                                            </td>
+                                        )}
+                                        {isDisposalRecord && (
+                                            <td className="py-4 px-6 text-center">
+                                                <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${item.reason === 'returned_to_supplier' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
+                                                    {item.reason === 'returned_to_supplier' ? 'Returned' : 'Disposed'}
+                                                </span>
                                             </td>
                                         )}
                                     </tr>
@@ -531,6 +609,12 @@ const AdminExpiredItemList = () => {
                                         <tr className="border-b border-gray-200">
                                             <td className="py-3 px-4 font-semibold text-gray-500 bg-gray-50 w-1/3">Quantity</td>
                                             <td className="py-3 px-4 font-bold text-gray-800">{selectedItemDetail.instock_quantity}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="py-3 px-4 font-semibold text-gray-500 bg-gray-50 w-1/3">Supplier</td>
+                                            <td className="py-3 px-4 text-gray-700 font-bold">
+                                                {selectedItemDetail.purchase_product?.purchase?.supplier?.name || 'N/A'}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td className="py-3 px-4 font-semibold text-gray-500 bg-gray-50 w-1/3">Total Value</td>
