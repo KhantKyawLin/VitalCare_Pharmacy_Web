@@ -45,6 +45,7 @@ const AdminProductList = () => {
         discount: true,
         status: true,
         visibility: true,
+        chronic: true,
     });
 
     useEffect(() => {
@@ -263,6 +264,7 @@ const AdminProductList = () => {
                                             { id: 'sale_price', label: 'Sale Price' },
                                             { id: 'discount', label: 'Discount' },
                                             { id: 'status', label: 'Stock Alert' },
+                                            { id: 'chronic', label: 'Chronic Status' },
                                             { id: 'visibility', label: 'Visibility' },
                                         ].map(col => (
                                             <label key={col.id} className="flex items-center px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-50 group">
@@ -326,6 +328,7 @@ const AdminProductList = () => {
                                 {visibleColumns.sale_price && <th className="py-3 font-medium text-gray-600">Sale Price</th>}
                                 {visibleColumns.discount && <th className="py-3 font-medium text-gray-600">Discount</th>}
                                 {visibleColumns.status && <th className="py-3 font-medium text-gray-600">Status</th>}
+                                {visibleColumns.chronic && <th className="py-3 font-medium text-gray-600">Chronic</th>}
                                 {visibleColumns.visibility && <th className="py-3 font-medium text-gray-600">Visibility</th>}
                                 <th className="py-3 font-medium text-gray-600 text-center">Actions</th>
                             </tr>
@@ -444,6 +447,18 @@ const AdminProductList = () => {
                                                 <span className={`px-3 py-1 rounded text-[11px] font-bold text-white shadow-sm inline-block min-w-[70px] text-center ${isLowStock ? 'bg-yellow-500' : 'bg-primary-dark'}`}>
                                                     {statusString}
                                                 </span>
+                                            </td>
+                                        )}
+
+                                        {visibleColumns.chronic && (
+                                            <td className="py-3.5">
+                                                {product.is_chronic ? (
+                                                    <span className="px-2.5 py-1 bg-purple-50 text-purple-600 rounded-full text-[10px] font-black border border-purple-100 flex items-center gap-1 w-fit uppercase tracking-tighter">
+                                                        <Clock size={10} strokeWidth={3} /> Chronic
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-gray-300 text-[10px] font-bold px-2.5">—</span>
+                                                )}
                                             </td>
                                         )}
 

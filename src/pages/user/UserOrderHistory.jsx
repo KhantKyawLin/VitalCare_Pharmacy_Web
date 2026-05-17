@@ -1,14 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../../utils/api';
 import { AuthContext } from '../../context/AuthContext';
-import { Eye, Download } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Eye, Download, RotateCcw } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { CartContext } from '../../context/CartContext';
 
 const UserOrderHistory = () => {
     const { token } = useContext(AuthContext);
+    const { fetchCart } = useContext(CartContext);
     const [orders, setOrders] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [reorderingId, setReorderingId] = useState(null);
+    
+    const navigate = useNavigate();
 
     const location = useLocation();
 
@@ -19,6 +24,35 @@ const UserOrderHistory = () => {
         // Open in new tab with auth token
         const win = window.open(`${pdfUrl}?token=${token}`, '_blank');
         if (win) win.focus();
+    };
+
+    const handleReorder = async (orderId) => {
+        setReorderingId(orderId);
+        try {
+            const response = await api.post(`/auth/orders/${orderId}/reorder`);
+            
+            await fetchCart(); // Update cart count in navbar
+            
+            const result = await Swal.fire({
+                title: 'Items Added!',
+                text: response.data.message,
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'Go to Cart',
+                cancelButtonText: 'Continue Shopping',
+                confirmButtonColor: 'var(--primary-color)',
+                cancelButtonColor: '#6c757d'
+            });
+
+            if (result.isConfirmed) {
+                navigate('/cart');
+            }
+        } catch (error) {
+            console.error("Reorder failed:", error);
+            Swal.fire('Error', 'Failed to re-add items to cart. Some products might be unavailable.', 'error');
+        } finally {
+            setReorderingId(null);
+        }
     };
 
     useEffect(() => {
@@ -148,6 +182,14 @@ const UserOrderHistory = () => {
                                                         className="px-3 py-1 flex items-center justify-center gap-1.5 border border-slate-200 text-slate-600 rounded text-xs font-medium hover:bg-slate-50 transition-colors"
                                                     >
                                                         <Download size={14} /> PDF
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => handleReorder(order.id)}
+                                                        disabled={reorderingId === order.id}
+                                                        className="px-3 py-1 flex items-center justify-center gap-1.5 bg-primary-green text-white rounded text-xs font-medium hover:bg-primary-dark transition-all shadow-sm disabled:opacity-50"
+                                                    >
+                                                        <RotateCcw size={14} className={reorderingId === order.id ? 'animate-spin' : ''} />
+                                                        {reorderingId === order.id ? 'Adding...' : 'Re-order'}
                                                     </button>
                                                 </div>
                                             </td>

@@ -82,7 +82,8 @@ const AdminProductForm = () => {
 
     const [formData, setFormData] = useState({
         name: '', category_id: '', unit_id: '', minimum_quantity: '10', price: '', description: '', dosage: '', usage: '', side_effects: '',
-        is_published: true, requires_prescription: false
+        is_published: true, requires_prescription: false,
+        is_chronic: false, refill_interval_days: ''
     });
 
     const [errors, setErrors] = useState({});
@@ -122,7 +123,9 @@ const AdminProductForm = () => {
                     side_effects: product.side_effects || '',
                     dosage: product.dosage || '',
                     is_published: product.is_published === 1 || product.is_published === true,
-                    requires_prescription: product.requires_prescription === 1 || product.requires_prescription === true
+                    requires_prescription: product.requires_prescription === 1 || product.requires_prescription === true,
+                    is_chronic: product.is_chronic === 1 || product.is_chronic === true,
+                    refill_interval_days: product.refill_interval_days || ''
                 });
 
                 if (product.pictures && product.pictures.length > 0) {
@@ -237,7 +240,7 @@ const AdminProductForm = () => {
 
         const data = new FormData();
         Object.keys(formData).forEach(key => {
-            if (key === 'is_published' || key === 'requires_prescription') {
+            if (key === 'is_published' || key === 'requires_prescription' || key === 'is_chronic') {
                 data.append(key, formData[key] ? '1' : '0');
             } else {
                 data.append(key, formData[key]);
@@ -489,7 +492,7 @@ const AdminProductForm = () => {
                                 <p className="text-xs text-gray-500 mt-1">Maximum 500 characters</p>
                             </div>
 
-                            <div>
+                             <div>
                                 <label className="block text-sm text-gray-700 mb-1.5 font-medium">Side Effects</label>
                                 <textarea 
                                     name="side_effects"
@@ -499,6 +502,43 @@ const AdminProductForm = () => {
                                     className="w-full border border-primary-green/50 rounded px-4 py-3 outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all shadow-sm resize-none"
                                 ></textarea>
                                 <p className="text-xs text-gray-500 mt-1">Maximum 500 characters</p>
+                            </div>
+
+                            <div className="pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-8">
+                                <label className="flex items-center gap-3 cursor-pointer group w-fit">
+                                    <div className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none border-2 border-transparent">
+                                        <input 
+                                            type="checkbox" 
+                                            name="is_chronic"
+                                            checked={formData.is_chronic}
+                                            onChange={handleChange}
+                                            className="sr-only"
+                                        />
+                                        <div className={`w-full h-full rounded-full transition-colors ${formData.is_chronic ? 'bg-primary-green' : 'bg-gray-200'}`}></div>
+                                        <div className={`absolute left-1 bg-white w-4 h-4 rounded-full transition-transform ${formData.is_chronic ? 'translate-x-5' : ''}`}></div>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-bold text-gray-700 group-hover:text-primary-green transition-colors">Chronic Medication</span>
+                                        <span className="text-[11px] text-gray-400 font-medium">Enable for recurring refills and customer reminders</span>
+                                    </div>
+                                </label>
+
+                                {formData.is_chronic && (
+                                    <div className="flex-grow animate-in slide-in-from-left-4 duration-300">
+                                        <label className="block text-[11px] font-black text-primary-green uppercase tracking-widest mb-1.5">Refill Interval (Days)</label>
+                                        <div className="flex items-center gap-3">
+                                            <input 
+                                                type="number" 
+                                                name="refill_interval_days"
+                                                value={formData.refill_interval_days}
+                                                onChange={handleChange}
+                                                placeholder="e.g. 30"
+                                                className="w-24 border border-primary-green/50 rounded px-4 py-2 outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all shadow-sm"
+                                            />
+                                            <span className="text-xs text-gray-500 font-medium">days (System will remind user 3 days before)</span>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

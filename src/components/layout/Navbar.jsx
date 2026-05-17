@@ -265,6 +265,38 @@ const Navbar = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    // Medication Refill Reminders (Real-time)
+    useEffect(() => {
+        if (user && user.id && window.Echo) {
+            const channel = window.Echo.private(`App.Models.User.${user.id}`);
+            
+            channel.listen('.refill-reminder', (data) => {
+                Swal.fire({
+                    title: '<span class="text-primary-green">Medication Reminder</span>',
+                    html: `<div class="text-gray-600">${data.message}</div>`,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'View History',
+                    cancelButtonText: 'Later',
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    customClass: {
+                        popup: 'rounded-xl border-2 border-primary-green/20 shadow-2xl',
+                        title: 'text-xl font-bold'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/profile/orders');
+                    }
+                });
+            });
+
+            return () => {
+                window.Echo.leave(`App.Models.User.${user.id}`);
+            };
+        }
+    }, [user, navigate]);
+
     const isActive = (path) => location.pathname === path;
 
     const navLinks = [
