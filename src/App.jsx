@@ -55,6 +55,7 @@ import AdminBrandingSettings from './pages/admin/AdminBrandingSettings';
 import AdminMessages from './pages/admin/AdminMessages';
 import AdminAboutSettings from './pages/admin/AdminAboutSettings';
 import AdminFaqList from './pages/admin/AdminFaqList';
+import AdminPrescriptionQueue from './pages/admin/AdminPrescriptionQueue';
 
 const PublicLayout = () => {
   const location = useLocation();
@@ -136,6 +137,7 @@ function App() {
             <Route path="suppliers" element={<AdminSupplierList />} />
             <Route path="orders" element={<AdminOrderList />} />
             <Route path="orders/:id" element={<AdminOrderDetail />} />
+            <Route path="prescriptions" element={<AdminPrescriptionQueue />} />
             <Route path="messages" element={<AdminMessages />} />
             <Route path="account-settings" element={<AdminProfileSettings />} />
           </Route>

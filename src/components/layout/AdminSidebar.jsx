@@ -140,6 +140,7 @@ const AdminSidebar = ({ isOpen }) => {
             children: [
                 { name: 'Point of Sale', path: '/admin/pos', icon: <ShoppingCart size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff', 'pharmacist'] },
                 { name: 'All Sales History', path: '/admin/orders', icon: <History size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff', 'pharmacist'] },
+                { name: 'Prescription Queue', path: '/admin/prescriptions', icon: <ClipboardList size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'pharmacist'] },
                 { name: 'New Purchase', path: '/admin/purchases/create', icon: <ShoppingCart size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff', 'pharmacist'] },
                 { name: 'Purchase History', path: '/admin/purchases', icon: <History size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff', 'pharmacist'] },
                 { name: 'Suppliers', path: '/admin/suppliers', icon: <Truck size={18} className="stroke-2" />, roles: ['admin', 'superadmin', 'staff', 'pharmacist'] }
