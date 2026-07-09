@@ -2,14 +2,17 @@ import React, { useState, useEffect, useContext } from 'react';
 import api from '../../utils/api';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import { Percent, LayoutDashboard, History, Star, Eye, ChevronRight } from 'lucide-react';
+import { Percent, LayoutDashboard, History, Star, Eye, ChevronRight, AlertCircle } from 'lucide-react';
 import ProductCard from '../../components/common/ProductCard';
+import echo from '../../utils/echo';
+import toast from '../../utils/toast';
 
 const UserDashboard = () => {
     const { user, token } = useContext(AuthContext);
     const [recentOrders, setRecentOrders] = useState([]);
     const [promotions, setPromotions] = useState([]);
     const [specialOffers, setSpecialOffers] = useState([]);
+    const [reminders, setReminders] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -31,6 +34,13 @@ const UserDashboard = () => {
                     console.warn("Special offers not available:", e.message);
                 }
 
+                try {
+                    const remindersRes = await api.get('/refill-reminders');
+                    setReminders(remindersRes.data.data || []);
+                } catch (e) {
+                    console.warn("Reminders not available:", e.message);
+                }
+
             } catch (error) {
                 console.error("Dashboard primary fetch error:", error);
             } finally {
@@ -39,7 +49,26 @@ const UserDashboard = () => {
         };
 
         fetchDashboardData();
-    }, [token]);
+        
+        if (user && token) {
+            echo.connector.pusher.config.auth = {
+                headers: { Authorization: `Bearer ${token}` }
+            };
+            echo.private(`App.Models.User.${user.id}`)
+                .listen('.refill-reminder', (e) => {
+                    if (e.reminder) {
+                        setReminders(prev => [...prev, e.reminder]);
+                    }
+                    toast.info(e.message);
+                });
+        }
+        
+        return () => {
+            if (user) {
+                echo.leave(`App.Models.User.${user.id}`);
+            }
+        };
+    }, [token, user]);
 
     const getStatusConfig = (status) => {
         switch(status?.toLowerCase()) {
@@ -63,6 +92,22 @@ const UserDashboard = () => {
         );
     }
 
+    const handleReminderAction = async (id, action) => {
+        try {
+            await api.post(`/refill-reminders/${id}/action`, { action });
+            setReminders(prev => prev.filter(r => r.id !== id));
+            if (action === 'actioned') {
+                const reminder = reminders.find(r => r.id === id);
+                if (reminder) {
+                    window.location.href = `/products/${reminder.product_id}`;
+                }
+            }
+        } catch (error) {
+            console.error("Failed to update reminder action:", error);
+            toast.error("Failed to update reminder");
+        }
+    };
+
     return (
         <div className="space-y-6 pt-2 pb-8">
             
@@ -73,6 +118,47 @@ const UserDashboard = () => {
                 </div>
                 <h2 className="text-[22px] text-gray-800">Welcome, {user?.name}</h2>
             </div>
+
+            {/* Refill Reminders Banner */}
+            {reminders.length > 0 && (
+                <div className="bg-orange-50 rounded-lg p-5 border border-orange-200 flex flex-col justify-center h-auto">
+                    <div className="flex items-center gap-3 mb-2">
+                        <AlertCircle className="text-orange-500 stroke-2" size={24} />
+                        <h2 className="text-xl text-orange-700 font-semibold">Medication Refill Reminders</h2>
+                    </div>
+                    <div className="space-y-3 mt-2">
+                        {reminders.map(reminder => (
+                            <div key={reminder.id} className="bg-white p-4 rounded-md shadow-sm border border-orange-100 flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden">
+                                        {reminder.product?.image && (
+                                            <img src={`${import.meta.env.VITE_API_URL.replace('/api', '')}/storage/${reminder.product.image}`} alt={reminder.product.name} className="w-full h-full object-cover" />
+                                        )}
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold text-gray-800">{reminder.product?.name}</p>
+                                        <p className="text-sm text-gray-500">You are running low. Due for refill around {new Date(reminder.due_date).toLocaleDateString()}.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button 
+                                        onClick={() => handleReminderAction(reminder.id, 'actioned')}
+                                        className="px-4 py-2 bg-primary-green text-white text-sm font-medium rounded-md hover:bg-primary-dark transition"
+                                    >
+                                        ⚡ Refill Now
+                                    </button>
+                                    <button 
+                                        onClick={() => handleReminderAction(reminder.id, 'ignored')}
+                                        className="px-4 py-2 bg-gray-100 text-gray-600 text-sm font-medium rounded-md hover:bg-gray-200 transition"
+                                    >
+                                        Skip
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Current Promotions Banner */}
             {promotions.length > 0 ? (
