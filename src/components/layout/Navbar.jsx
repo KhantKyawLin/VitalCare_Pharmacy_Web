@@ -344,9 +344,14 @@ const Navbar = () => {
                     <Link to="/" className="flex items-center gap-1 group transition-all shrink-0">
                         <div className="relative h-10 lg:h-13 w-auto flex items-center">
                             {settings.site_logo ? (
-                                <img src={`http://127.0.0.1:8000/storage/${settings.site_logo}`} alt="Logo" className="h-full w-auto object-contain transition-transform group-hover:scale-105 duration-300" />
+                                <img 
+                                    src={`${import.meta.env.VITE_STORAGE_URL || 'http://127.0.0.1:8000/storage'}/${settings.site_logo}`} 
+                                    onError={(e) => { e.target.onerror = null; e.target.src = '/VitalCare_Logo.png'; }}
+                                    alt="VitalCare Logo" 
+                                    className="h-full w-auto object-contain transition-transform group-hover:scale-105 duration-300" 
+                                />
                             ) : (
-                                <img src="http://localhost/VitalCare/image/VitalCare_Logo.png" alt="VitalCare Logo" className="h-full w-auto object-contain transition-transform group-hover:scale-105 duration-300" />
+                                <img src="/VitalCare_Logo.png" alt="VitalCare Logo" className="h-full w-auto object-contain transition-transform group-hover:scale-105 duration-300" />
                             )}
                         </div>
                         <span className="text-primary-green font-black text-lg lg:text-2xl tracking-tighter leading-none group-hover:text-accent-green transition-colors">
@@ -396,9 +401,14 @@ const Navbar = () => {
                     <Link to="/" className="flex items-center gap-1 group shrink-0">
                          <div className="h-8 w-auto flex items-center">
                             {settings.site_logo ? (
-                                <img src={`http://127.0.0.1:8000/storage/${settings.site_logo}`} alt="Logo" className="h-full w-auto object-contain" />
+                                <img 
+                                    src={`${import.meta.env.VITE_STORAGE_URL || 'http://127.0.0.1:8000/storage'}/${settings.site_logo}`} 
+                                    onError={(e) => { e.target.onerror = null; e.target.src = '/VitalCare_Logo.png'; }}
+                                    alt="VitalCare Logo" 
+                                    className="h-full w-auto object-contain" 
+                                />
                             ) : (
-                                <img src="http://localhost/VitalCare/image/VitalCare_Logo.png" alt="Logo" className="h-full w-auto object-contain" />
+                                <img src="/VitalCare_Logo.png" alt="VitalCare Logo" className="h-full w-auto object-contain" />
                             )}
                         </div>
                         <span className="text-primary-green font-black text-base tracking-tighter leading-none">
