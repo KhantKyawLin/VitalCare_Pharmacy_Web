@@ -169,10 +169,9 @@ const AdminLayout = () => {
                             <Menu size={20} className="stroke-2" />
                         </button>
 
-                        {/* LEFT: User Greeting (Active Account) */}
+                        {/* LEFT: User Greeting */}
                         <div className="hidden md:flex items-center gap-4 border-l border-gray-100 pl-4 h-6">
                             <div>
-                                <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.15em] leading-none mb-1">Active Account</p>
                                 <p className="text-xs font-bold text-gray-700">
                                     Welcome, <span className="text-primary-green font-black">{user?.name || 'System Admin'}</span>
                                 </p>
@@ -181,10 +180,9 @@ const AdminLayout = () => {
                     </div>
 
                     <div className="flex items-center gap-6">
-                        {/* RIGHT: Real-time Clock (Current Session) */}
+                        {/* RIGHT: Real-time Clock */}
                         <div className="hidden lg:flex items-center gap-4 border-r border-gray-100 pr-6 h-6">
                             <div className="text-right">
-                                <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.15em] leading-none mb-1">Current Session</p>
                                 <div className="flex items-center gap-2.5">
                                     <span className="text-[9px] font-black text-primary-green/70 bg-primary-green/5 px-2 py-0.5 rounded-full border border-primary-green/10">
                                         {dateString}
