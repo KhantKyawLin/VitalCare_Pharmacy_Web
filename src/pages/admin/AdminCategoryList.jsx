@@ -26,7 +26,7 @@ const AdminCategoryList = () => {
     const [search, setSearch] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingCategory, setEditingCategory] = useState(null);
-    const [formData, setFormData] = useState({ name: '' });
+    const [categoryNames, setCategoryNames] = useState(['']);
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
@@ -50,10 +50,10 @@ const AdminCategoryList = () => {
     const handleOpenModal = (category = null) => {
         if (category) {
             setEditingCategory(category);
-            setFormData({ name: category.name });
+            setCategoryNames([category.name]);
         } else {
             setEditingCategory(null);
-            setFormData({ name: '' });
+            setCategoryNames(['']);
         }
         setIsModalOpen(true);
     };
@@ -61,7 +61,22 @@ const AdminCategoryList = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setEditingCategory(null);
-        setFormData({ name: '' });
+        setCategoryNames(['']);
+    };
+
+    const handleAddField = () => {
+        setCategoryNames([...categoryNames, '']);
+    };
+
+    const handleRemoveField = (index) => {
+        const updated = categoryNames.filter((_, i) => i !== index);
+        setCategoryNames(updated.length ? updated : ['']);
+    };
+
+    const handleFieldChange = (index, value) => {
+        const updated = [...categoryNames];
+        updated[index] = value;
+        setCategoryNames(updated);
     };
 
     const handleSubmit = async (e) => {
@@ -69,7 +84,7 @@ const AdminCategoryList = () => {
         setSaving(true);
         try {
             if (editingCategory) {
-                await api.put(`/admin/categories/${editingCategory.id}`, formData);
+                await api.put(`/admin/categories/${editingCategory.id}`, { name: categoryNames[0] });
                 Swal.fire({
                     icon: 'success',
                     title: 'Updated!',
@@ -78,19 +93,51 @@ const AdminCategoryList = () => {
                     showConfirmButton: false
                 });
             } else {
-                await api.post(`/admin/categories`, formData);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Created!',
-                    text: 'New category has been added successfully.',
-                    timer: 1500,
-                    showConfirmButton: false
-                });
+                const validNames = categoryNames.map(n => n.trim()).filter(n => n);
+                if (validNames.length === 0) {
+                    Swal.fire('Error', 'Please enter at least one category name.', 'error');
+                    setSaving(false);
+                    return;
+                }
+
+                if (validNames.length === 1) {
+                    await api.post(`/admin/categories`, { name: validNames[0] });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Created!',
+                        text: 'New category has been added successfully.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } else {
+                    const response = await api.post(`/admin/categories`, { categories: validNames });
+                    const { message, errors } = response.data;
+                    if (errors && errors.length > 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: message,
+                            html: `<p class="text-sm text-gray-500 mt-2">Skipped: ${errors.join(', ')}</p>`,
+                            timer: 3000,
+                            showConfirmButton: true
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Created!',
+                            text: message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }
+                }
             }
             handleCloseModal();
             fetchCategories();
         } catch (error) {
-            const message = error.response?.data?.name?.[0] || 'Something went wrong';
+            const message = error.response?.data?.name?.[0] 
+                || error.response?.data?.message 
+                || error.response?.data?.errors?.join(', ')
+                || 'Something went wrong';
             Swal.fire('Error', message, 'error');
         } finally {
             setSaving(false);
@@ -278,24 +325,57 @@ const AdminCategoryList = () => {
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
                         <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                             <h3 className="text-lg font-bold text-gray-800">
-                                {editingCategory ? 'Edit Category' : 'Add New Category'}
+                                {editingCategory ? 'Edit Category' : categoryNames.length > 1 ? 'Add Multiple Categories' : 'Add New Category'}
                             </h3>
                             <button onClick={handleCloseModal} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-400">
                                 <X size={20} />
                             </button>
                         </div>
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Category Name</label>
-                                <input 
-                                    type="text" 
-                                    required
-                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-green focus:ring-4 focus:ring-primary-green/10 outline-none transition-all text-sm"
-                                    placeholder="e.g. Pain Killers"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                />
+                            <div className="space-y-3 max-h-[320px] overflow-y-auto pr-1">
+                                {categoryNames.map((name, index) => (
+                                    <div key={index} className="flex items-center gap-2">
+                                        <div className="flex-1">
+                                            {categoryNames.length > 1 && (
+                                                <label className="block text-xs font-semibold text-gray-400 mb-1">Category {index + 1}</label>
+                                            )}
+                                            {categoryNames.length === 1 && (
+                                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Category Name</label>
+                                            )}
+                                            <input 
+                                                type="text" 
+                                                required
+                                                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-green focus:ring-4 focus:ring-primary-green/10 outline-none transition-all text-sm"
+                                                placeholder={`e.g. ${index === 0 ? 'Pain & Fever Relief' : index === 1 ? 'Vitamins & Supplements' : 'Category name'}`}
+                                                value={name}
+                                                onChange={(e) => handleFieldChange(index, e.target.value)}
+                                                autoFocus={index === categoryNames.length - 1}
+                                            />
+                                        </div>
+                                        {!editingCategory && categoryNames.length > 1 && (
+                                            <button 
+                                                type="button"
+                                                onClick={() => handleRemoveField(index)}
+                                                className="mt-5 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                title="Remove"
+                                            >
+                                                <X size={16} strokeWidth={2.5} />
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
                             </div>
+
+                            {!editingCategory && (
+                                <button 
+                                    type="button"
+                                    onClick={handleAddField}
+                                    className="w-full py-2 rounded-xl border-2 border-dashed border-gray-200 text-gray-400 hover:border-primary-green hover:text-primary-green text-sm font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                                >
+                                    <Plus size={16} strokeWidth={2.5} /> Add Another Category
+                                </button>
+                            )}
+
                             <div className="flex gap-3 pt-2">
                                 <button 
                                     type="button"
@@ -309,7 +389,7 @@ const AdminCategoryList = () => {
                                     disabled={saving}
                                     className="flex-1 px-4 py-2.5 rounded-xl bg-primary-green text-white font-bold hover:bg-primary-dark shadow-lg shadow-primary-green/20 transition-all text-sm disabled:opacity-50"
                                 >
-                                    {saving ? 'Saving...' : editingCategory ? 'Update Category' : 'Create Category'}
+                                    {saving ? 'Saving...' : editingCategory ? 'Update Category' : categoryNames.length > 1 ? `Create ${categoryNames.filter(n => n.trim()).length} Categories` : 'Create Category'}
                                 </button>
                             </div>
                         </form>
