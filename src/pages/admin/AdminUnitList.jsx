@@ -23,7 +23,7 @@ const AdminUnitList = () => {
     const [search, setSearch] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingUnit, setEditingUnit] = useState(null);
-    const [formData, setFormData] = useState({ name: '' });
+    const [unitNames, setUnitNames] = useState(['']);
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
@@ -47,10 +47,10 @@ const AdminUnitList = () => {
     const handleOpenModal = (unit = null) => {
         if (unit) {
             setEditingUnit(unit);
-            setFormData({ name: unit.name });
+            setUnitNames([unit.name]);
         } else {
             setEditingUnit(null);
-            setFormData({ name: '' });
+            setUnitNames(['']);
         }
         setIsModalOpen(true);
     };
@@ -58,7 +58,22 @@ const AdminUnitList = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setEditingUnit(null);
-        setFormData({ name: '' });
+        setUnitNames(['']);
+    };
+
+    const handleAddField = () => {
+        setUnitNames([...unitNames, '']);
+    };
+
+    const handleRemoveField = (index) => {
+        const updated = unitNames.filter((_, i) => i !== index);
+        setUnitNames(updated.length ? updated : ['']);
+    };
+
+    const handleFieldChange = (index, value) => {
+        const updated = [...unitNames];
+        updated[index] = value;
+        setUnitNames(updated);
     };
 
     const handleSubmit = async (e) => {
@@ -66,7 +81,7 @@ const AdminUnitList = () => {
         setSaving(true);
         try {
             if (editingUnit) {
-                await api.put(`/admin/units/${editingUnit.id}`, formData);
+                await api.put(`/admin/units/${editingUnit.id}`, { name: unitNames[0] });
                 Swal.fire({
                     icon: 'success',
                     title: 'Updated!',
@@ -75,19 +90,51 @@ const AdminUnitList = () => {
                     showConfirmButton: false
                 });
             } else {
-                await api.post(`/admin/units`, formData);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Created!',
-                    text: 'New unit has been added successfully.',
-                    timer: 1500,
-                    showConfirmButton: false
-                });
+                const validNames = unitNames.map(n => n.trim()).filter(n => n);
+                if (validNames.length === 0) {
+                    Swal.fire('Error', 'Please enter at least one unit name.', 'error');
+                    setSaving(false);
+                    return;
+                }
+
+                if (validNames.length === 1) {
+                    await api.post(`/admin/units`, { name: validNames[0] });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Created!',
+                        text: 'New unit has been added successfully.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } else {
+                    const response = await api.post(`/admin/units`, { units: validNames });
+                    const { message, errors } = response.data;
+                    if (errors && errors.length > 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: message,
+                            html: `<p class="text-sm text-gray-500 mt-2">Skipped: ${errors.join(', ')}</p>`,
+                            timer: 3000,
+                            showConfirmButton: true
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Created!',
+                            text: message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }
+                }
             }
             handleCloseModal();
             fetchUnits();
         } catch (error) {
-            const message = error.response?.data?.name?.[0] || 'Something went wrong';
+            const message = error.response?.data?.name?.[0] 
+                || error.response?.data?.message 
+                || error.response?.data?.errors?.join(', ')
+                || 'Something went wrong';
             Swal.fire('Error', message, 'error');
         } finally {
             setSaving(false);
@@ -249,27 +296,60 @@ const AdminUnitList = () => {
             {/* Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
                         <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                             <h3 className="text-lg font-bold text-gray-800">
-                                {editingUnit ? 'Edit Unit' : 'Add New Unit'}
+                                {editingUnit ? 'Edit Unit' : unitNames.length > 1 ? 'Add Multiple Units' : 'Add New Unit'}
                             </h3>
                             <button onClick={handleCloseModal} className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-400">
                                 <X size={20} />
                             </button>
                         </div>
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Unit Name</label>
-                                <input 
-                                    type="text" 
-                                    required
-                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-green focus:ring-4 focus:ring-primary-green/10 outline-none transition-all text-sm"
-                                    placeholder="e.g. Bottle, Box, Tablet"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                />
+                            <div className="space-y-3 max-h-[320px] overflow-y-auto pr-1">
+                                {unitNames.map((name, index) => (
+                                    <div key={index} className="flex items-center gap-2">
+                                        <div className="flex-1">
+                                            {unitNames.length > 1 && (
+                                                <label className="block text-xs font-semibold text-gray-400 mb-1">Unit {index + 1}</label>
+                                            )}
+                                            {unitNames.length === 1 && (
+                                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Unit Name</label>
+                                            )}
+                                            <input 
+                                                type="text" 
+                                                required
+                                                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-green focus:ring-4 focus:ring-primary-green/10 outline-none transition-all text-sm"
+                                                placeholder={`e.g. ${index === 0 ? 'Strip' : index === 1 ? 'Bottle' : 'Unit name'}`}
+                                                value={name}
+                                                onChange={(e) => handleFieldChange(index, e.target.value)}
+                                                autoFocus={index === unitNames.length - 1}
+                                            />
+                                        </div>
+                                        {!editingUnit && unitNames.length > 1 && (
+                                            <button 
+                                                type="button"
+                                                onClick={() => handleRemoveField(index)}
+                                                className="mt-5 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                title="Remove"
+                                            >
+                                                <X size={16} strokeWidth={2.5} />
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
                             </div>
+
+                            {!editingUnit && (
+                                <button 
+                                    type="button"
+                                    onClick={handleAddField}
+                                    className="w-full py-2 rounded-xl border-2 border-dashed border-gray-200 text-gray-400 hover:border-primary-green hover:text-primary-green text-sm font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                                >
+                                    <Plus size={16} strokeWidth={2.5} /> Add Another Unit
+                                </button>
+                            )}
+
                             <div className="flex gap-3 pt-2">
                                 <button 
                                     type="button"
@@ -283,7 +363,7 @@ const AdminUnitList = () => {
                                     disabled={saving}
                                     className="flex-1 px-4 py-2.5 rounded-xl bg-primary-green text-white font-bold hover:bg-primary-dark shadow-lg shadow-primary-green/20 transition-all text-sm disabled:opacity-50"
                                 >
-                                    {saving ? 'Saving...' : editingUnit ? 'Update Unit' : 'Create Unit'}
+                                    {saving ? 'Saving...' : editingUnit ? 'Update Unit' : unitNames.length > 1 ? `Create ${unitNames.filter(n => n.trim()).length} Units` : 'Create Unit'}
                                 </button>
                             </div>
                         </form>
