@@ -19,11 +19,17 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// Helper to get storage URL
+// Helper to get storage URL (served via static frontend storage)
 export const getStorageUrl = (path) => {
     if (!path) return '';
-    if (path.startsWith('http')) return path;
-    return `${STORAGE_BASE_URL}/${path}`;
+    if (path.startsWith('http') && !path.includes('/storage/')) return path;
+    
+    let relativePath = path;
+    if (path.includes('/storage/')) {
+        relativePath = path.split('/storage/')[1];
+    }
+    relativePath = relativePath.replace(/^\//, '');
+    return `/storage/${relativePath}`;
 };
 
 // Helper for auth headers
