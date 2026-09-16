@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 
 export const SettingsContext = createContext();
 
@@ -14,7 +14,7 @@ export const SettingsProvider = ({ children }) => {
 
     const fetchSettings = async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/site-settings');
+            const response = await api.get('/site-settings');
             if (response.data) {
                 const newSettings = { ...settings, ...response.data };
                 setSettings(newSettings);
