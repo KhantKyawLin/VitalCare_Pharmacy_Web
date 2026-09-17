@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
-import { Menu, User as UserIcon, UserCircle, Bell, AlertCircle, Package, X, Clock, ShoppingCart, MessageSquare } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Menu, User as UserIcon, UserCircle, Bell, AlertCircle, Package, X, Clock, ShoppingCart, MessageSquare, ChevronRight } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -122,10 +122,73 @@ const NotificationBell = () => {
     );
 };
 
+const getBreadcrumbs = (pathname) => {
+    const cleanPath = pathname.replace(/\/+$/, '');
+
+    const routes = [
+        { path: '/admin', exact: true, crumbs: [{ label: 'Dashboard' }] },
+        // Financial Reports
+        { path: '/admin/reports', crumbs: [{ label: 'Financial Reports' }, { label: 'Summary Overview', path: '/admin/reports' }] },
+        { path: '/admin/profit-loss', crumbs: [{ label: 'Financial Reports' }, { label: 'Profit & Loss Ledger', path: '/admin/profit-loss' }] },
+        // Inventory
+        { path: '/admin/products/create', crumbs: [{ label: 'Inventory' }, { label: 'Manage Products', path: '/admin/products' }, { label: 'Add Product' }] },
+        { path: '/admin/products/edit', prefix: true, crumbs: [{ label: 'Inventory' }, { label: 'Manage Products', path: '/admin/products' }, { label: 'Edit Product' }] },
+        { path: '/admin/products', crumbs: [{ label: 'Inventory' }, { label: 'Manage Products', path: '/admin/products' }] },
+        { path: '/admin/categories', crumbs: [{ label: 'Inventory' }, { label: 'Categories', path: '/admin/categories' }] },
+        { path: '/admin/units', crumbs: [{ label: 'Inventory' }, { label: 'Unit Management', path: '/admin/units' }] },
+        { path: '/admin/expired', crumbs: [{ label: 'Inventory' }, { label: 'Expired Items', path: '/admin/expired' }] },
+        { path: '/admin/reorder-alerts', crumbs: [{ label: 'Inventory' }, { label: 'Reorder Alerts', path: '/admin/reorder-alerts' }] },
+        // Sales & Logistics
+        { path: '/admin/pos', crumbs: [{ label: 'Sales & Logistics' }, { label: 'Point of Sale', path: '/admin/pos' }] },
+        { path: '/admin/orders', crumbs: [{ label: 'Sales & Logistics' }, { label: 'All Sales History', path: '/admin/orders' }] },
+        { path: '/admin/prescriptions', crumbs: [{ label: 'Sales & Logistics' }, { label: 'Prescription Queue', path: '/admin/prescriptions' }] },
+        { path: '/admin/purchases/create', crumbs: [{ label: 'Sales & Logistics' }, { label: 'Purchase History', path: '/admin/purchases' }, { label: 'New Purchase' }] },
+        { path: '/admin/purchases', crumbs: [{ label: 'Sales & Logistics' }, { label: 'Purchase History', path: '/admin/purchases' }] },
+        { path: '/admin/suppliers', crumbs: [{ label: 'Sales & Logistics' }, { label: 'Suppliers', path: '/admin/suppliers' }] },
+        // Promotions
+        { path: '/admin/promotions/create', crumbs: [{ label: 'Promotions' }, { label: 'All Promotions', path: '/admin/promotions' }, { label: 'Create Promotion' }] },
+        { path: '/admin/promotions/edit', prefix: true, crumbs: [{ label: 'Promotions' }, { label: 'All Promotions', path: '/admin/promotions' }, { label: 'Edit Promotion' }] },
+        { path: '/admin/promotions', crumbs: [{ label: 'Promotions' }, { label: 'All Promotions', path: '/admin/promotions' }] },
+        // Health Tips
+        { path: '/admin/health-tips/create', crumbs: [{ label: 'Health Tips' }, { label: 'Archive', path: '/admin/health-tips' }, { label: 'Create New Tip' }] },
+        { path: '/admin/health-tips/edit', prefix: true, crumbs: [{ label: 'Health Tips' }, { label: 'Archive', path: '/admin/health-tips' }, { label: 'Edit Tip' }] },
+        { path: '/admin/health-tips', crumbs: [{ label: 'Health Tips' }, { label: 'Archive', path: '/admin/health-tips' }] },
+        { path: '/admin/faqs', crumbs: [{ label: 'Health Tips' }, { label: 'Manage FAQs', path: '/admin/faqs' }] },
+        // User Management
+        { path: '/admin/users', crumbs: [{ label: 'User Management' }, { label: 'Staff & Customers', path: '/admin/users' }] },
+        { path: '/admin/logs', crumbs: [{ label: 'User Management' }, { label: 'Activity Logs', path: '/admin/logs' }] },
+        // Communication
+        { path: '/admin/messages', crumbs: [{ label: 'Communication' }, { label: 'Contact Messages', path: '/admin/messages' }] },
+        // Settings
+        { path: '/admin/branding', crumbs: [{ label: 'Settings' }, { label: 'Branding & UI', path: '/admin/branding' }] },
+        { path: '/admin/about-settings', crumbs: [{ label: 'Settings' }, { label: 'About Us Page', path: '/admin/about-settings' }] },
+        { path: '/admin/account-settings', crumbs: [{ label: 'Settings' }, { label: 'Account Profile', path: '/admin/account-settings' }] },
+    ];
+
+    for (const route of routes) {
+        if (route.exact ? cleanPath === route.path : cleanPath.startsWith(route.path)) {
+            return route.crumbs;
+        }
+    }
+
+    const segments = cleanPath.replace(/^\/admin\/?/, '').split('/').filter(Boolean);
+    if (segments.length === 0) return [{ label: 'Dashboard' }];
+    return [
+        { label: 'Admin', path: '/admin' },
+        ...segments.map((seg, i) => ({
+            label: seg.charAt(0).toUpperCase() + seg.slice(1).replace(/[-_]/g, ' '),
+            path: i === segments.length - 1 ? null : `/admin/${segments.slice(0, i + 1).join('/')}`
+        }))
+    ];
+};
+
 const AdminLayout = () => {
     const { user } = useContext(AuthContext);
+    const location = useLocation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [currentTime, setCurrentTime] = useState(new Date());
+
+    const breadcrumbs = getBreadcrumbs(location.pathname);
 
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -161,41 +224,63 @@ const AdminLayout = () => {
             <div className="flex-grow flex flex-col min-w-0 h-full overflow-hidden">
                 {/* Admin Header */}
                 <header className="h-[60px] min-h-[60px] bg-white border-b border-gray-200 flex items-center justify-between px-4 z-10 shrink-0 print:hidden">
-                    <div className="flex items-center gap-4">
+                    {/* LEFT: Sidebar Toggle & Breadcrumb Navigation */}
+                    <div className="flex items-center gap-3 min-w-0">
                         <button 
                             onClick={toggleSidebar}
-                            className="p-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+                            className="p-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors shrink-0"
+                            title="Toggle Sidebar"
                         >
                             <Menu size={20} className="stroke-2" />
                         </button>
 
-                        {/* LEFT: User Greeting */}
-                        <div className="hidden md:flex items-center gap-4 border-l border-gray-100 pl-4 h-6">
-                            <div>
-                                <p className="text-xs font-bold text-gray-700">
-                                    Welcome, <span className="text-primary-green font-black">{user?.name || 'System Admin'}</span>
-                                </p>
-                            </div>
-                        </div>
+                        {/* Breadcrumb Trail */}
+                        <nav aria-label="Breadcrumb" className="hidden sm:flex items-center gap-2 text-[13px] pl-3 border-l border-gray-200 truncate">
+                            {breadcrumbs.map((crumb, idx) => {
+                                const isLast = idx === breadcrumbs.length - 1;
+                                return (
+                                    <React.Fragment key={idx}>
+                                        {idx > 0 && (
+                                            <span className="text-gray-400 select-none font-bold text-xs">&gt;</span>
+                                        )}
+                                        {crumb.path && !isLast ? (
+                                            <Link 
+                                                to={crumb.path}
+                                                className="text-gray-600 hover:text-primary-green transition-colors font-medium hover:underline truncate"
+                                            >
+                                                {crumb.label}
+                                            </Link>
+                                        ) : (
+                                            <span className={`truncate ${isLast ? 'text-[#7d2222] font-bold' : 'text-gray-600 font-medium'}`}>
+                                                {crumb.label}
+                                            </span>
+                                        )}
+                                    </React.Fragment>
+                                );
+                            })}
+                        </nav>
                     </div>
 
-                    <div className="flex items-center gap-6">
-                        {/* RIGHT: Real-time Clock */}
-                        <div className="hidden lg:flex items-center gap-4 border-r border-gray-100 pr-6 h-6">
-                            <div className="text-right">
-                                <div className="flex items-center gap-2.5">
-                                    <span className="text-[9px] font-black text-primary-green/70 bg-primary-green/5 px-2 py-0.5 rounded-full border border-primary-green/10">
-                                        {dateString}
-                                    </span>
-                                    <div className="flex items-center gap-1.5 text-gray-800">
-                                        <Clock size={13} className="text-primary-green opacity-80" />
-                                        <span className="text-xs font-black tabular-nums tracking-tight">{timeString}</span>
-                                    </div>
+                    {/* RIGHT: User Greeting, Real-time Clock & Quick Actions */}
+                    <div className="flex items-center gap-5">
+                        {/* Grouped: Welcome User (top) & Real-time Clock (bottom) */}
+                        <div className="hidden md:flex flex-col items-end text-right border-r border-gray-100 pr-5">
+                            <p className="text-xs font-bold text-gray-800 leading-tight">
+                                Welcome, <span className="text-primary-green font-black">{user?.name || 'System Admin'}</span>
+                            </p>
+                            <div className="flex items-center gap-1.5 mt-1 text-gray-500">
+                                <span className="text-[10px] font-semibold text-gray-400">
+                                    {dateString}
+                                </span>
+                                <span className="text-gray-300 text-[10px]">•</span>
+                                <div className="flex items-center gap-1 text-gray-700">
+                                    <Clock size={11} className="text-primary-green opacity-80" />
+                                    <span className="text-[11px] font-black tabular-nums tracking-tight">{timeString}</span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Real-time Stock & Expiry Notifications */}
+                        {/* Real-time Stock & Expiry Notifications & Profile */}
                         <div className="flex items-center gap-4">
                             <NotificationBell />
 
