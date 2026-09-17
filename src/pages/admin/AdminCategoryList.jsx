@@ -111,21 +111,20 @@ const AdminCategoryList = () => {
                     });
                 } else {
                     const response = await api.post(`/admin/categories`, { categories: validNames });
-                    const { message, errors } = response.data;
-                    if (errors && errors.length > 0) {
+                    const { status, message } = response.data;
+                    if (status === 'partial') {
                         Swal.fire({
                             icon: 'warning',
-                            title: message,
-                            html: `<p class="text-sm text-gray-500 mt-2">Skipped: ${errors.join(', ')}</p>`,
-                            timer: 3000,
-                            showConfirmButton: true
+                            title: 'Partial Upload',
+                            text: message,
+                            confirmButtonColor: '#22c55e',
                         });
                     } else {
                         Swal.fire({
                             icon: 'success',
                             title: 'Created!',
                             text: message,
-                            timer: 1500,
+                            timer: 2000,
                             showConfirmButton: false
                         });
                     }
@@ -134,11 +133,14 @@ const AdminCategoryList = () => {
             handleCloseModal();
             fetchCategories();
         } catch (error) {
-            const message = error.response?.data?.name?.[0] 
-                || error.response?.data?.message 
-                || error.response?.data?.errors?.join(', ')
+            const message = error.response?.data?.message 
+                || error.response?.data?.name?.[0]
                 || 'Something went wrong';
-            Swal.fire('Error', message, 'error');
+            Swal.fire({
+                icon: 'error',
+                title: 'Duplicate / Error',
+                text: message,
+            });
         } finally {
             setSaving(false);
         }
