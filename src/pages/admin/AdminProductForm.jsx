@@ -277,11 +277,15 @@ const AdminProductForm = () => {
             });
         } catch (error) {
             if (error.response?.status === 422) {
-                setErrors(error.response.data);
+                const responseData = error.response.data;
+                const fieldErrors = responseData?.errors || responseData;
+                setErrors(fieldErrors);
+
+                const duplicateNameMsg = fieldErrors?.name?.[0];
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Validation Error',
-                    text: 'Please check the form fields and try again.',
+                    title: duplicateNameMsg ? 'Duplicate Product' : 'Validation Error',
+                    text: duplicateNameMsg || responseData?.message || 'Please check the form fields and try again.',
                     confirmButtonColor: 'var(--primary-color)'
                 });
             } else {
