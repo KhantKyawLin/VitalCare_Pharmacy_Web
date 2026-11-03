@@ -468,7 +468,7 @@ const AdminProductList = () => {
                                                     onClick={() => handleTogglePublish(product.id, product.is_published)}
                                                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${product.is_published ? 'bg-primary-green' : 'bg-gray-200'}`}
                                                 >
-                                                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${product.is_published ? 'translate-x-6' : 'translate-x-1'}`} />
+                                                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform ${product.is_published ? 'translate-x-6' : 'translate-x-1'}`} />
                                                 </button>
                                             </td>
                                         )}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { 
     HelpCircle, 
     ChevronDown, 
@@ -48,7 +48,7 @@ const FAQ = () => {
     useEffect(() => {
         const fetchFaqs = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/faqs');
+                const response = await api.get('/faqs');
                 setFaqs(response.data);
             } catch (error) {
                 console.error("Error fetching FAQs:", error);

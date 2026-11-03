@@ -414,7 +414,7 @@ const AdminProductForm = () => {
 
                             <div className="pt-2 flex flex-col sm:flex-row gap-6">
                                 <label className="flex items-center gap-3 cursor-pointer group w-fit">
-                                    <div className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none border-2 border-transparent">
+                                    <div className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none ${formData.is_published ? 'bg-primary-green' : 'bg-gray-200'}`}>
                                         <input 
                                             type="checkbox" 
                                             name="is_published"
@@ -422,8 +422,7 @@ const AdminProductForm = () => {
                                             onChange={handleChange}
                                             className="sr-only"
                                         />
-                                        <div className={`w-full h-full rounded-full transition-colors ${formData.is_published ? 'bg-primary-green' : 'bg-gray-200'}`}></div>
-                                        <div className={`absolute left-1 bg-white w-4 h-4 rounded-full transition-transform ${formData.is_published ? 'translate-x-5' : ''}`}></div>
+                                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform ${formData.is_published ? 'translate-x-6' : 'translate-x-1'}`} />
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="text-sm font-bold text-gray-700 group-hover:text-primary-green transition-colors">Publish to Storefront</span>
@@ -432,7 +431,7 @@ const AdminProductForm = () => {
                                 </label>
 
                                 <label className="flex items-center gap-3 cursor-pointer group w-fit">
-                                    <div className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none border-2 border-transparent">
+                                    <div className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none ${formData.requires_prescription ? 'bg-red-500' : 'bg-gray-200'}`}>
                                         <input 
                                             type="checkbox" 
                                             name="requires_prescription"
@@ -440,8 +439,7 @@ const AdminProductForm = () => {
                                             onChange={handleChange}
                                             className="sr-only"
                                         />
-                                        <div className={`w-full h-full rounded-full transition-colors ${formData.requires_prescription ? 'bg-red-500' : 'bg-gray-200'}`}></div>
-                                        <div className={`absolute left-1 bg-white w-4 h-4 rounded-full transition-transform ${formData.requires_prescription ? 'translate-x-5' : ''}`}></div>
+                                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform ${formData.requires_prescription ? 'translate-x-6' : 'translate-x-1'}`} />
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="text-sm font-bold text-gray-700 group-hover:text-red-500 transition-colors">Requires Prescription</span>
@@ -510,7 +508,7 @@ const AdminProductForm = () => {
 
                             <div className="pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-8">
                                 <label className="flex items-center gap-3 cursor-pointer group w-fit">
-                                    <div className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none border-2 border-transparent">
+                                    <div className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none ${formData.is_chronic ? 'bg-primary-green' : 'bg-gray-200'}`}>
                                         <input 
                                             type="checkbox" 
                                             name="is_chronic"
@@ -518,8 +516,7 @@ const AdminProductForm = () => {
                                             onChange={handleChange}
                                             className="sr-only"
                                         />
-                                        <div className={`w-full h-full rounded-full transition-colors ${formData.is_chronic ? 'bg-primary-green' : 'bg-gray-200'}`}></div>
-                                        <div className={`absolute left-1 bg-white w-4 h-4 rounded-full transition-transform ${formData.is_chronic ? 'translate-x-5' : ''}`}></div>
+                                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform ${formData.is_chronic ? 'translate-x-6' : 'translate-x-1'}`} />
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="text-sm font-bold text-gray-700 group-hover:text-primary-green transition-colors">Chronic Medication</span>

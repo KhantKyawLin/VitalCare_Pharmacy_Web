@@ -328,7 +328,7 @@ const AdminHealthTipForm = () => {
                                 onClick={() => setFormData(prev => ({ ...prev, is_published: !prev.is_published }))}
                                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${formData.is_published ? 'bg-primary-green' : 'bg-gray-300'}`}
                             >
-                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.is_published ? 'translate-x-6' : 'translate-x-1'}`} />
+                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform ${formData.is_published ? 'translate-x-6' : 'translate-x-1'}`} />
                             </button>
                         </div>
                     </div>
