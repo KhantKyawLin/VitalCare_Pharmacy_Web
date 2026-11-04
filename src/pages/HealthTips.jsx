@@ -9,7 +9,8 @@ import {
     Search, 
     TrendingUp,
     Clock,
-    Star
+    Star,
+    X
 } from 'lucide-react';
 
 const HealthTips = () => {
@@ -62,16 +63,26 @@ const HealthTips = () => {
 
                         {/* Search Bar */}
                         <div className="relative max-w-xl">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Search className="h-5 w-5 text-gray-400" />
+                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                <Search size={18} />
                             </div>
                             <input
                                 type="text"
-                                className="block w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-primary-light focus:border-primary-green outline-none transition-all text-gray-700 font-medium"
+                                className="w-full pl-10 pr-10 py-3 bg-white border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green outline-none transition-all text-sm text-gray-700 placeholder:text-gray-400 font-medium"
                                 placeholder="Search health topics, symptoms, or advice..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
+                            {search && (
+                                <button
+                                    type="button"
+                                    onClick={() => setSearch('')}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                                    title="Clear search"
+                                >
+                                    <X size={16} />
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
