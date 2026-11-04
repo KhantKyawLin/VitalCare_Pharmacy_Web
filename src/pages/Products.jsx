@@ -23,7 +23,6 @@ const Products = () => {
     const [totalResults, setTotalResults] = useState(0);
     
     // Filter States
-    const [showFilters, setShowFilters] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [selectedType, setSelectedType] = useState('all');
     const [search, setSearch] = useState('');
@@ -95,22 +94,11 @@ const Products = () => {
                             </p>
                         </div>
 
-                        <button 
-                            onClick={() => setShowFilters(!showFilters)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-[4px] border-2 transition-all font-black uppercase tracking-widest text-xs ${showFilters ? 'bg-primary-green border-primary-green text-white' : 'bg-white border-primary-green text-primary-green hover:bg-primary-green/5'}`}
-                        >
-                            <SlidersHorizontal size={14} strokeWidth={3} />
-                            Filters
-                            {getActiveFiltersCount() > 0 && (
-                                <span className="flex items-center justify-center w-5 h-5 bg-white text-primary-green rounded-full text-[10px]">
-                                    {getActiveFiltersCount()}
-                                </span>
-                            )}
-                        </button>
+                        
                     </div>
 
                     {/* Expandable Filter Panel */}
-                    <div className={`overflow-hidden transition-all duration-500 ease-in-out ${showFilters ? 'max-h-[500px] opacity-100 mt-6' : 'max-h-0 opacity-0'}`}>
+                    <div className="mt-4">
                         <div className="bg-gray-50 rounded-xl p-6 border border-gray-100 shadow-sm">
                             <form onSubmit={handleSearchSubmit} className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 {/* Search */}
@@ -122,7 +110,13 @@ const Products = () => {
                                             type="text"
                                             placeholder="Keyword..."
                                             value={search}
-                                            onChange={(e) => setSearch(e.target.value)}
+                                            onChange={(e) => {
+                                                setSearch(e.target.value);
+                                                if (!e.target.value) {
+                                                    setAppliedSearch('');
+                                                    setCurrentPage(1);
+                                                }
+                                            }}
                                             className="w-full pl-9 pr-3 py-2.5 bg-white border border-gray-200 rounded-[4px] outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green font-bold text-xs text-gray-700"
                                         />
                                     </div>
