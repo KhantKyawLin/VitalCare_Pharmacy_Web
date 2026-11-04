@@ -100,15 +100,15 @@ const Products = () => {
                     {/* Expandable Filter Panel */}
                     <div className="mt-4">
                         <div className="bg-gray-50 rounded-xl p-6 border border-gray-100 shadow-sm">
-                            <form onSubmit={handleSearchSubmit} className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            <form onSubmit={handleSearchSubmit} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-4 items-end">
                                 {/* Search */}
-                                <div>
+                                <div className="md:col-span-5">
                                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Search</label>
                                     <div className="relative">
                                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                                         <input 
                                             type="text"
-                                            placeholder="Keyword..."
+                                            placeholder="Search by keyword... (Press Enter)"
                                             value={search}
                                             onChange={(e) => {
                                                 setSearch(e.target.value);
@@ -117,18 +117,28 @@ const Products = () => {
                                                     setCurrentPage(1);
                                                 }
                                             }}
-                                            className="w-full pl-9 pr-3 py-2.5 bg-white border border-gray-200 rounded-[4px] outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green font-bold text-xs text-gray-700"
+                                            className="w-full pl-9 pr-8 py-2.5 bg-white border border-gray-200 rounded-[4px] outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green font-bold text-xs text-gray-700 transition-all"
                                         />
+                                        {search && (
+                                            <button
+                                                type="button"
+                                                onClick={() => { setSearch(''); setAppliedSearch(''); setCurrentPage(1); }}
+                                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-0.5"
+                                                title="Clear search"
+                                            >
+                                                <X size={13} />
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
 
                                 {/* Category */}
-                                <div>
+                                <div className="md:col-span-4">
                                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Category</label>
                                     <select 
                                         value={selectedCategory}
                                         onChange={(e) => { setSelectedCategory(e.target.value); setCurrentPage(1); }}
-                                        className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-[4px] outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green font-bold text-xs text-gray-700 appearance-none cursor-pointer"
+                                        className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-[4px] outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green font-bold text-xs text-gray-700 appearance-none cursor-pointer transition-all"
                                     >
                                         <option value="">All Categories</option>
                                         {categories.map(cat => (
@@ -138,34 +148,28 @@ const Products = () => {
                                 </div>
 
                                 {/* Type */}
-                                <div>
-                                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Product Type</label>
+                                <div className="md:col-span-3">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Product Type</label>
+                                        {(appliedSearch || selectedCategory || selectedType !== 'all') && (
+                                            <button 
+                                                type="button"
+                                                onClick={handleClearAll}
+                                                className="text-[10px] font-bold text-primary-green hover:underline flex items-center gap-1 transition-colors"
+                                            >
+                                                <RefreshCw size={10} strokeWidth={2.5} /> Reset Filters
+                                            </button>
+                                        )}
+                                    </div>
                                     <select 
                                         value={selectedType}
                                         onChange={(e) => { setSelectedType(e.target.value); setCurrentPage(1); }}
-                                        className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-[4px] outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green font-bold text-xs text-gray-700 appearance-none cursor-pointer"
+                                        className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-[4px] outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green font-bold text-xs text-gray-700 appearance-none cursor-pointer transition-all"
                                     >
                                         <option value="all">All Products</option>
                                         <option value="top_sellers">Top Selling Products</option>
                                         <option value="promotions">Promotional Items</option>
                                     </select>
-                                </div>
-
-                                {/* Buttons */}
-                                <div className="flex items-end gap-2 md:col-span-3 lg:col-span-1">
-                                    <button 
-                                        type="submit"
-                                        className="flex-grow bg-primary-green text-white py-2.5 rounded-[4px] font-black uppercase tracking-widest text-[10px] hover:bg-primary-dark transition-all shadow-lg shadow-primary-green/20"
-                                    >
-                                        Apply Filters
-                                    </button>
-                                    <button 
-                                        type="button"
-                                        onClick={handleClearAll}
-                                        className="px-4 py-2.5 bg-white border border-gray-200 text-gray-400 rounded-[4px] font-black uppercase tracking-widest text-[10px] hover:bg-gray-100 transition-all flex items-center gap-2"
-                                    >
-                                        <RefreshCw size={12} strokeWidth={3} /> Clear
-                                    </button>
                                 </div>
                             </form>
                         </div>
