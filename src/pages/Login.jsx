@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
 import Swal from 'sweetalert2';
+import api from '../utils/api';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -41,15 +42,10 @@ const Login = () => {
                     }
                 });
 
-                const response = await fetch('http://127.0.0.1:8000/api/auth/forgot-password', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
-                });
+                const response = await api.post('/auth/forgot-password', { email });
+                const data = response.data;
 
-                const data = await response.json();
-
-                if (response.ok) {
+                if (response.status === 200 || response.status === 201) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Request Submitted',

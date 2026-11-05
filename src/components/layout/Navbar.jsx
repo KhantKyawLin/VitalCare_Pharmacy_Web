@@ -6,7 +6,7 @@ import Button from '../common/Button';
 import { AuthContext } from '../../context/AuthContext';
 import { CartContext } from '../../context/CartContext';
 import { WishlistContext } from '../../context/WishlistContext';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import Swal from 'sweetalert2';
 
 // --- Sub-components (Defined outside to prevent re-mounting & focus loss) ---
@@ -119,7 +119,7 @@ const IconsRow = ({ wishlistCount, cartCount, isLoading, isLoggedIn, user }) => 
             >
                 <div className="w-8 h-8 rounded-full border border-gray-200 overflow-hidden flex items-center justify-center bg-gray-50">
                     {user?.profile ? (
-                        <img src={user.profile.startsWith('http') ? user.profile : `http://127.0.0.1:8000/storage/${user.profile}`} alt="profile" className="w-full h-full object-cover" />
+                        <img src={user.profile.startsWith('http') ? user.profile : getStorageUrl(user.profile)} alt="profile" className="w-full h-full object-cover" />
                     ) : (
                         <User size={18} />
                     )}
@@ -227,7 +227,7 @@ const Navbar = () => {
             if (searchQuery.length >= 2) {
                 setIsSearching(true);
                 try {
-                    const response = await axios.get(`http://127.0.0.1:8000/api/search?q=${searchQuery}`);
+                    const response = await api.get(`/search?q=${encodeURIComponent(searchQuery)}`);
                     setSearchResults(response.data);
                     setShowSearchResults(true);
                 } catch (error) {
@@ -345,7 +345,7 @@ const Navbar = () => {
                         <div className="relative h-10 lg:h-13 w-auto flex items-center">
                             {settings.site_logo ? (
                                 <img 
-                                    src={`${import.meta.env.VITE_STORAGE_URL || 'http://127.0.0.1:8000/storage'}/${settings.site_logo}`} 
+                                    src={getStorageUrl(settings.site_logo)} 
                                     onError={(e) => { e.target.onerror = null; e.target.src = '/VitalCare_Logo.png'; }}
                                     alt="VitalCare Logo" 
                                     className="h-full w-auto object-contain transition-transform group-hover:scale-105 duration-300" 
@@ -402,7 +402,7 @@ const Navbar = () => {
                          <div className="h-8 w-auto flex items-center">
                             {settings.site_logo ? (
                                 <img 
-                                    src={`${import.meta.env.VITE_STORAGE_URL || 'http://127.0.0.1:8000/storage'}/${settings.site_logo}`} 
+                                    src={getStorageUrl(settings.site_logo)} 
                                     onError={(e) => { e.target.onerror = null; e.target.src = '/VitalCare_Logo.png'; }}
                                     alt="VitalCare Logo" 
                                     className="h-full w-auto object-contain" 

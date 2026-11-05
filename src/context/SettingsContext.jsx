@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import api from '../utils/api';
+import api, { getStorageUrl } from '../utils/api';
 
 export const SettingsContext = createContext();
 
@@ -61,7 +61,7 @@ export const SettingsProvider = ({ children }) => {
         if (data.site_logo) {
             const favicon = document.querySelector('link[rel="icon"]');
             if (favicon) {
-                favicon.href = `http://127.0.0.1:8000/storage/${data.site_logo}`;
+                favicon.href = getStorageUrl(data.site_logo);
             }
         }
 

@@ -11,7 +11,7 @@ import {
     CheckCircle2,
     AlertCircle
 } from 'lucide-react';
-import axios from 'axios';
+import api from '../utils/api';
 import { useSettings } from '../context/SettingsContext';
 import Swal from 'sweetalert2';
 
@@ -44,9 +44,9 @@ const Contact = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/contact', formData);
+            const response = await api.post('/contact', formData);
             
-            if (response.status === 201) {
+            if (response.status === 201 || response.status === 200) {
                 setSubmitted(true);
                 Swal.fire({
                     icon: 'success',

@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSettings } from '../context/SettingsContext';
+import { getStorageUrl } from '../utils/api';
 
 const About = () => {
     const { settings } = useSettings();
@@ -27,11 +28,11 @@ const About = () => {
     const visionDesc = settings?.about_vision_desc || 'To be the most trusted healthcare partner in every household across the nation.';
     
     const heroImage = settings?.about_hero_image 
-        ? `http://127.0.0.1:8000/storage/${settings.about_hero_image}`
+        ? getStorageUrl(settings.about_hero_image)
         : "https://images.unsplash.com/photo-1586015555751-63bb77f4322a?q=80&w=2070&auto=format&fit=crop";
 
     const storyImage = settings?.about_story_image
-        ? `http://127.0.0.1:8000/storage/${settings.about_story_image}`
+        ? getStorageUrl(settings.about_story_image)
         : "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070&auto=format&fit=crop";
 
     const pillars = [

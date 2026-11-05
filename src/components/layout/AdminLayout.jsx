@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
 import { Menu, User as UserIcon, UserCircle, Bell, AlertCircle, Package, X, Clock, ShoppingCart, MessageSquare, ChevronRight } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import api, { getStorageUrl } from '../../utils/api';
 import { AuthContext } from '../../context/AuthContext';
 
 const NotificationBell = () => {
@@ -15,7 +15,7 @@ const NotificationBell = () => {
     const fetchNotifications = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get('http://127.0.0.1:8000/api/admin/notifications/alerts', {
+            const response = await api.get('/admin/notifications/alerts', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setNotifications(response.data.alerts);
@@ -292,7 +292,7 @@ const AdminLayout = () => {
                             >
                                 <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-white">
                                     {user?.profile ? (
-                                        <img src={`http://127.0.0.1:8000/storage/${user.profile}`} alt="Profile" className="w-full h-full object-cover" />
+                                        <img src={getStorageUrl(user.profile)} alt="Profile" className="w-full h-full object-cover" />
                                     ) : (
                                         <UserIcon size={18} className="text-slate-500 group-hover:text-primary-green transition-colors" />
                                     )}

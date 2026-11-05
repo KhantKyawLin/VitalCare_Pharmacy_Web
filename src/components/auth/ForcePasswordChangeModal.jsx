@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { AuthContext } from '../../context/AuthContext';
 import { KeyRound, ShieldAlert, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import Swal from 'sweetalert2';
@@ -32,7 +32,7 @@ const ForcePasswordChangeModal = () => {
 
         setLoading(true);
         try {
-            await axios.post('http://127.0.0.1:8000/api/auth/force-change-password', {
+            await api.post('/auth/force-change-password', {
                 password: password,
                 password_confirmation: confirmPassword
             });

@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { NavLink, useLocation, useNavigate, Link } from 'react-router-dom';
 import { useSettings } from '../../context/SettingsContext';
+import { getStorageUrl } from '../../utils/api';
 import { AuthContext } from '../../context/AuthContext';
 import Swal from 'sweetalert2';
 import { 
@@ -64,7 +65,7 @@ const UserSidebar = ({ isOpen }) => {
                 className={`h-[60px] min-h-[60px] flex items-center border-b border-gray-200 shrink-0 transition-all hover:opacity-80 active:scale-95 duration-200 ${!isOpen ? 'justify-center px-0' : 'px-4'}`}
             >
                 <img 
-                    src={settings.site_logo ? `http://127.0.0.1:8000/storage/${settings.site_logo}` : "http://localhost/VitalCare/image/VitalCare_Logo.png"} 
+                    src={settings.site_logo ? getStorageUrl(settings.site_logo) : "/VitalCare_Logo.png"} 
                     alt="Logo" 
                     className={`${!isOpen ? 'w-10 h-10' : 'w-8 h-8 mr-3'} object-contain transition-all`} 
                 />

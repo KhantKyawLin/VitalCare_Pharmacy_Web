@@ -19,7 +19,7 @@ api.interceptors.request.use(
         }
 
         // On Vercel showcase deployment, resolve mock data directly for catalog endpoints
-        if (isVercel && (config.method || 'get').toLowerCase() === 'get') {
+        if (isVercel) {
             const mock = handleMockRequest(config);
             if (mock) {
                 config.adapter = () => Promise.resolve(mock);
@@ -35,7 +35,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.config && (error.config.method || 'get').toLowerCase() === 'get') {
+        if (error.config) {
             const fallback = handleMockRequest(error.config);
             if (fallback) {
                 return Promise.resolve(fallback);
@@ -45,7 +45,7 @@ api.interceptors.response.use(
     }
 );
 
-// Helper to get storage URL (served via static frontend storage)
+// Helper to get storage URL (served via static frontend storage on Vercel, or backend locally)
 export const getStorageUrl = (path) => {
     if (!path) return '';
     if (path.startsWith('http') && !path.includes('/storage/')) return path;
@@ -55,7 +55,11 @@ export const getStorageUrl = (path) => {
         relativePath = path.split('/storage/')[1];
     }
     relativePath = relativePath.replace(/^\//, '');
-    return `/storage/${relativePath}`;
+    
+    if (isVercel) {
+        return `/storage/${relativePath}`;
+    }
+    return `${STORAGE_BASE_URL}/${relativePath}`;
 };
 
 // Helper for auth headers

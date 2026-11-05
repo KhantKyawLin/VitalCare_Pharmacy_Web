@@ -295,7 +295,7 @@ const ProductDetail = () => {
                                     </button>
                                     <button 
                                         onClick={() => {
-                                            const shareUrl = `${import.meta.env.VITE_BASE_URL || 'http://127.0.0.1:8000'}/share/product/${product.id}`;
+                                            const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : (import.meta.env.VITE_BASE_URL || 'http://127.0.0.1:8000')}/products/${product.id}`;
                                             navigator.clipboard.writeText(shareUrl);
                                             showSuccessToast('Shareable link (optimized for social media) copied to clipboard!');
                                         }}
