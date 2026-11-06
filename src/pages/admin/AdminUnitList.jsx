@@ -34,8 +34,12 @@ const AdminUnitList = () => {
         setLoading(true);
         try {
             const response = await api.get(`/admin/units`);
-            setUnits(response.data.units);
-            setStats(response.data.stats);
+            const unitsData = response.data?.units || (Array.isArray(response.data) ? response.data : []);
+            setUnits(unitsData);
+            setStats(response.data?.stats || {
+                total_units: unitsData.length,
+                most_used_unit: unitsData[0] ? { name: unitsData[0].name, count: unitsData[0].products_count || 0 } : null
+            });
         } catch (error) {
             console.error("Error fetching units:", error);
             Swal.fire('Error', 'Failed to load units', 'error');
@@ -165,9 +169,9 @@ const AdminUnitList = () => {
         }
     };
 
-    const filteredUnits = units.filter(unit => 
-        unit.name.toLowerCase().includes(search.toLowerCase()) ||
-        `UNT-${String(unit.id).padStart(3, '0')}`.toLowerCase().includes(search.toLowerCase())
+    const filteredUnits = (units || []).filter(unit => 
+        (unit?.name || '').toLowerCase().includes(search.toLowerCase()) ||
+        `UNT-${String(unit?.id || '').padStart(3, '0')}`.toLowerCase().includes(search.toLowerCase())
     );
 
     return (

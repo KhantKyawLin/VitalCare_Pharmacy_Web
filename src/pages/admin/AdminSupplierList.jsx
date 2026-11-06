@@ -33,8 +33,8 @@ const AdminSupplierList = () => {
         setLoading(true);
         try {
             const res = await api.get('/admin/suppliers');
-            setSuppliers(res.data.suppliers);
-            setStats(res.data.stats);
+            setSuppliers(res.data?.suppliers || (Array.isArray(res.data) ? res.data : []));
+            setStats(res.data?.stats || { total_suppliers: 0 });
         } catch (error) {
             console.error("Error fetching suppliers:", error);
             Swal.fire('Error', 'Failed to load suppliers', 'error');
@@ -153,9 +153,10 @@ const AdminSupplierList = () => {
         });
     };
 
+    const safeSuppliers = suppliers || [];
     const filteredSuppliers = search 
-        ? suppliers.filter(s => s.name.toLowerCase().includes(search.toLowerCase()) || (s.phone && s.phone.includes(search)))
-        : suppliers;
+        ? safeSuppliers.filter(s => (s?.name || '').toLowerCase().includes(search.toLowerCase()) || (s?.phone && s.phone.includes(search)))
+        : safeSuppliers;
 
     return (
         <div className="space-y-6 pt-2 pb-8 max-w-[1500px] mx-auto px-4 sm:px-6">

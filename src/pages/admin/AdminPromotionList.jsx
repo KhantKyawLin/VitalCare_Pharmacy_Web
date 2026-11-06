@@ -37,7 +37,7 @@ const AdminPromotionList = () => {
         setLoading(true);
         try {
             const response = await api.get(`/admin/promotions`);
-            setPromotions(response.data.promotions);
+            setPromotions(response.data?.promotions || (Array.isArray(response.data) ? response.data : []));
         } catch (error) {
             console.error("Error fetching promotions:", error);
             Swal.fire('Error', 'Failed to load promotions', 'error');
@@ -69,12 +69,13 @@ const AdminPromotionList = () => {
         }
     };
 
-    const filteredPromotions = promotions.filter(promo => 
-        promo.title.toLowerCase().includes(search.toLowerCase())
+    const safePromotions = promotions || [];
+    const filteredPromotions = safePromotions.filter(promo => 
+        (promo?.title || '').toLowerCase().includes(search.toLowerCase())
     );
 
-    const activeCount = promotions.filter(p => p.is_active && new Date(p.end_date) >= new Date()).length;
-    const orderCount = promotions.filter(p => p.promotion_scope === 'order').length;
+    const activeCount = safePromotions.filter(p => p.is_active && new Date(p.end_date) >= new Date()).length;
+    const orderCount = safePromotions.filter(p => p.promotion_scope === 'order').length;
 
     return (
         <div className="space-y-6 pt-2 pb-8 max-w-[1600px] mx-auto px-4 sm:px-6">

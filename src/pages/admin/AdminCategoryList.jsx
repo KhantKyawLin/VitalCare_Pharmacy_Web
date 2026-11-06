@@ -37,8 +37,13 @@ const AdminCategoryList = () => {
         setLoading(true);
         try {
             const response = await api.get(`/admin/categories`);
-            setCategories(response.data.categories);
-            setStats(response.data.stats);
+            const catsData = response.data?.categories || (Array.isArray(response.data) ? response.data : []);
+            setCategories(catsData);
+            setStats(response.data?.stats || {
+                total_categories: catsData.length,
+                active_categories: catsData.length,
+                top_category: catsData[0] ? { name: catsData[0].name, count: catsData[0].products_count || 0 } : null
+            });
         } catch (error) {
             console.error("Error fetching categories:", error);
             Swal.fire('Error', 'Failed to load categories', 'error');
@@ -169,9 +174,9 @@ const AdminCategoryList = () => {
         }
     };
 
-    const filteredCategories = categories.filter(cat => 
-        cat.name.toLowerCase().includes(search.toLowerCase()) ||
-        `CAT-${String(cat.id).padStart(3, '0')}`.toLowerCase().includes(search.toLowerCase())
+    const filteredCategories = (categories || []).filter(cat => 
+        (cat?.name || '').toLowerCase().includes(search.toLowerCase()) ||
+        `CAT-${String(cat?.id || '').padStart(3, '0')}`.toLowerCase().includes(search.toLowerCase())
     );
 
     return (

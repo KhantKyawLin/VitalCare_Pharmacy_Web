@@ -804,49 +804,194 @@ export function handleMockRequest(config) {
 
     // 31. Admin Units: /admin/units
     if (cleanPath === '/admin/units') {
+        const unitsList = [
+            { id: 1, name: 'Tablet', products_count: 28, created_at: '2026-09-16T09:36:00.000000Z' },
+            { id: 2, name: 'Capsule', products_count: 14, created_at: '2026-09-16T09:36:00.000000Z' },
+            { id: 3, name: 'Syrup / Bottle', products_count: 8, created_at: '2026-09-16T09:36:00.000000Z' },
+            { id: 4, name: 'Strip', products_count: 6, created_at: '2026-09-16T09:36:00.000000Z' },
+            { id: 5, name: 'Box', products_count: 4, created_at: '2026-09-16T09:36:00.000000Z' },
+            { id: 6, name: 'Piece', products_count: 2, created_at: '2026-09-16T09:36:00.000000Z' }
+        ];
         return {
-            data: [
-                { id: 1, name: 'Tablet', abbreviation: 'Tab' },
-                { id: 2, name: 'Capsule', abbreviation: 'Cap' },
-                { id: 3, name: 'Bottle', abbreviation: 'Btl' },
-                { id: 4, name: 'Strip', abbreviation: 'Str' },
-                { id: 5, name: 'Box', abbreviation: 'Box' }
-            ],
-            status: 200,
-            statusText: 'OK',
-            config,
-            headers: {}
-        };
-    }
-
-    // 32. Admin Suppliers: /admin/suppliers
-    if (cleanPath === '/admin/suppliers') {
-        return {
-            data: [
-                { id: 1, name: 'Mega Lifesciences Ltd.', contact_person: 'Mr. Vivek', phone: '09444444444' },
-                { id: 2, name: 'United Pharma Co.', contact_person: 'Dr. Win', phone: '09333333333' }
-            ],
-            status: 200,
-            statusText: 'OK',
-            config,
-            headers: {}
-        };
-    }
-
-    // 33. Admin Promotions: /admin/promotions
-    if (cleanPath === '/admin/promotions') {
-        return {
-            data: [
-                {
-                    id: 1,
-                    title: 'Monsoon Wellness Campaign',
-                    type: 'percentage',
-                    discount_value: 15,
-                    start_date: '2026-11-01',
-                    end_date: '2026-11-30',
-                    is_active: 1
+            data: {
+                units: unitsList,
+                stats: {
+                    total_units: unitsList.length,
+                    most_used_unit: { name: 'Tablet', count: 28 }
                 }
-            ],
+            },
+            status: 200,
+            statusText: 'OK',
+            config,
+            headers: {}
+        };
+    }
+
+    // 32. Admin Categories: /admin/categories
+    if (cleanPath === '/admin/categories') {
+        const catList = mockCategories.map((c, idx) => ({
+            ...c,
+            products_count: [10, 11, 14, 8, 6, 7, 3, 3][idx] || 5
+        }));
+        return {
+            data: {
+                categories: catList,
+                stats: {
+                    total_categories: catList.length,
+                    active_categories: catList.length,
+                    top_category: { name: 'Vitamins & Supplements', count: 14 }
+                }
+            },
+            status: 200,
+            statusText: 'OK',
+            config,
+            headers: {}
+        };
+    }
+
+    // 33. Admin Products: /admin/products
+    if (cleanPath === '/admin/products') {
+        const page = parseInt(params.page || 1, 10);
+        const perPage = parseInt(params.per_page || 8, 10);
+        const start = (page - 1) * perPage;
+        const pageItems = mockProducts.slice(start, start + perPage);
+        return {
+            data: {
+                data: pageItems,
+                current_page: page,
+                last_page: Math.ceil(mockProducts.length / perPage),
+                total: mockProducts.length,
+                per_page: perPage,
+                metrics: {
+                    total_products: mockProducts.length,
+                    low_stock_count: 4,
+                    expiring_count: 2,
+                    out_of_stock_count: 0
+                }
+            },
+            status: 200,
+            statusText: 'OK',
+            config,
+            headers: {}
+        };
+    }
+
+    // 34. Admin Health Tips: /admin/health-tips
+    if (cleanPath === '/admin/health-tips') {
+        return {
+            data: {
+                data: mockHealthTips,
+                current_page: 1,
+                last_page: 1,
+                total: mockHealthTips.length,
+                metrics: {
+                    total_tips: mockHealthTips.length,
+                    published_tips: mockHealthTips.length
+                }
+            },
+            status: 200,
+            statusText: 'OK',
+            config,
+            headers: {}
+        };
+    }
+
+    // 35. Admin Suppliers: /admin/suppliers
+    if (cleanPath === '/admin/suppliers') {
+        const suppliersList = [
+            { id: 1, name: 'Mega Lifesciences Ltd.', contact_person: 'Mr. Vivek', phone: '09444444444', email: 'sales@megalife.com', address: 'Yangon', products_count: 12 },
+            { id: 2, name: 'United Pharma Co.', contact_person: 'Dr. Win', phone: '09333333333', email: 'info@unitedpharma.com', address: 'Mandalay', products_count: 8 }
+        ];
+        return {
+            data: {
+                suppliers: suppliersList,
+                stats: { total_suppliers: suppliersList.length }
+            },
+            status: 200,
+            statusText: 'OK',
+            config,
+            headers: {}
+        };
+    }
+
+    // 36. Admin Promotions: /admin/promotions
+    if (cleanPath === '/admin/promotions') {
+        const promoList = [
+            {
+                id: 1,
+                title: 'Seasonal Health Discount',
+                type: 'percentage',
+                discount_value: 15,
+                start_date: '2026-11-01',
+                end_date: '2026-11-30',
+                is_active: 1
+            },
+            {
+                id: 2,
+                title: 'Weekend Multivitamin Deal',
+                type: 'fixed_amount',
+                discount_value: 500,
+                start_date: '2026-11-01',
+                end_date: '2026-11-30',
+                is_active: 1
+            }
+        ];
+        return {
+            data: {
+                promotions: promoList,
+                stats: { total: promoList.length, active: promoList.length }
+            },
+            status: 200,
+            statusText: 'OK',
+            config,
+            headers: {}
+        };
+    }
+
+    // 37. Admin Purchases: /admin/purchases
+    if (cleanPath === '/admin/purchases') {
+        return {
+            data: {
+                purchases: {
+                    data: [],
+                    current_page: 1,
+                    last_page: 1,
+                    total: 0
+                },
+                stats: { total_purchases: 0, total_spent: 0 }
+            },
+            status: 200,
+            statusText: 'OK',
+            config,
+            headers: {}
+        };
+    }
+
+    // 38. Admin Expired Items: /admin/expired
+    if (cleanPath === '/admin/expired') {
+        return {
+            data: {
+                data: [],
+                current_page: 1,
+                last_page: 1,
+                total: 0
+            },
+            status: 200,
+            statusText: 'OK',
+            config,
+            headers: {}
+        };
+    }
+
+    // 39. Admin Reorder Alerts: /admin/reorder-alerts
+    if (cleanPath === '/admin/reorder-alerts') {
+        return {
+            data: {
+                data: [],
+                current_page: 1,
+                last_page: 1,
+                total: 0
+            },
             status: 200,
             statusText: 'OK',
             config,
