@@ -187,6 +187,47 @@ const Login = () => {
                     </div>
                 </form>
 
+                {/* Quick Demo Login Buttons for Showcase / Evaluators */}
+                <div className="pt-4 border-t border-gray-100">
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider text-center mb-2.5">
+                        Demo Accounts (Click to Fill & Test)
+                    </p>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                        <button
+                            type="button"
+                            onClick={() => { setEmail('admin@vitalcare.com'); setPassword('password123'); setError(''); }}
+                            className="p-2.5 border border-blue-100 bg-blue-50/70 hover:bg-blue-100 text-blue-700 rounded-lg text-left transition-colors flex flex-col group cursor-pointer"
+                        >
+                            <span className="font-bold text-[12px] group-hover:text-blue-800">👑 Admin</span>
+                            <span className="text-[10px] text-blue-500 font-mono">admin@vitalcare.com</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => { setEmail('customer@vitalcare.com'); setPassword('password123'); setError(''); }}
+                            className="p-2.5 border border-emerald-100 bg-emerald-50/70 hover:bg-emerald-100 text-emerald-700 rounded-lg text-left transition-colors flex flex-col group cursor-pointer"
+                        >
+                            <span className="font-bold text-[12px] group-hover:text-emerald-800">👤 Customer</span>
+                            <span className="text-[10px] text-emerald-500 font-mono">customer@vitalcare.com</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => { setEmail('pharmacist@vitalcare.com'); setPassword('password123'); setError(''); }}
+                            className="p-2.5 border border-purple-100 bg-purple-50/70 hover:bg-purple-100 text-purple-700 rounded-lg text-left transition-colors flex flex-col group cursor-pointer"
+                        >
+                            <span className="font-bold text-[12px] group-hover:text-purple-800">💊 Pharmacist</span>
+                            <span className="text-[10px] text-purple-500 font-mono">pharmacist@vitalcare.com</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => { setEmail('staff@vitalcare.com'); setPassword('password123'); setError(''); }}
+                            className="p-2.5 border border-amber-100 bg-amber-50/70 hover:bg-amber-100 text-amber-700 rounded-lg text-left transition-colors flex flex-col group cursor-pointer"
+                        >
+                            <span className="font-bold text-[12px] group-hover:text-amber-800">📋 Staff</span>
+                            <span className="text-[10px] text-amber-500 font-mono">staff@vitalcare.com</span>
+                        </button>
+                    </div>
+                </div>
+
                 <div className="text-center mt-4">
                     <p className="text-sm text-text-muted">
                         Don't have an account?{' '}
