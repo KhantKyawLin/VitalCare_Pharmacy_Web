@@ -41,7 +41,7 @@
             if (settings.site_logo) {
               const favicon = document.querySelector('link[rel="icon"]');
               if (favicon) {
-                favicon.href = 'http://127.0.0.1:8000/storage/' + settings.site_logo;
+                favicon.href = '/storage/' + settings.site_logo.replace(/^\//, '');
               }
             }
           }
